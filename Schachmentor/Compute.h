@@ -1,6 +1,19 @@
 #pragma once
 #include <ctime>
+#include <iostream>
+#include <sstream>
+
 #include "Comunicate.h"
+
+#define NAKED 0
+#define UCI 1
+#define UCISTARTUP 11
+#define STARTFEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0"
+#define WHITE 0
+#define BLACK 1
+#define VERSION_STRING "1.1"
+#define COMPILE_STRING " compiled 23.03.2016"
+
 class Compute
 {
 public:
@@ -11,6 +24,7 @@ private:
 	bool end;
 	Comunicate *mycom;
 	void readInput();
+	bool ucistartup(std::string command);
 	std::string  command;
 	bool uci(std::string command);
 	bool naked(std::string  command);

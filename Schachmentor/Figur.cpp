@@ -13,3 +13,33 @@ Figur::Figur()
 Figur::~Figur()
 {
 }
+
+void Figur::setTyp(char typ)
+{
+	this->typ = typ;
+}
+
+void Figur::setPosx(int posx)
+{
+	this->posx = posx;
+}
+
+void Figur::setPosy(int posy)
+{
+	this->posy = posy;
+}
+
+char Figur::getTyp()
+{
+	return this->typ;
+}
+
+int Figur::getPosx()
+{
+	return this->posx;
+}
+
+int Figur::getPosy()
+{
+	return this->posy;
+}
