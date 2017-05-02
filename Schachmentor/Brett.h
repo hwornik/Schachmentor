@@ -22,7 +22,7 @@ public:
 	bool setBoardfromFEN(char pos[100]);
 	char getField(int i, int j);
 private:
-	char Board[8][8];
+	int Board[8][8];
 	void reset();
 	int bewertung();
 	int getWert(char w);

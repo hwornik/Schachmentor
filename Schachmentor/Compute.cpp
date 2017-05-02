@@ -100,10 +100,12 @@ bool Compute::ucistartup(std::string command)
 	{
 		mode = 1;	// wechsle in normalen ucimodus
 		std::cout << "readyok\n";
+		return true;
 	}
 	//--------------------------------------------------------
 	// Startup end
 	//--------------------------------------------------------
+	return false;
 }
 
 bool Compute::uci(std::string command)

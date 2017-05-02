@@ -62,7 +62,7 @@ bool Brett::setBoardfromFEN(char pos[100])
 					this->Weiss[wi]->setTyp(pos[z]);
 					this->Weiss[wi]->setPosx(j);
 					this->Weiss[wi]->setPosy(i);
-					this->Board[i][j] = this->Weiss[wi]->getTyp();
+					this->Board[i][j] = wi+1;
 					wi++;
 					if (pos[z] == 'K')
 					{
@@ -76,7 +76,7 @@ bool Brett::setBoardfromFEN(char pos[100])
 					this->Schwarz[si]->setTyp(pos[z]);
 					this->Schwarz[si]->setPosx(j);
 					this->Schwarz[si]->setPosy(i);
-					this->Board[i][j] = this->Schwarz[wi]->getTyp();
+					this->Board[i][j] = -(si+1);
 					if (pos[z] == 'k')
 					{
 						this->kingpos[1][0] = j;
@@ -192,7 +192,7 @@ void Brett::reset()
 	{
 		for (int j = 0; j < 8; j++)
 		{
-			Board[i][j] = 'e';
+			Board[i][j] = 0;
 		}
 	}
 	bewertg = 0;
