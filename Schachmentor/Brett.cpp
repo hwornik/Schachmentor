@@ -54,33 +54,68 @@ bool Brett::setBoardfromFEN(char pos[100])
 			{
 				j--;
 			}
-			if(!isdigit(pos[z]))
+			else if (pos[z] == '1')
 			{
-				if (isupper(pos[z]))
+				
+				if (pos[z] == '2')
 				{
-					this->Weiss[wi] = new Figur();;
-					this->Weiss[wi]->setTyp(pos[z]);
-					this->Weiss[wi]->setPosx(j);
-					this->Weiss[wi]->setPosy(i);
-					this->Board[i][j] = wi+1;
-					wi++;
-					if (pos[z] == 'K')
-					{
-						this->kingpos[0][0] = j;
-						this->kingpos[0][1] = i;
-					}
+					j++;
+				}
+				else if (pos[z] == '3')
+				{
+					j=j+2;
+
+				}
+				else if (pos[z] == '4')
+				{
+					j=j+3;
+				}
+				else if (pos[z] == '5')
+				{
+					j=j+4;
+				}
+				else if (pos[z] == '6')
+				{
+					j=j+5;
+				}
+				else if (pos[z] == '7')
+				{
+					j=j+6;
+				}
+				else if (pos[z] == '8')
+				{
+					j=j+7;
 				}
 				else
 				{
-					this->Schwarz[si] = new Figur();
-					this->Schwarz[si]->setTyp(pos[z]);
-					this->Schwarz[si]->setPosx(j);
-					this->Schwarz[si]->setPosy(i);
-					this->Board[i][j] = -(si+1);
-					if (pos[z] == 'k')
+					if (isupper(pos[z]))
 					{
-						this->kingpos[1][0] = j;
-						this->kingpos[1][1] = i;
+						this->Weiss[wi] = new Figur();;
+						this->Weiss[wi]->setTyp(pos[z]);
+						this->Weiss[wi]->setPosx(j);
+						this->Weiss[wi]->setPosy(i);
+						this->Board[i][j] = wi + 1;
+						wi++;
+						if (pos[z] == 'K')
+						{
+							this->kingpos[0][0] = j;
+							this->kingpos[0][1] = i;
+						}
+						wi++;
+					}
+					else
+					{
+						this->Schwarz[si] = new Figur();
+						this->Schwarz[si]->setTyp(pos[z]);
+						this->Schwarz[si]->setPosx(j);
+						this->Schwarz[si]->setPosy(i);
+						this->Board[i][j] = -(si + 1);
+						if (pos[z] == 'k')
+						{
+							this->kingpos[1][0] = j;
+							this->kingpos[1][1] = i;
+						}
+						si++;
 					}
 				}
 			}

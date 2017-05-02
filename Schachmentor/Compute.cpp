@@ -159,6 +159,10 @@ bool Compute::uci(std::string command)
 	//----------------------------------------------------------
 	// > setoption name MultiPV value 3   3 komplette Berechnungen gleichzeitig
 	//----------------------------------------------------------
+	if (command.compare("quit")==0)
+	{
+		this->end = true;
+	}
 	return false;
 }
 
