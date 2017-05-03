@@ -2,6 +2,10 @@
 #include <windows.h>
 #include <tchar.h>
 #include <strsafe.h>
+#include <sstream>
+#include <string.h>
+
+#include "Brett.h"
 
 #define MAX_THREADS 3
 #define BUF_SIZE 255
@@ -19,7 +23,11 @@ public:
 	~Spiel();
 	int startup();
 	int shutdown();
+	void setBrettwithFEN(std::string fen);
+	void setHash(std::string hash);
+	void makeMoves(std::string moves);
 private:
+	Brett board;
 	static DWORD WINAPI CentralControl(LPVOID lpParam);
 	void ErrorHandler(LPTSTR lpszFunction);
 	PMYDATA pData;

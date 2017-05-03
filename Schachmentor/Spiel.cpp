@@ -74,6 +74,18 @@ int Spiel::shutdown()
 	return 0;
 }
 
+void Spiel::setBrettwithFEN(std::string fen)
+{
+}
+
+void Spiel::setHash(std::string hash)
+{
+}
+
+void Spiel::makeMoves(std::string moves)
+{
+}
+
 DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 {
 	HANDLE hStdout;
