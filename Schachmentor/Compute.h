@@ -2,6 +2,7 @@
 #include <ctime>
 #include <iostream>
 #include <sstream>
+#include <string.h>
 
 #include "Comunicate.h"
 
@@ -41,5 +42,8 @@ private:
 	clock_t movetime;
 	bool searchmvs;
 	void loadFromFen(std::string pos);
+	std::string Ponder="",Hash="", NalimovCache="", NalimovPath="", MultiPV="",
+		OwnBook="", ClearHash="", PositionLearning="", BookFile="", BookSize="",
+		Selectivity="", ClearBook="";
 };
 
