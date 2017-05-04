@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "Comunicate.h"
+#include "Spiel.h"
 
 #define NAKED 0
 #define UCI 1
@@ -22,6 +23,7 @@ public:
 	~Compute();
 	bool start();
 private:
+	Spiel *game;
 	bool end;
 	Comunicate *mycom;
 	void readInput();

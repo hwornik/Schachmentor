@@ -10,12 +10,14 @@ Compute::Compute()
 {
 	mode = -1;
 	end = false;
+	game = new Spiel();
+	mycom = new Comunicate();
 }
 
 
 Compute::~Compute()
 {
-	mycom = new Comunicate();
+
 }
 
 
@@ -147,6 +149,10 @@ bool Compute::uci(std::string command)
 	//movetime integer im millisec
 	//infinite
 	//----------------------------------------------------------
+	if (command.compare(0, 2, "go") == 0)
+	{
+		game->startup();
+	}
 	//----------------------------------------------------------
 	//> stop
 	//----------------------------------------------------------
@@ -161,6 +167,7 @@ bool Compute::uci(std::string command)
 	//----------------------------------------------------------
 	if (command.compare("quit")==0)
 	{
+		game->shutdown();
 		this->end = true;
 	}
 	return false;

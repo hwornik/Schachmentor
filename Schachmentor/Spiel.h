@@ -4,6 +4,7 @@
 #include <strsafe.h>
 #include <sstream>
 #include <string.h>
+#include <iostream>
 
 #include "Brett.h"
 
@@ -11,6 +12,7 @@
 #define BUF_SIZE 255
 
 typedef struct MyData {
+	bool *quit;
 	int val1;
 	int val2;
 } MYDATA, *PMYDATA;
@@ -28,6 +30,7 @@ public:
 	void makeMoves(std::string moves);
 private:
 	Brett board;
+	bool beenden;
 	static DWORD WINAPI CentralControl(LPVOID lpParam);
 	void ErrorHandler(LPTSTR lpszFunction);
 	PMYDATA pData;

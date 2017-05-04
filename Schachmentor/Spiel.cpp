@@ -8,6 +8,7 @@ Spiel::Spiel()
 
 Spiel::~Spiel()
 {
+	beenden = false;
 }
 
 int Spiel::startup()
@@ -30,6 +31,7 @@ int Spiel::startup()
 		int i = 1;
 		pData->val1 = i;
 		pData->val2 = i + 100;
+		pData->quit = &beenden;
 
 		// Create the thread to begin execution on its own.
 
@@ -58,19 +60,19 @@ int Spiel::startup()
 
 int Spiel::shutdown()
 {
-	// Wait until all threads have terminated.
+	// close the while schleife im Thread
+	this->beenden = true;
 
+	// Wait until all threads have terminated.
 	WaitForSingleObject( hThread, TRUE);
 
 	// Close all thread handles and free memory allocations.
-
-
-		CloseHandle(hThread);
-		if (pData != NULL)
-		{
-			HeapFree(GetProcessHeap(), 0, pData);
-			pData = NULL;    // Ensure address is not reused.
-		}
+	CloseHandle(hThread);
+	if (pData != NULL)
+	{
+		HeapFree(GetProcessHeap(), 0, pData);
+		pData = NULL;    // Ensure address is not reused.
+	}
 	return 0;
 }
 
@@ -89,7 +91,7 @@ void Spiel::makeMoves(std::string moves)
 DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 {
 	HANDLE hStdout;
-	PMYDATA pDataArray;
+	PMYDATA pData;
 
 	TCHAR msgBuf[BUF_SIZE];
 	size_t cchStringSize;
@@ -105,15 +107,19 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 	// The pointer is known to be valid because 
 	// it was checked for NULL before the thread was created.
 
-	pDataArray = (PMYDATA)lpParam;
+	pData = (PMYDATA)lpParam;
 
 	// Print the parameter values using thread-safe functions.
 
 	StringCchPrintf(msgBuf, BUF_SIZE, TEXT("Parameters = %d, %d\n"),
-		pDataArray->val1, pDataArray->val2);
+		pData->val1, pData->val2);
 	StringCchLength(msgBuf, BUF_SIZE, &cchStringSize);
 	WriteConsole(hStdout, msgBuf, (DWORD)cchStringSize, &dwChars, NULL);
-
+	while(!*pData->quit)
+	{
+		std::cout << "#Working#";
+		Sleep(100);
+	}
 	return 0;
 }
 
