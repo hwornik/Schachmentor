@@ -3,19 +3,19 @@
 
 Spiel::Spiel()
 {
+	beenden = false;
 }
 
 
 Spiel::~Spiel()
 {
-	beenden = false;
 }
 
-int Spiel::startup()
+int Spiel::startup(int hashsize)
 {
-
+	std::cout << "Hashsize=" << hashsize << "\n";
 		// Allocate memory for thread data.
-
+		//*hasharray = new Brett[hashsize];
 		pData = (PMYDATA)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY,
 			sizeof(MYDATA));
 
@@ -120,6 +120,7 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 		std::cout << "#Working#";
 		Sleep(100);
 	}
+	std::cout << "#Thread ende#";
 	return 0;
 }
 

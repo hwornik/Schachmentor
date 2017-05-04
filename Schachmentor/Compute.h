@@ -26,6 +26,7 @@ private:
 	Spiel *game;
 	bool end;
 	Comunicate *mycom;
+	int hashsize;
 	void readInput();
 	bool ucistartup(std::string command);
 	std::string  command;
@@ -47,5 +48,6 @@ private:
 	std::string Ponder="",Hash="", NalimovCache="", NalimovPath="", MultiPV="",
 		OwnBook="", ClearHash="", PositionLearning="", BookFile="", BookSize="",
 		Selectivity="", ClearBook="";
+	int getIntfromchar(std::string command);
 };
 

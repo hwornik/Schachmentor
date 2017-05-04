@@ -23,13 +23,14 @@ class Spiel
 public:
 	Spiel();
 	~Spiel();
-	int startup();
+	int startup(int hashsize);
 	int shutdown();
 	void setBrettwithFEN(std::string fen);
 	void setHash(std::string hash);
 	void makeMoves(std::string moves);
 private:
 	Brett board;
+	Brett **hasharray;
 	bool beenden;
 	static DWORD WINAPI CentralControl(LPVOID lpParam);
 	void ErrorHandler(LPTSTR lpszFunction);

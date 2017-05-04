@@ -12,6 +12,7 @@ Compute::Compute()
 	end = false;
 	game = new Spiel();
 	mycom = new Comunicate();
+	hashsize = 512;
 }
 
 
@@ -68,7 +69,7 @@ bool Compute::ucistartup(std::string command)
 		std::cout << "written by Wornik Hans\n";
 
 		//< option name Ponder type check default false
-		//< option name Hash type spin default 1 min 1 max 1024
+		std::cout << "option name Hash type spin default 512 min 1 max 1024";
 		//< option name NalimovCache type spin min 1 max 16 default 2
 		//< option name NalimovPath type string default <empty>
 		//< option name MultiPV type spin min 1 max 20 default 1
@@ -90,6 +91,12 @@ bool Compute::ucistartup(std::string command)
 	//-----------------------------------------------------
 	//> setoption name Ponder value true
 	//> setoption name Hash value 16
+	std::cout << command.substr(0, 20) << "#\n";
+	if (command.compare(0,19,"setoption name Hash") == 0)
+	{
+		int z = command.length();
+		hashsize=this->getIntfromchar(command.substr(26,z));
+	}
 	//> setoption name NalimovCache value 4
 	//> setoption name NalimovPath value D : \tbs
 	//> setoption name Position Learning value true
@@ -151,7 +158,7 @@ bool Compute::uci(std::string command)
 	//----------------------------------------------------------
 	if (command.compare(0, 2, "go") == 0)
 	{
-		game->startup();
+		game->startup(hashsize);
 	}
 	//----------------------------------------------------------
 	//> stop
@@ -222,4 +229,18 @@ char Compute::starUpCalc()
 
 void Compute::loadFromFen(std::string pos)
 {
+}
+
+int Compute::getIntfromchar(std::string command)
+{
+	const char *cstr = command.c_str();
+	int l = command.length();
+	int c, zahl = 0;
+	for (int i = 0; i < l;i++)
+	{
+		c = cstr[i] - 48;
+		if (c >= 0 && c < 10)
+			zahl = c+ zahl*10;
+	}
+	return zahl;
 }
