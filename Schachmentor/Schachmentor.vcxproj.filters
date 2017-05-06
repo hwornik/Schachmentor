@@ -42,6 +42,15 @@
     <ClInclude Include="Spiel.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Hashbrett.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Convert.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Taktik.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -63,6 +72,15 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Spiel.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Hashbrett.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Convert.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Taktik.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

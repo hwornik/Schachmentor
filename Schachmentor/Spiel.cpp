@@ -3,6 +3,7 @@
 
 Spiel::Spiel()
 {
+	conv = new Convert();
 	beenden = false;
 }
 
@@ -14,6 +15,7 @@ Spiel::~Spiel()
 int Spiel::startup(int hashsize)
 {
 	std::cout << "Hashsize=" << hashsize << "\n";
+	hasharray = new Hashbrett*[hashsize];
 		// Allocate memory for thread data.
 		//*hasharray = new Brett[hashsize];
 		pData = (PMYDATA)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY,
@@ -74,10 +76,6 @@ int Spiel::shutdown()
 		pData = NULL;    // Ensure address is not reused.
 	}
 	return 0;
-}
-
-void Spiel::setBrettwithFEN(std::string fen)
-{
 }
 
 void Spiel::setHash(std::string hash)
@@ -157,3 +155,7 @@ void Spiel::ErrorHandler(LPTSTR lpszFunction)
 	LocalFree(lpMsgBuf);
 	LocalFree(lpDisplayBuf);
 }
+
+
+
+
