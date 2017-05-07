@@ -12,10 +12,14 @@
 
 #define MAX_THREADS 3
 #define BUF_SIZE 255
+#define PRINT 11
+#define WAITING -1
 
 typedef struct MyData {
 	bool *quit;
 	bool *endsearch;
+	int *input;
+	bool *ready;
 	int val1;
 	int val2;
 } MYDATA, *PMYDATA;
@@ -28,9 +32,10 @@ public:
 	~Spiel();
 	int startup(int hashsize);
 	int shutdown();
-	void setBoardwithFEN(Brett *board, std::string fen);
 	void setHash(std::string hash);
+	void setBoardwithFen(std::string fen);
 	void makeMoves(std::string moves);
+	bool startAction(int action);
 private:
 	Convert *conv;
 	Brett board;
@@ -41,5 +46,7 @@ private:
 	PMYDATA pData;
 	DWORD   dwThreadId;
 	HANDLE  hThread;
+	int eingabe;
+	bool ready;
 };
 

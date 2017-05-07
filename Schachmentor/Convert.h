@@ -10,6 +10,7 @@ public:
 	~Convert();
 	int getWert(char w);
 	int getNumberofChar(char line);
+	int getcharfromNumber(int line);
 	void setBoardwithFEN(Brett * board, std::string fen);
 	std::string getBoardFen(Brett * board);
 };

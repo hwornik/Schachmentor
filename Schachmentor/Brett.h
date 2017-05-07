@@ -37,8 +37,8 @@ public:
 	void setCastlQueenside(bool white, bool castle);
 	bool getCastlKingside(bool white);
 	bool getCastlQueenside(bool white);
-	void setEnPassant(bool enpass);
-	bool getEnPassant();
+	void setEnPassant(int line);
+	int getEnPassant();
 	void setZugNr(int zug);
 	void setHalbzug(int zug);
 	int getZugNr();
@@ -56,7 +56,7 @@ private:
 	bool whitetoMove;
 	bool castleKs[2];
 	bool castleQs[2];
-	bool enpassant;
+	int enpassant;
 	int zugnr;
 	int halbzug;
 };

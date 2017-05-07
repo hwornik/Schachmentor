@@ -13,17 +13,17 @@ Convert::~Convert()
 
 int Convert::getWert(char w)
 {
-	if (w == 'p' || 'P')
+	if (w == 'p' || w == 'P')
 		return 1;
-	if (w == 'r' || 'R')
+	if (w == 'r' || w == 'R')
 		return 5;
-	if (w == 'b' || 'B')
+	if (w == 'b' || w == 'B')
 		return 3;
-	if (w == 'n' || 'N')
+	if (w == 'n' || w == 'N')
 		return 3;
-	if (w == 'q' || 'Q')
+	if (w == 'q' || w == 'Q')
 		return 9;
-	if (w == 'k' || 'K')
+	if (w == 'k' || w == 'K')
 		return 100;
 }
 
@@ -48,6 +48,28 @@ int Convert::getNumberofChar(char line)
 		return 7;
 	return -1;
 }
+int Convert::getcharfromNumber(int line)
+{
+	if (line == 0)
+		return 'a';
+	if (line == 1)
+		return 'b';
+	if (line == 2)
+		return 'c';
+	if (line == 3)
+		return 'd';
+	if (line == 4)
+		return 'e';
+	if (line == 5)
+		return 'f';
+	if (line == 6)
+		return 'g';
+	if (line == 7)
+		return 'h';
+	return 'x';
+}
+
+
 
 void Convert::setBoardwithFEN(Brett *board, std::string fen)
 {
@@ -106,12 +128,10 @@ void Convert::setBoardwithFEN(Brett *board, std::string fen)
 						board->touchWeiss(wi)->setPosx(j);
 						board->touchWeiss(wi)->setPosy(i);
 						board->setField(j, i, wi);
-						wi++;
 						if (pos[z] == 'K')
 						{
 							board->setKingPos(true, j, i);
 						}
-						wi++;
 					}
 					else
 					{
@@ -120,13 +140,11 @@ void Convert::setBoardwithFEN(Brett *board, std::string fen)
 						board->touchSchwarz(wi)->setTyp(pos[z]);
 						board->touchSchwarz(wi)->setPosx(j);
 						board->touchSchwarz(wi)->setPosy(i);
-						board->setField(j, i, wi);
-						wi++;
+						board->setField(j, i, -wi);
 						if (pos[z] == 'k')
 						{
 							board->setKingPos(true, j, i);
 						}
-						wi++;
 					}
 				}
 			}
@@ -183,11 +201,11 @@ void Convert::setBoardwithFEN(Brett *board, std::string fen)
 	z++;
 	if (pos[z] == '-')
 	{
-		board->setEnPassant(false);
+		board->setEnPassant(-1);
 	}
 	else
 	{
-		board->setEnPassant(true);
+		board->setEnPassant(this->getNumberofChar(pos[z]));
 		z++;
 	}
 	while (!isdigit(pos[z]))
@@ -214,5 +232,105 @@ void Convert::setBoardwithFEN(Brett *board, std::string fen)
 
 std::string Convert::getBoardFen(Brett * board)
 {
-	return std::string();
+	char fenstring[85];
+	for (register int i = 0; i < 85; i++)
+	{
+		fenstring[i] = ' ';
+	}
+	fenstring[84] = '\0';
+	int z = 0;
+	int leer;
+	for (int i = 7; i >= 0; i--)
+	{
+		leer = 0;
+		for (int j = 0; j < 8; j++)
+		{
+			if (board->getField(j,i) == 0)
+			{
+				leer++;
+			}
+			else
+			{
+				if (leer > 0)
+				{
+					fenstring[z] = (char)leer + 48;
+					leer = 0;
+					z++;
+				}
+				if (board->getField(j, i) > 0)
+				{
+					fenstring[z] = board->touchWeiss(board->getField(j, i)-1)->getTyp();
+				}
+				else
+				{
+					fenstring[z] = board->touchSchwarz(-(board->getField(j, i)+1))->getTyp();
+				}
+
+				z++;
+			}
+		}
+		if (leer > 0)
+		{
+			fenstring[z] = (char)leer + 48;
+			leer = 0;
+			z++;
+		}
+		if (i >0 && i<7)
+		{
+			fenstring[z] = '/';
+			z++;
+		}
+	}
+	fenstring[z] = ' ';
+	z++;
+	if (board->getWhitetoMove())
+	{
+		fenstring[z] = 'w';
+	}
+	else
+	{
+		fenstring[z] = 'b';
+	}
+	//Für richtigen FenString notwendig
+	z++;
+	fenstring[z] = ' ';
+	z++;
+	if (board->getCastlKingside(true))
+	{
+		fenstring[z] = 'K';
+		z++;
+	}
+	if (board->getCastlQueenside(true))
+	{
+		fenstring[z] = 'Q';
+		z++;
+	}
+	if (board->getCastlKingside(false))
+	{
+		fenstring[z] = 'k';
+		z++;
+	}
+	if (board->getCastlQueenside(false))
+	{
+		fenstring[z] = 'q';
+		z++;
+	}
+	fenstring[z] = ' ';
+	z++;
+	if (board->getEnPassant() < 0)
+	{
+		fenstring[z] = '-';
+	}
+	else
+	{		
+		fenstring[z] = this->getcharfromNumber(board->getEnPassant());
+	}
+	z++;
+	fenstring[z] = ' ';
+	z++;
+	fenstring[z] = board->getHalbzug();
+	z++;
+	fenstring[z] = ' ';
+	z++;
+	fenstring[z] = board->getZugNr();
 }

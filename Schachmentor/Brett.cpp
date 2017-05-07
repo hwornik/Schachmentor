@@ -21,8 +21,6 @@ Brett::~Brett()
 		if (Weiss[i] != NULL)
 			delete Weiss[i];
 	}
-	delete Schwarz;
-	delete Weiss;
 }
 
 int Brett::getField(int i, int j)
@@ -160,12 +158,12 @@ bool Brett::getCastlQueenside(bool white)
 	return this->castleQs[i];
 }
 
-void Brett::setEnPassant(bool enpass)
+void Brett::setEnPassant(int line)
 {
-	this->enpassant = enpass;
+	this->enpassant = line;
 }
 
-bool Brett::getEnPassant()
+int Brett::getEnPassant()
 {
 	return this->enpassant;
 }

@@ -28,12 +28,15 @@ int Spiel::startup(int hashsize)
 			// Just terminate execution.
 			ExitProcess(2);
 		}
-
+		eingabe = -1;
+		ready = true;
 		// Generate unique data for each thread to work with.
 		int i = 1;
 		pData->val1 = i;
 		pData->val2 = i + 100;
 		pData->quit = &beenden;
+		pData->input = &eingabe;
+		pData->ready = &ready;
 
 		// Create the thread to begin execution on its own.
 
@@ -82,8 +85,18 @@ void Spiel::setHash(std::string hash)
 {
 }
 
+void Spiel::setBoardwithFen(std::string fen)
+{
+}
+
 void Spiel::makeMoves(std::string moves)
 {
+}
+
+bool Spiel::startAction(int action)
+{
+	this->eingabe = action;
+	return false;
 }
 
 DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
@@ -115,6 +128,11 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 	WriteConsole(hStdout, msgBuf, (DWORD)cchStringSize, &dwChars, NULL);
 	while(!*pData->quit)
 	{
+		if (*pData->input == PRINT)
+		{
+			*pData->input = WAITING;
+			*pData->ready = true;
+		}
 		std::cout << "#Working#";
 		Sleep(100);
 	}
