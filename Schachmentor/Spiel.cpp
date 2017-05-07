@@ -95,6 +95,8 @@ void Spiel::makeMoves(std::string moves)
 
 bool Spiel::startAction(int action)
 {
+	while (!ready)
+		Sleep(100);
 	this->eingabe = action;
 	return false;
 }
