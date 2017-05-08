@@ -80,3 +80,13 @@ char * Hashbrett::getZug()
 {
 	return this->zug;
 }
+
+std::string Hashbrett::getFenString()
+{
+	return this->fenstring;
+}
+
+void Hashbrett::setFenString(std::string fenstring)
+{
+	this->fenstring = fenstring;
+}

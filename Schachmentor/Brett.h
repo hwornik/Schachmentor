@@ -3,24 +3,6 @@
 
 #include "Figur.h"
 
-static const char BRETTFARBEN[8][8] = { { 'b','w','b','w','b','w','b','w' },
-										{ 'w','b','w','b','w','b','w','b' },
-										{ 'b','w','b','w','b','w','b','w' },
-										{ 'w','b','w','b','w','b','w','b' },
-										{ 'b','w','b','w','b','w','b','w' },
-										{ 'w','b','w','b','w','b','w','b' },
-										{ 'b','w','b','w','b','w','b','w' },
-										{ 'w','b','w','b','w','b','w','b' } };
-
-static const char BRETTFELDER[8][8] = { { '#',' ','#',' ','#',' ','#',' ' },
-										{ ' ','#',' ','#',' ','#',' ','#' },
-										{ '#',' ','#',' ','#',' ','#',' ' },
-										{ ' ','#',' ','#',' ','#',' ','#' },
-										{ '#',' ','#',' ','#',' ','#',' ' },
-										{ ' ','#',' ','#',' ','#',' ','#' },
-										{ '#',' ','#',' ','#',' ','#',' ' },
-										{ ' ','#',' ','#',' ','#',' ','#' } };
-
 class Brett
 {
 public:
@@ -54,6 +36,7 @@ public:
 	int getHalbzug();
 	void reset();
 	bool makeMove(Figur *fig, int nachx, int nachy);
+
 private:
 	int board[8][8];
 	int maxschwarz;
