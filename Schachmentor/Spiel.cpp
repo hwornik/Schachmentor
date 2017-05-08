@@ -3,7 +3,6 @@
 
 Spiel::Spiel()
 {
-	conv = new Convert();
 	beenden = false;
 }
 
@@ -37,7 +36,9 @@ int Spiel::startup(int hashsize)
 		pData->quit = &beenden;
 		pData->input = &eingabe;
 		pData->ready = &ready;
-
+		pData->fenstring = &fen;
+		pData->movestodo = &moves;
+		pData->movemade = &move;
 		// Create the thread to begin execution on its own.
 
 		hThread = CreateThread(
@@ -93,11 +94,33 @@ void Spiel::makeMoves(std::string moves)
 {
 }
 
+void Spiel::searchMoves(std::string)
+{
+}
+
 bool Spiel::startAction(int action)
 {
 	while (!ready)
 		Sleep(100);
 	this->eingabe = action;
+	return false;
+}
+
+bool Spiel::setFenString(std::string fen)
+{
+	this->fen = fen;
+	return false;
+}
+
+bool Spiel::setMovestoMake(std::string moves)
+{
+	this->moves = moves;
+	return false;
+}
+
+bool Spiel::setMoveMadebyGUI(std::string move)
+{
+	this->move = move;
 	return false;
 }
 
@@ -121,17 +144,19 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 	// it was checked for NULL before the thread was created.
 
 	pData = (PMYDATA)lpParam;
-
+	Convert *conv = new Convert();
+	Brett *board = new Brett();
 	// Print the parameter values using thread-safe functions.
-
 	StringCchPrintf(msgBuf, BUF_SIZE, TEXT("Parameters = %d, %d\n"),
 		pData->val1, pData->val2);
 	StringCchLength(msgBuf, BUF_SIZE, &cchStringSize);
 	WriteConsole(hStdout, msgBuf, (DWORD)cchStringSize, &dwChars, NULL);
+	// Print thread ende
 	while(!*pData->quit)
 	{
 		if (*pData->input == PRINT)
 		{
+			conv->displayBoard(board);
 			*pData->input = WAITING;
 			*pData->ready = true;
 		}
@@ -175,7 +200,4 @@ void Spiel::ErrorHandler(LPTSTR lpszFunction)
 	LocalFree(lpMsgBuf);
 	LocalFree(lpDisplayBuf);
 }
-
-
-
 

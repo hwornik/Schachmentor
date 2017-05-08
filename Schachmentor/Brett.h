@@ -3,7 +3,7 @@
 
 #include "Figur.h"
 
-static const char BRETTFARBEN[8][8] = {  { 'b','w','b','w','b','w','b','w' },
+static const char BRETTFARBEN[8][8] = { { 'b','w','b','w','b','w','b','w' },
 										{ 'w','b','w','b','w','b','w','b' },
 										{ 'b','w','b','w','b','w','b','w' },
 										{ 'w','b','w','b','w','b','w','b' },
@@ -11,7 +11,15 @@ static const char BRETTFARBEN[8][8] = {  { 'b','w','b','w','b','w','b','w' },
 										{ 'w','b','w','b','w','b','w','b' },
 										{ 'b','w','b','w','b','w','b','w' },
 										{ 'w','b','w','b','w','b','w','b' } };
-static const char NUMBERTOCHAR[8] = { 'a','b','c','d','e','f','g','h' };
+
+static const char BRETTFELDER[8][8] = { { '#',' ','#',' ','#',' ','#',' ' },
+										{ ' ','#',' ','#',' ','#',' ','#' },
+										{ '#',' ','#',' ','#',' ','#',' ' },
+										{ ' ','#',' ','#',' ','#',' ','#' },
+										{ '#',' ','#',' ','#',' ','#',' ' },
+										{ ' ','#',' ','#',' ','#',' ','#' },
+										{ '#',' ','#',' ','#',' ','#',' ' },
+										{ ' ','#',' ','#',' ','#',' ','#' } };
 
 class Brett
 {
@@ -28,6 +36,7 @@ public:
 	Figur *touchWeiss(int number);
 	bool addnewFigurWeiss();
 	bool addnewFigurSchwarz();
+	bool deleteFigure(int boardint);
 	int getFigurmax(bool white);
 	void setFigurenwert(int wert);
 	int getFigurenwert();
@@ -44,8 +53,9 @@ public:
 	int getZugNr();
 	int getHalbzug();
 	void reset();
+	bool makeMove(Figur *fig, int nachx, int nachy);
 private:
-	int Board[8][8];
+	int board[8][8];
 	int maxschwarz;
 	int maxweiss;
 	Figur *Schwarz[16];

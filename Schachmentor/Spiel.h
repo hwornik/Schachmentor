@@ -20,6 +20,9 @@ typedef struct MyData {
 	bool *endsearch;
 	int *input;
 	bool *ready;
+	std::string *fenstring;
+	std::string *movestodo;
+	std::string *movemade;
 	int val1;
 	int val2;
 } MYDATA, *PMYDATA;
@@ -35,10 +38,12 @@ public:
 	void setHash(std::string hash);
 	void setBoardwithFen(std::string fen);
 	void makeMoves(std::string moves);
+	void searchMoves(std::string);
 	bool startAction(int action);
+	bool setFenString(std::string fen);
+	bool setMovestoMake(std::string moves);
+	bool setMoveMadebyGUI(std::string move);
 private:
-	Convert *conv;
-	Brett board;
 	Hashbrett **hasharray;
 	bool beenden;
 	static DWORD WINAPI CentralControl(LPVOID lpParam);
@@ -48,5 +53,8 @@ private:
 	HANDLE  hThread;
 	int eingabe;
 	bool ready;
+	std::string fen;
+	std::string moves;
+	std::string move;
 };
 

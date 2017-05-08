@@ -25,12 +25,12 @@ Brett::~Brett()
 
 int Brett::getField(int i, int j)
 {
-	return Board[i][j];
+	return board[i][j];
 }
 
 void Brett::setField(int i, int j, int wert)
 {
-	Board[i][j] = wert;
+	board[i][j] = wert;
 }
 
 int Brett::getKingPos(bool white, bool xwert)
@@ -92,6 +92,34 @@ bool Brett::addnewFigurSchwarz()
 		return true;
 	}
 	return false;
+}
+
+bool Brett::deleteFigure(int boardint)
+{
+	if (boardint > 0)
+	{
+		boardint = boardint - 1;
+		delete Schwarz[boardint];
+		for (int i = boardint; i < (maxweiss+1); i++)
+		{
+			Schwarz[i] = Schwarz[i + 1];
+		}
+		maxweiss--;
+		Schwarz[maxweiss] = NULL;
+	}
+	else if (boardint < 0)
+	{
+		boardint = -(boardint + 1);
+		delete Weiss[boardint];
+		for (int i = boardint; i < (maxschwarz + 1); i++)
+		{
+			Weiss[i] = Weiss[i + 1];
+		}
+		maxschwarz--;
+		Schwarz[maxschwarz] = NULL;
+	}
+	else
+		return false;
 }
 
 int Brett::getFigurmax(bool white)
@@ -207,11 +235,29 @@ void Brett::reset()
 	{
 		for (int j = 0; j < 8; j++)
 		{
-			Board[i][j] = 0;
+			board[i][j] = 0;
 		}
 	}
 	bewertg = 0;
 	figwert = 0;
 }
+
+bool Brett::makeMove(Figur * fig, int nachx, int nachy)
+{
+	int oldnr=board[fig->getPosx][fig->getPosy];
+	board[fig->getPosx][fig->getPosy] = 0;
+	fig->setPosx(nachx);
+	fig->setPosy(nachy);
+	if (board[nachx][nachy] != 0)
+	{
+		this->deleteFigure(board[nachx][nachy]);
+		board[nachx][nachy] = oldnr;
+		return true;
+	}
+	board[nachx][nachy] = oldnr;
+	return false;
+}
+
+
 
 

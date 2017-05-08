@@ -50,23 +50,7 @@ int Convert::getNumberofChar(char line)
 }
 int Convert::getcharfromNumber(int line)
 {
-	if (line == 0)
-		return 'a';
-	if (line == 1)
-		return 'b';
-	if (line == 2)
-		return 'c';
-	if (line == 3)
-		return 'd';
-	if (line == 4)
-		return 'e';
-	if (line == 5)
-		return 'f';
-	if (line == 6)
-		return 'g';
-	if (line == 7)
-		return 'h';
-	return 'x';
+	return NUMBERTOCHAR[line];
 }
 
 
@@ -333,4 +317,43 @@ std::string Convert::getBoardFen(Brett * board)
 	fenstring[z] = ' ';
 	z++;
 	fenstring[z] = board->getZugNr();
+}
+
+void Convert::displayBoard(Brett *board)
+{
+	for (int i = 8; i > 0; i--)
+	{
+		for (int j = 1; j < 9; j++)
+		{
+			int x;
+			x = board->getField(j, i);
+			if (x != 0)
+			{
+				if (x > 0)
+				{
+					x = x - 1;
+					std::cout << board->touchWeiss(x)->getTyp();
+				}
+				else
+				{
+					x = -(x + 1);
+					std::cout << board->touchSchwarz(x)->getTyp();
+				}
+			}
+			else
+			{
+				std::cout << BRETTFARBEN[j][i];
+			}
+		}
+		printf("\n");
+	}
+	if (board->getWhitetoMove())
+	{
+		printf("White to Move");
+	}
+	else
+	{
+		printf("Black to Move");
+	}
+	printf("\n");
 }
