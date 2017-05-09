@@ -4,8 +4,7 @@
 #include <iostream>
 
 #include "Brett.h"
-
-static const char NUMBERTOCHAR[8] = { 'a','b','c','d','e','f','g','h' };
+#include "Constants.h"
 
 class Convert
 {

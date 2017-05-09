@@ -67,11 +67,10 @@ void Convert::setBoardwithFEN(Brett *board, std::string fen)
 		{
 			if (pos[z] == '/')
 			{
-				j--;
+				z++;
 			}
-			else if (pos[z] == '1')
+			if (pos[z] != '1')
 			{
-
 				if (pos[z] == '2')
 				{
 					j++;
@@ -107,11 +106,11 @@ void Convert::setBoardwithFEN(Brett *board, std::string fen)
 					if (isupper(pos[z]))
 					{
 						board->addnewFigurWeiss();
-						wi = board->getFigurmax(true);
+						wi = board->getFigurmax(true) - 1;
 						board->touchWeiss(wi)->setTyp(pos[z]);
 						board->touchWeiss(wi)->setPosx(j);
 						board->touchWeiss(wi)->setPosy(i);
-						board->setField(j, i, wi);
+						board->setField(j, i, wi+1);
 						if (pos[z] == 'K')
 						{
 							board->setKingPos(true, j, i);
@@ -120,11 +119,11 @@ void Convert::setBoardwithFEN(Brett *board, std::string fen)
 					else
 					{
 						board->addnewFigurSchwarz();
-						wi = board->getFigurmax(false);
+						wi = board->getFigurmax(false) - 1;
 						board->touchSchwarz(wi)->setTyp(pos[z]);
 						board->touchSchwarz(wi)->setPosx(j);
 						board->touchSchwarz(wi)->setPosy(i);
-						board->setField(j, i, -wi);
+						board->setField(j, i, -(wi+1));
 						if (pos[z] == 'k')
 						{
 							board->setKingPos(true, j, i);
@@ -321,12 +320,14 @@ std::string Convert::getBoardFen(Brett * board)
 
 void Convert::displayBoard(Brett *board)
 {
-	for (int i = 8; i > 0; i--)
+	printf("\n");
+	for (int i = 7; i >= 0; i--)
 	{
-		for (int j = 1; j < 9; j++)
+		for (int j = 0; j < 8; j++)
 		{
 			int x;
 			x = board->getField(j, i);
+			//std::cout << '#' << x << '#';
 			if (x != 0)
 			{
 				if (x > 0)
@@ -342,7 +343,7 @@ void Convert::displayBoard(Brett *board)
 			}
 			else
 			{
-				std::cout << BRETTFARBEN[j][i];
+				std::cout << BRETTFELDER[j][i];
 			}
 		}
 		printf("\n");

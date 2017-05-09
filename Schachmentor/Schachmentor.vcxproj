@@ -141,6 +141,7 @@
     <ClInclude Include="Brett.h" />
     <ClInclude Include="Compute.h" />
     <ClInclude Include="Comunicate.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="Convert.h" />
     <ClInclude Include="Figur.h" />
     <ClInclude Include="Hashbrett.h" />

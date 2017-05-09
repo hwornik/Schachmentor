@@ -9,13 +9,8 @@
 #include "Brett.h"
 #include "Hashbrett.h"
 #include "Convert.h"
+#include "Constants.h"
 
-#define MAX_THREADS 3
-#define BUF_SIZE 255
-
-//interne Befehle für CentralControl
-#define SETBOARDWITHFEN 90
-#define MAKEMOVES	91
 
 typedef struct MyData {
 	bool *quit;

@@ -160,7 +160,13 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 			*pData->input = WAITING;
 			*pData->ready = true;
 		}
-		std::cout << "#Working#";
+		if (*pData->input == SETBOARDWITHFEN)
+		{
+			conv->setBoardwithFEN(board,*pData->fenstring);
+			*pData->input = WAITING;
+			*pData->ready = true;
+		}
+
 		Sleep(100);
 	}
 	std::cout << "#Thread ende#";

@@ -51,6 +51,9 @@
     <ClInclude Include="Taktik.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

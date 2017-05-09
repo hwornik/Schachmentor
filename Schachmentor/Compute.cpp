@@ -128,6 +128,10 @@ bool Compute::uci(std::string command)
 	//--------------------------------------------------------
 	//> ucinewgame
 	//--------------------------------------------------------
+	if (command.compare(0, 10, "ucinewgame") == 0)
+	{
+		this->game->startAction(RESETGAME);
+	}
 	//--------------------------------------------------------
 	//> position startpos
 	//--------------------------------------------------------
@@ -187,8 +191,19 @@ bool Compute::naked(std::string command)
 		std::cout << "Schachmentor engine 1\n";
 		std::cout << "written by Wornik Hans\n";
 		std::cout << "Konsolenmodus\n";
+		game->startup(hashsize);
+		mode = NAKED;
 	}
-	mode = 0;
+	if (command.compare("ucinewgame") == 0)
+	{
+		this->game->setFenString(STARTFEN);
+		this->game->startAction(SETBOARDWITHFEN);
+	}
+	if (command.compare("show") == 0)
+	{
+		this->game->startAction(PRINT);
+		std::cout << "Print";
+	}
 	return false;
 }
 
