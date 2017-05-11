@@ -16,30 +16,331 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 {
 	int index = 0;
 	int ** moves = new int*[29];
-	// Felder für Pawn
-	if (fig->getTyp() == ('p' || 'P'))
+	// Felder für Pawn-----------------------------------------------------------------------------------------------------------------
+	// Schwarz-------------------------------------------------------------------------------------------------------------------------
+	if ( fig->getTyp() ==  'P')
 	{
 		if (board->getField(fig->getPosx(), (fig->getPosy() + 1)) == 0)
 		{
-			moves[index] = new int[2];
+			moves[index] = new int[3];
 			moves[index][0] = fig->getPosx();
 			moves[index][1] = fig->getPosy() + 1;
+			moves[index][2] = 0;
 			index++;
 		}
-		else
+		else if (fig->getPosx()==1 && board->getField(fig->getPosx(), (fig->getPosy() + 1)) == 0 && board->getField(fig->getPosx(), (fig->getPosy() + 2)) == 0)
 		{
-			return nullptr;
-		}
-		if (board->getField(fig->getPosx(), (fig->getPosy() + 2)) == 0)
-		{
-			moves[index] = new int[2];
+			moves[index] = new int[3];
 			moves[index][0] = fig->getPosx();
 			moves[index][1] = fig->getPosy() + 2;
+			moves[index][2] = 0;
 			index++;
 		}
-		moves[index] = new int[2];
+		else if (board->getField(fig->getPosx() + 1, fig->getPosy() + 1) < 0)
+		{
+			moves[index] = new int[3];
+			moves[index][0] = fig->getPosx() + 1;
+			moves[index][1] = fig->getPosy() + 1;
+			moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() + 1, fig->getPosy() + 1)+1))->getTyp());
+			index++;
+		}
+		else if (board->getField(fig->getPosx() + 1, fig->getPosy() - 1) < 0)
+		{
+			moves[index] = new int[3];
+			moves[index][0] = fig->getPosx() + 1;
+			moves[index][1] = fig->getPosy() - 1;
+			moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() + 1, fig->getPosy() - 1) + 1))->getTyp());
+			index++;
+		}
+		else if (fig->getTyp() == 'p')
+		{
+			if (board->getField(fig->getPosx(), (fig->getPosy() - 1)) == 0)
+			{
+				moves[index] = new int[3];
+				moves[index][0] = fig->getPosx();
+				moves[index][1] = fig->getPosy() - 1;
+				moves[index][2] = 0;
+				index++;
+			}
+			else if (fig->getPosx() == 6 && board->getField(fig->getPosx(), (fig->getPosy() - 1)) == 0 && board->getField(fig->getPosx(), (fig->getPosy() - 2)) == 0)
+			{
+				moves[index] = new int[3];
+				moves[index][0] = fig->getPosx();
+				moves[index][1] = fig->getPosy() - 2;
+				moves[index][2] = 0;
+				index++;
+			}
+			else if (board->getField(fig->getPosx() - 1, fig->getPosy() + 1) > 0)
+			{
+				moves[index] = new int[3];
+				moves[index][0] = fig->getPosx() - 1;
+				moves[index][1] = fig->getPosy() + 1;
+				moves[index][2] = -conv->getWert(board->touchWeiss((board->getField(fig->getPosx() - 1, fig->getPosy() + 1) - 1))->getTyp());
+				index++;
+			}
+			else if (board->getField(fig->getPosx() - 1, fig->getPosy() - 1) > 0)
+			{
+				moves[index] = new int[3];
+				moves[index][0] = fig->getPosx() - 1;
+				moves[index][1] = fig->getPosy() - 1;
+				moves[index][2] = -conv->getWert(board->touchWeiss((board->getField(fig->getPosx() - 1, fig->getPosy() - 1) - 1))->getTyp());
+				index++;
+			}
+		}
+		// Springer ------------------------------------------------------------------------------------------------------------
+		// Weiss----------------------------------------------------------------------------------------------------------------
+		if (fig->getTyp() == 'N')
+		{
+			if ((fig->getPosx() + 2) < 7 && (fig->getPosy() + 1) < 7 && board->getField(fig->getPosx() + 2, fig->getPosy() + 1) <= 0)
+			{
+				moves[index] = new int[3];
+				moves[index][0] = fig->getPosx() + 2;
+				moves[index][1] = fig->getPosy() + 1;
+				if (board->getField(fig->getPosx() + 2, fig->getPosy() + 1) < 0)
+				{
+					moves[index][2]= conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() + 2 , fig->getPosy() + 1) + 1))->getTyp());
+				}
+				else
+				{
+					moves[index][2] = 0;
+				}
+				index++;
+			}
+			else if ((fig->getPosx() + 2) < 7 && (fig->getPosy() - 1) > -1 && board->getField(fig->getPosx() + 2, fig->getPosy() - 1) <= 0)
+			{
+				moves[index] = new int[3];
+				moves[index][0] = fig->getPosx() + 2;
+				moves[index][1] = fig->getPosy() - 1;
+				if (board->getField(fig->getPosx() + 2, fig->getPosy() - 1) < 0)
+				{
+					moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() + 2, fig->getPosy() - 1) + 1))->getTyp());
+				}
+				else
+				{
+					moves[index][2] = 0;
+				}
+				index++;
+			}
+			else if ((fig->getPosx() - 2) > -1 && (fig->getPosy() + 1) < 7 && board->getField(fig->getPosx() - 2, fig->getPosy() + 1) <= 0)
+			{
+				moves[index] = new int[3];
+				moves[index][0] = fig->getPosx() - 2;
+				moves[index][1] = fig->getPosy() + 1;
+				if (board->getField(fig->getPosx() - 2, fig->getPosy() + 1) < 0)
+				{
+					moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() - 2, fig->getPosy() + 1) + 1))->getTyp());
+				}
+				else
+				{
+					moves[index][2] = 0;
+				}
+				index++;
+			}
+			else if ((fig->getPosx() - 2) > -1 && (fig->getPosy() - 1) > -1 && board->getField(fig->getPosx() - 2, fig->getPosy() - 1) <= 0)
+			{
+				moves[index] = new int[3];
+				moves[index][0] = fig->getPosx() - 2;
+				moves[index][1] = fig->getPosy() - 1;
+				if (board->getField(fig->getPosx() - 2, fig->getPosy() - 1) < 0)
+				{
+					moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() - 2, fig->getPosy() - 1) + 1))->getTyp());
+				}
+				else
+				{
+					moves[index][2] = 0;
+				}
+				index++;
+			}
+			else if ((fig->getPosx() + 1) < 7 && (fig->getPosy() + 2) < 7 && board->getField(fig->getPosx() + 1, fig->getPosy() + 2) <= 0)
+			{
+				moves[index] = new int[3];
+				moves[index][0] = fig->getPosx() + 1;
+				moves[index][1] = fig->getPosy() + 2;
+				if (board->getField(fig->getPosx() + 1, fig->getPosy() + 2) < 0)
+				{
+					moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() + 1, fig->getPosy() + 2) + 1))->getTyp());
+				}
+				else
+				{
+					moves[index][2] = 0;
+				}
+				index++;
+			}
+			else if ((fig->getPosx() - 1) > -1 && (fig->getPosy() + 2) < 7 && board->getField(fig->getPosx() - 1, fig->getPosy() + 2) <= 0)
+			{
+				moves[index] = new int[3];
+				moves[index][0] = fig->getPosx() - 1;
+				moves[index][1] = fig->getPosy() + 2;
+				if (board->getField(fig->getPosx() - 1, fig->getPosy() + 2) < 0)
+				{
+					moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() - 1, fig->getPosy() + 2) + 1))->getTyp());
+				}
+				else
+				{
+					moves[index][2] = 0;
+				}
+				index++;
+			}
+			else if ((fig->getPosx() + 1) < 7 && (fig->getPosy() - 2) > -1 && board->getField(fig->getPosx() + 1, fig->getPosy() - 2) <= 0)
+			{
+				moves[index] = new int[3];
+				moves[index][0] = fig->getPosx() + 1;
+				moves[index][1] = fig->getPosy() - 2;
+				if (board->getField(fig->getPosx() + 1, fig->getPosy() - 2) < 0)
+				{
+					moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() + 1, fig->getPosy() - 2) + 1))->getTyp());
+				}
+				else
+				{
+					moves[index][2] = 0;
+				}
+				index++;
+			}
+			else if ((fig->getPosx() - 1) > -1 && (fig->getPosy() -2 ) > -1 && board->getField(fig->getPosx() - 1, fig->getPosy() - 2) <= 0)
+			{
+				moves[index] = new int[3];
+				moves[index][0] = fig->getPosx() - 1;
+				moves[index][1] = fig->getPosy() - 2;
+				if (board->getField(fig->getPosx() - 1, fig->getPosy() - 2) < 0)
+				{
+					moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() - 1, fig->getPosy() - 2) + 1))->getTyp());
+				}
+				else
+				{
+					moves[index][2] = 0;
+				}
+				index++;
+			}
+		}
+		// Schwarz--------------------------------------------------------------------------------------------------------------
+		if (fig->getTyp() == 'n')
+		{
+			if ((fig->getPosx() + 2) < 7 && (fig->getPosy() + 1) < 7 && board->getField(fig->getPosx() + 2, fig->getPosy() + 1) >= 0)
+			{
+				moves[index] = new int[3];
+				moves[index][0] = fig->getPosx() + 2;
+				moves[index][1] = fig->getPosy() + 1;
+				if (board->getField(fig->getPosx() + 2, fig->getPosy() + 1) < 0)
+				{
+					moves[index][2] = -conv->getWert(board->touchWeiss(board->getField(fig->getPosx() + 2, fig->getPosy() + 1) - 1)->getTyp());
+				}
+				else
+				{
+					moves[index][2] = 0;
+				}
+				index++;
+			}
+			else if ((fig->getPosx() + 2) < 7 && (fig->getPosy() - 1) > -1 && board->getField(fig->getPosx() + 2, fig->getPosy() - 1) <= 0)
+			{
+				moves[index] = new int[3];
+				moves[index][0] = fig->getPosx() + 2;
+				moves[index][1] = fig->getPosy() - 1;
+				if (board->getField(fig->getPosx() + 2, fig->getPosy() - 1) < 0)
+				{
+					moves[index][2] = -conv->getWert(board->touchWeiss((board->getField(fig->getPosx() + 2, fig->getPosy() - 1) - 1))->getTyp());
+				}
+				else
+				{
+					moves[index][2] = 0;
+				}
+				index++;
+			}
+			else if ((fig->getPosx() - 2) > -1 && (fig->getPosy() + 1) < 7 && board->getField(fig->getPosx() - 2, fig->getPosy() + 1) <= 0)
+			{
+				moves[index] = new int[3];
+				moves[index][0] = fig->getPosx() - 2;
+				moves[index][1] = fig->getPosy() + 1;
+				if (board->getField(fig->getPosx() - 2, fig->getPosy() + 1) < 0)
+				{
+					moves[index][2] = -conv->getWert(board->touchWeiss((board->getField(fig->getPosx() - 2, fig->getPosy() + 1) - 1))->getTyp());
+				}
+				else
+				{
+					moves[index][2] = 0;
+				}
+				index++;
+			}
+			else if ((fig->getPosx() - 2) > -1 && (fig->getPosy() - 1) > -1 && board->getField(fig->getPosx() - 2, fig->getPosy() - 1) <= 0)
+			{
+				moves[index] = new int[3];
+				moves[index][0] = fig->getPosx() - 2;
+				moves[index][1] = fig->getPosy() - 1;
+				if (board->getField(fig->getPosx() - 2, fig->getPosy() - 1) < 0)
+				{
+					moves[index][2] = -conv->getWert(board->touchWeiss((board->getField(fig->getPosx() - 2, fig->getPosy() - 1) - 1))->getTyp());
+				}
+				else
+				{
+					moves[index][2] = 0;
+				}
+				index++;
+			}
+			else if ((fig->getPosx() + 1) < 7 && (fig->getPosy() + 2) < 7 && board->getField(fig->getPosx() + 1, fig->getPosy() + 2) <= 0)
+			{
+				moves[index] = new int[3];
+				moves[index][0] = fig->getPosx() + 1;
+				moves[index][1] = fig->getPosy() + 2;
+				if (board->getField(fig->getPosx() + 1, fig->getPosy() + 2) < 0)
+				{
+					moves[index][2] = -conv->getWert(board->touchWeiss((board->getField(fig->getPosx() + 1, fig->getPosy() + 2) - 1))->getTyp());
+				}
+				else
+				{
+					moves[index][2] = 0;
+				}
+				index++;
+			}
+			else if ((fig->getPosx() - 1) > -1 && (fig->getPosy() + 2) < 7 && board->getField(fig->getPosx() - 1, fig->getPosy() + 2) <= 0)
+			{
+				moves[index] = new int[3];
+				moves[index][0] = fig->getPosx() - 1;
+				moves[index][1] = fig->getPosy() + 2;
+				if (board->getField(fig->getPosx() - 1, fig->getPosy() + 2) < 0)
+				{
+					moves[index][2] = -conv->getWert(board->touchWeiss((board->getField(fig->getPosx() - 1, fig->getPosy() + 2) - 1))->getTyp());
+				}
+				else
+				{
+					moves[index][2] = 0;
+				}
+				index++;
+			}
+			else if ((fig->getPosx() + 1) < 7 && (fig->getPosy() - 2) > -1 && board->getField(fig->getPosx() + 1, fig->getPosy() - 2) <= 0)
+			{
+				moves[index] = new int[3];
+				moves[index][0] = fig->getPosx() + 1;
+				moves[index][1] = fig->getPosy() - 2;
+				if (board->getField(fig->getPosx() + 1, fig->getPosy() - 2) < 0)
+				{
+					moves[index][2] = -conv->getWert(board->touchWeiss((board->getField(fig->getPosx() + 1, fig->getPosy() - 2) - 1))->getTyp());
+				}
+				else
+				{
+					moves[index][2] = 0;
+				}
+				index++;
+			}
+			else if ((fig->getPosx() - 1) > -1 && (fig->getPosy() - 2) > -1 && board->getField(fig->getPosx() - 1, fig->getPosy() - 2) <= 0)
+			{
+				moves[index] = new int[3];
+				moves[index][0] = fig->getPosx() - 1;
+				moves[index][1] = fig->getPosy() - 2;
+				if (board->getField(fig->getPosx() - 1, fig->getPosy() - 2) < 0)
+				{
+					moves[index][2] = -conv->getWert(board->touchSchwarz((board->getField(fig->getPosx() - 1, fig->getPosy() - 2) - 1))->getTyp());
+				}
+				else
+				{
+					moves[index][2] = 0;
+				}
+				index++;
+			}
+		}
+		// Läufer und Queen--------------------------------------------------------------------------------------------------------
+		moves[index] = new int[3];
 		moves[index][0] = -1;
 		moves[index][1] = -1;
+		moves[index][2] = 0;
 
 	}
 	return nullptr;
@@ -54,7 +355,7 @@ bool Movemennt::proveMove(int ** move, Figur * fig, Brett * board)
 	// Felder für Pawn
 	if (fig->getTyp() == 'P')
 	{
-		if (board->getField(fig->getPosx(), (fig->getPosy()+1 )) == 0)
+		if (board->getField(fig->getPosx(), (fig->getPosy() + 1)) == 0)
 		{
 			if (move[0][0] == move[1][0])
 			{
@@ -86,6 +387,14 @@ bool Movemennt::proveMove(int ** move, Figur * fig, Brett * board)
 				return false;
 			}
 
+		}
+		else if (board->getField(fig->getPosx() + 1, (fig->getPosy() + 1)) < 0 && move[0][0] == (move[1][0] +1) && move[0][1]==(move[1][1]+1))
+		{
+			return true;
+		}
+		else if (board->getField(fig->getPosx() + 1, (fig->getPosy() - 1)) < 0 && move[0][0] == (move[1][0] + 1) && move[0][1] == (move[1][1] - 1))
+		{
+			return true;
 		}
 		else
 		{
@@ -121,17 +430,100 @@ bool Movemennt::proveMove(int ** move, Figur * fig, Brett * board)
 					}
 				}
 			}
+			else if (board->getField(fig->getPosx() - 1, (fig->getPosy() + 1)) > 0 && move[0][0] == (move[1][0] - 1) && move[0][1] == (move[1][1] + 1))
+			{
+				return true;
+			}
+			else if (board->getField(fig->getPosx() - 1, (fig->getPosy() - 1)) > 0 && move[0][0] == (move[1][0] - 1) && move[0][1] == (move[1][1] - 1))
+			{
+				return true;
+			}
 			else
 			{
 				return false;
 			}
 
 		}
+
 		else
 		{
 			return false;
 		}
 	}
+	// Springer ------------------------------------------------------------------------------------------------------------
+	// Weiss----------------------------------------------------------------------------------------------------------------
+	if (fig->getTyp() == 'N')
+	{
+		if ((fig->getPosx() + 2) < 7 && (fig->getPosy() + 1) < 7 && board->getField(fig->getPosx() + 2, fig->getPosy() + 1) <= 0)
+		{
+			return true;
+		}
+		else if ((fig->getPosx() + 2) < 7 && (fig->getPosy() - 1) > -1 && board->getField(fig->getPosx() + 2, fig->getPosy() - 1) <= 0)
+		{
+			return true;
+		}
+		else if ((fig->getPosx() - 2) > -1 && (fig->getPosy() + 1) < 7 && board->getField(fig->getPosx() - 2, fig->getPosy() + 1) <= 0)
+		{
+			return true;
+		}
+		else if ((fig->getPosx() - 2) > -1 && (fig->getPosy() - 1) > -1 && board->getField(fig->getPosx() - 2, fig->getPosy() - 1) <= 0)
+		{
+			return true;
+		}
+		else if ((fig->getPosx() + 1) < 7 && (fig->getPosy() + 2) < 7 && board->getField(fig->getPosx() + 1, fig->getPosy() + 2) <= 0)
+		{
+			return true;
+		}
+		else if ((fig->getPosx() - 1) > -1 && (fig->getPosy() + 2) < 7 && board->getField(fig->getPosx() - 1, fig->getPosy() + 2) <= 0)
+		{
+			return true;
+		}
+		else if ((fig->getPosx() + 1) < 7 && (fig->getPosy() - 2) > -1 && board->getField(fig->getPosx() + 1, fig->getPosy() - 2) <= 0)
+		{
+			return true;
+		}
+		else if ((fig->getPosx() - 1) > -1 && (fig->getPosy() - 2) > -1 && board->getField(fig->getPosx() - 1, fig->getPosy() - 2) <= 0)
+		{
+			return true;
+		}
+	}
+	// Schwarz--------------------------------------------------------------------------------------------------------------
+	if (fig->getTyp() == 'n')
+	{
+		if ((fig->getPosx() + 2) < 7 && (fig->getPosy() + 1) < 7 && board->getField(fig->getPosx() + 2, fig->getPosy() + 1) >= 0)
+		{
+			return true;
+		}
+		else if ((fig->getPosx() + 2) < 7 && (fig->getPosy() - 1) > -1 && board->getField(fig->getPosx() + 2, fig->getPosy() - 1) <= 0)
+		{
+			return true;
+		}
+		else if ((fig->getPosx() - 2) > -1 && (fig->getPosy() + 1) < 7 && board->getField(fig->getPosx() - 2, fig->getPosy() + 1) <= 0)
+		{
+			return true;
+		}
+		else if ((fig->getPosx() - 2) > -1 && (fig->getPosy() - 1) > -1 && board->getField(fig->getPosx() - 2, fig->getPosy() - 1) <= 0)
+		{
+			return true;
+		}
+		else if ((fig->getPosx() + 1) < 7 && (fig->getPosy() + 2) < 7 && board->getField(fig->getPosx() + 1, fig->getPosy() + 2) <= 0)
+		{
+			return true;
+		}
+		else if ((fig->getPosx() - 1) > -1 && (fig->getPosy() + 2) < 7 && board->getField(fig->getPosx() - 1, fig->getPosy() + 2) <= 0)
+		{
+			return true;
+		}
+		else if ((fig->getPosx() + 1) < 7 && (fig->getPosy() - 2) > -1 && board->getField(fig->getPosx() + 1, fig->getPosy() - 2) <= 0)
+		{
+			return true;
+		}
+		else if ((fig->getPosx() - 1) > -1 && (fig->getPosy() - 2) > -1 && board->getField(fig->getPosx() - 1, fig->getPosy() - 2) <= 0)
+		{
+			return true;
+		}
+	}
+
 	return nullptr;
 }
 
