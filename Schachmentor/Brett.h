@@ -35,7 +35,7 @@ public:
 	int getZugNr();
 	int getHalbzug();
 	void reset();
-	bool makeMove(Figur *fig, int nachx, int nachy);
+	void makeMove(Figur *fig, int nachx, int nachy);
 
 private:
 	int board[8][8];

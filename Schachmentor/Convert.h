@@ -17,5 +17,7 @@ public:
 	void setBoardwithFEN(Brett * board, std::string fen);
 	std::string getBoardFen(Brett * board);
 	void displayBoard(Brett * board);
+	int** getMoveIntfromChar(std::string move);
+	int getIntfromNumber(char n);
 };
 

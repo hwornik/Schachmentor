@@ -25,6 +25,7 @@ int Convert::getWert(char w)
 		return 9;
 	if (w == 'k' || w == 'K')
 		return 100;
+	return -1;
 }
 
 
@@ -216,11 +217,6 @@ void Convert::setBoardwithFEN(Brett *board, std::string fen)
 std::string Convert::getBoardFen(Brett * board)
 {
 	char fenstring[85];
-	for (register int i = 0; i < 85; i++)
-	{
-		fenstring[i] = ' ';
-	}
-	fenstring[84] = '\0';
 	int z = 0;
 	int leer;
 	for (int i = 7; i >= 0; i--)
@@ -258,14 +254,7 @@ std::string Convert::getBoardFen(Brett * board)
 			leer = 0;
 			z++;
 		}
-		if (i >0 && i<7)
-		{
-			fenstring[z] = '/';
-			z++;
-		}
 	}
-	fenstring[z] = ' ';
-	z++;
 	if (board->getWhitetoMove())
 	{
 		fenstring[z] = 'w';
@@ -274,9 +263,6 @@ std::string Convert::getBoardFen(Brett * board)
 	{
 		fenstring[z] = 'b';
 	}
-	//Für richtigen FenString notwendig
-	z++;
-	fenstring[z] = ' ';
 	z++;
 	if (board->getCastlKingside(true))
 	{
@@ -298,8 +284,6 @@ std::string Convert::getBoardFen(Brett * board)
 		fenstring[z] = 'q';
 		z++;
 	}
-	fenstring[z] = ' ';
-	z++;
 	if (board->getEnPassant() < 0)
 	{
 		fenstring[z] = '-';
@@ -309,13 +293,9 @@ std::string Convert::getBoardFen(Brett * board)
 		fenstring[z] = this->getcharfromNumber(board->getEnPassant());
 	}
 	z++;
-	fenstring[z] = ' ';
-	z++;
-	fenstring[z] = board->getHalbzug();
-	z++;
-	fenstring[z] = ' ';
-	z++;
-	fenstring[z] = board->getZugNr();
+	fenstring[z] = '\n';
+	std::string strfen = fenstring;
+	return strfen.substr(0,z);
 }
 
 void Convert::displayBoard(Brett *board)
@@ -357,4 +337,44 @@ void Convert::displayBoard(Brett *board)
 		printf("Black to Move");
 	}
 	printf("\n");
+}
+
+int ** Convert::getMoveIntfromChar(std::string move)
+{
+	const char *moveone = move.c_str();
+	int **mademove = new int*[2];
+	mademove[0] = new int[2];
+	mademove[1] = new int[2];
+	int ind = 0;
+	if (!isalpha(moveone[ind]))
+		ind++;
+	mademove[0][0] = this->getNumberofChar(moveone[ind]);
+	ind++;
+	mademove[0][1] = this->getIntfromNumber(moveone[ind]);
+	ind++;
+	mademove[1][0] = this->getNumberofChar(moveone[ind]);
+	ind++;
+	mademove[1][1] = this->getIntfromNumber(moveone[ind]);
+	return mademove;
+}
+
+int Convert::getIntfromNumber(char n)
+{
+	if (n == '1')
+		return 0;
+	if (n == '2')
+		return 1;
+	if (n == '3')
+		return 2;
+	if (n == '4')
+		return 3;
+	if (n == '5')
+		return 4;
+	if (n == '6')
+		return 5;
+	if (n == '7')
+		return 6;
+	if (n == '8')
+		return 7;
+	return -1;
 }

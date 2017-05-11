@@ -43,11 +43,11 @@ void Compute::readInput()
 		this->naked(command);
 	else if (mode == -1)
 	{
-		if (command.compare("uci") == 0)
+		if (command.compare(0,3,"uci") == 0)
 		{
 			this->ucistartup(command);
 		}
-		else if (command.compare("naked") == 0)
+		else if (command.compare(0,5,"naked") == 0)
 		{
 			this->naked(command);
 		}
@@ -91,7 +91,6 @@ bool Compute::ucistartup(std::string command)
 	//-----------------------------------------------------
 	//> setoption name Ponder value true
 	//> setoption name Hash value 16
-	std::cout << command.substr(0, 20) << "#\n";
 	if (command.compare(0,19,"setoption name Hash") == 0)
 	{
 		int z = command.length();
@@ -105,7 +104,7 @@ bool Compute::ucistartup(std::string command)
 	//> setoption name Selectivity value 5
 	//> isready
 	//< readyok
-	if (command.compare("isready") == 0)
+	if (command.compare(0,6,"isready") == 0)
 	{
 		mode = 1;	// wechsle in normalen ucimodus
 		std::cout << "readyok\n";
@@ -176,7 +175,7 @@ bool Compute::uci(std::string command)
 	//----------------------------------------------------------
 	// > setoption name MultiPV value 3   3 komplette Berechnungen gleichzeitig
 	//----------------------------------------------------------
-	if (command.compare("quit")==0)
+	if (command.compare(0,4,"quit")==0)
 	{
 		game->shutdown();
 		this->end = true;
@@ -194,15 +193,28 @@ bool Compute::naked(std::string command)
 		game->startup(hashsize);
 		mode = NAKED;
 	}
-	if (command.compare("ucinewgame") == 0)
+	if (command.compare(0,10,"ucinewgame") == 0)
 	{
 		this->game->setFenString(STARTFEN);
 		this->game->startAction(SETBOARDWITHFEN);
 	}
-	if (command.compare("show") == 0)
+	if (command.compare(0,4,"show") == 0)
 	{
 		this->game->startAction(PRINT);
-		std::cout << "Print";
+	}
+	if (command.compare(0,7,"showfen") == 0)
+	{
+		this->game->startAction(SHOWFEN);
+	}
+	if (command.compare(0, 8, "makemove") == 0)
+	{
+		this->game->setMoveMadebyGUI(command.substr(9, command.length()));
+		this->game->startAction(MAKEMOVE);
+	}
+	if (command.compare(0,4,"quit") == 0)
+	{
+		game->shutdown();
+		this->end = true;
 	}
 	return false;
 }

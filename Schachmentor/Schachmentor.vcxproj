@@ -145,6 +145,7 @@
     <ClInclude Include="Convert.h" />
     <ClInclude Include="Figur.h" />
     <ClInclude Include="Hashbrett.h" />
+    <ClInclude Include="Movemennt.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Spiel.h" />
     <ClInclude Include="stdafx.h" />
@@ -158,6 +159,7 @@
     <ClCompile Include="Convert.cpp" />
     <ClCompile Include="Figur.cpp" />
     <ClCompile Include="Hashbrett.cpp" />
+    <ClCompile Include="Movemennt.cpp" />
     <ClCompile Include="Schachmentor.cpp" />
     <ClCompile Include="Spiel.cpp" />
     <ClCompile Include="stdafx.cpp">

@@ -146,6 +146,7 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 	pData = (PMYDATA)lpParam;
 	Convert *conv = new Convert();
 	Brett *board = new Brett();
+	Movemennt *moves = new Movemennt();
 	// Print the parameter values using thread-safe functions.
 	StringCchPrintf(msgBuf, BUF_SIZE, TEXT("Parameters = %d, %d\n"),
 		pData->val1, pData->val2);
@@ -166,7 +167,18 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 			*pData->input = WAITING;
 			*pData->ready = true;
 		}
-
+		if (*pData->input == SHOWFEN)
+		{
+			std::cout << "\n" << conv->getBoardFen(board) << "\n";
+			*pData->input = WAITING;
+			*pData->ready = true;
+		}
+		if (*pData->input == MAKEMOVE)
+		{
+			moves->makeMove(board, *pData->movemade);
+			*pData->input = WAITING;
+			*pData->ready = true;
+		}
 		Sleep(100);
 	}
 	std::cout << "#Thread ende#";

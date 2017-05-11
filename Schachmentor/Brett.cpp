@@ -244,20 +244,13 @@ void Brett::reset()
 	figwert = 0;
 }
 
-bool Brett::makeMove(Figur * fig, int nachx, int nachy)
+void Brett::makeMove(Figur * fig, int nachx, int nachy)
 {
 	int oldnr=board[fig->getPosx()][fig->getPosy()];
 	board[fig->getPosx()][fig->getPosy()] = 0;
 	fig->setPosx(nachx);
 	fig->setPosy(nachy);
-	if (board[nachx][nachy] != 0)
-	{
-		this->deleteFigure(board[nachx][nachy]);
-		board[nachx][nachy] = oldnr;
-		return true;
-	}
 	board[nachx][nachy] = oldnr;
-	return false;
 }
 
 

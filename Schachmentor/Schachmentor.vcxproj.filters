@@ -54,6 +54,9 @@
     <ClInclude Include="Constants.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Movemennt.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -84,6 +87,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Taktik.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Movemennt.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
