@@ -43,3 +43,6 @@ static const char BRETTFELDER[8][8] = { { '#',' ','#',' ','#',' ','#',' ' },
 // Werte für Spiel
 #define MAX_THREADS 3
 #define BUF_SIZE 255
+
+//Anweisung für Roched in zugarray auf pos 3
+#define ROCHADE 100
