@@ -8,7 +8,14 @@ Brett::Brett()
 	{
 		Schwarz[i] = NULL;
 		Weiss[i] = NULL ;
+		if (i < 8)
+		{
+			for (int j = 0; j < 8; j++)
+				board[i][j] = 0;
+		}
 	}
+	this->zugnr = 1;
+	this->halbzug = 0;
 	maxweiss = 0;
 	maxschwarz = 0;
 }

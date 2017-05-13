@@ -2,7 +2,7 @@
 
 static const char NUMBERTOCHAR[8] = { 'a','b','c','d','e','f','g','h' };
 
-#define STARTFEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0"
+#define STARTFEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
 
 static const char BRETTFARBEN[8][8] = { { 'b','w','b','w','b','w','b','w' },

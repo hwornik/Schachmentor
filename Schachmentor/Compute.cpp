@@ -12,6 +12,7 @@ Compute::Compute()
 	end = false;
 	game = new Spiel();
 	mycom = new Comunicate();
+	conv = new Convert();
 	hashsize = 512;
 }
 
@@ -43,13 +44,16 @@ void Compute::readInput()
 		this->naked(command);
 	else if (mode == -1)
 	{
-		if (command.compare(0,3,"uci") == 0)
+		for (int i = 0; i < command.length() - 2; i++)
 		{
-			this->ucistartup(command);
-		}
-		else if (command.compare(0,5,"naked") == 0)
-		{
-			this->naked(command);
+			if (command.compare(i, 3, "uci") == 0)
+			{
+				this->ucistartup(command);
+			}
+			else if (i < (command.length() - 4) && command.compare(i, 5, "naked") == 0)
+			{
+				this->naked(command);
+			}
 		}
 	}
 }
@@ -63,159 +67,298 @@ bool Compute::ucistartup(std::string command)
 	// uci -> 
 	// id name Engine Name 
 	// id author Name
-	if (mode == -1)
+	char *cstr = new char[command.length() + 1];
+	strcpy(cstr, command.c_str());
+	char *pch;
+	pch = strtok(cstr, " ");
+	std::string word;
+	word = pch;
+	while (pch != NULL)
 	{
-		std::cout << "Schachmentor engine 1\n";
-		std::cout << "written by Wornik Hans\n";
+		if (mode == -1)
+		{
+			std::cout << "Schachmentor engine 1\n";
+			std::cout << "written by Wornik Hans\n";
 
-		//< option name Ponder type check default false
-		std::cout << "option name Hash type spin default 512 min 1 max 1024";
-		//< option name NalimovCache type spin min 1 max 16 default 2
-		//< option name NalimovPath type string default <empty>
-		//< option name MultiPV type spin min 1 max 20 default 1
-		//< option name OwnBook type check default true
-		// optional:---------
-		//< option name Clear Hash type button 
-		//< option name Position Learning type check default true
-		//< option name BookFile type string default dbbook.bin
-		//< option name Book Size type combo default Big var Small var Medium var Big
-		//< option name Selectivity type spin min 0 max 15 default 5
-		//< option name Clear Book Learning type button
-		// optional end.-----
-		//< uciok
-		std::cout << "uciok\n";
+			//< option name Ponder type check default false
+			std::cout << "option name Hash type spin default 512 min 1 max 1024\n";
+			//< option name NalimovCache type spin min 1 max 16 default 2
+			//< option name NalimovPath type string default <empty>
+			//< option name MultiPV type spin min 1 max 20 default 1
+			//< option name OwnBook type check default true
+			// optional:---------
+			//< option name Clear Hash type button 
+			//< option name Position Learning type check default true
+			//< option name BookFile type string default dbbook.bin
+			//< option name Book Size type combo default Big var Small var Medium var Big
+			//< option name Selectivity type spin min 0 max 15 default 5
+			//< option name Clear Book Learning type button
+			// optional end.-----
+			//< uciok
+			std::cout << "uciok\n";
+		}
+		mode = 11; // startupmodus
+		//-----------------------------------------------------
+		// gui set options now and then send isready
+		//-----------------------------------------------------
+		//> setoption name Ponder value true
+		//> setoption name Hash value 16
+		//> setoption name NalimovCache value 4
+		//> setoption name NalimovPath value D : \tbs
+		//> setoption name Position Learning value true
+		//> setoption name BookFile value dbbook.bin
+		//> setoption name Book Size value Big
+		//> setoption name Selectivity value 5
+		if (word.compare("setoption") == 0)// setoption part----------------------------------------------------------
+		{
+			if (pch != NULL)
+				pch = strtok(NULL, " ");
+			while (pch != NULL)
+			{
+				word = pch;
+				if (word.compare("name") == 0)// name part------------------------------------------------------------
+				{
+					if (pch != NULL)
+					{
+						pch = strtok(NULL, " ");
+						while (pch != NULL)
+						{
+							word = pch;
+							if (word.compare("Hash")==0)// Hash part------------------------------------
+							{
+									pch = strtok(NULL, " ");
+									while (pch != NULL)
+									{
+										if (word.compare("value"))// Hash value setzen------------------
+										{
+											pch = strtok(NULL, " ");
+											while (pch != NULL)
+											{
+												word = pch;
+												hashsize = this->getIntfromchar(word);
+												pch = strtok(NULL, " ");
+											}
+										}
+									}
+							}
+							if (pch != NULL)
+								pch = strtok(NULL, " ");
+						}
+					}
+				}
+				if (pch != NULL)
+					pch = strtok(NULL, " ");
+			}
+		}
+		//> isready
+		//< readyok
+		if (word.compare("isready") == 0)
+		{
+			mode = 1;	// wechsle in normalen ucimodus
+			std::cout << "readyok\n";
+			return true;
+		}
+		//--------------------------------------------------------
+		// Startup end
+		//--------------------------------------------------------
+		if (pch != NULL)
+			pch = strtok(NULL, " ");
 	}
-	mode = 11; // startupmodus
-	//-----------------------------------------------------
-	// gui set options now and then send isready
-	//-----------------------------------------------------
-	//> setoption name Ponder value true
-	//> setoption name Hash value 16
-	if (command.compare(0,19,"setoption name Hash") == 0)
-	{
-		int z = command.length();
-		hashsize=this->getIntfromchar(command.substr(26,z));
-	}
-	//> setoption name NalimovCache value 4
-	//> setoption name NalimovPath value D : \tbs
-	//> setoption name Position Learning value true
-	//> setoption name BookFile value dbbook.bin
-	//> setoption name Book Size value Big
-	//> setoption name Selectivity value 5
-	//> isready
-	//< readyok
-	if (command.compare(0,6,"isready") == 0)
-	{
-		mode = 1;	// wechsle in normalen ucimodus
-		std::cout << "readyok\n";
-		return true;
-	}
-	//--------------------------------------------------------
-	// Startup end
-	//--------------------------------------------------------
 	return false;
 }
 
 bool Compute::uci(std::string command)
 {
-	//--------------------------------------------------------
-	//> setoption name Hash value 1
-	//--------------------------------------------------------
-	//--------------------------------------------------------
-	//> setoption name Clear Book Learning | >setoption name Clear Book Learning value true 
-	//--------------------------------------------------------
-	//--------------------------------------------------------
-	//> ucinewgame
-	//--------------------------------------------------------
-	if (command.compare(0, 10, "ucinewgame") == 0)
+	char *cstr = new char[command.length() + 1];
+	strcpy(cstr, command.c_str());
+	char *pch;
+	pch = strtok(cstr, " ");
+	std::string word;
+	while (pch != NULL)
 	{
-		this->game->startAction(RESETGAME);
-	}
-	//--------------------------------------------------------
-	//> position startpos
-	//--------------------------------------------------------
-	//--------------------------------------------------------
-	//>position startpos moves g1f3 d7d5 b2b3 c8g4 c1b2 b8c6 h2h3
-	//--------------------------------------------------------
-	//--------------------------------------------------------
-	//>position fen 8/1K6/1Q6/8/5r2/4rk2/8/8 w - - 0 0 
-	//--------------------------------------------------------
-	//--------------------------------------------------------
-	//> position fen 8/1K6/1Q6/8/5r2/4rk2/8/8 w - - 0 0 moves b6b1 e3e2 
-	//---------------------------------------------------------
-	//---------------------------------------------------------
-	// go Kommands:
-	//> go +
-	//searchmoves
-	//ponder bool
-	//wtime  integer
-	//btime	integer
-	//winc	integer
-	//binc	integer
-	//movestogo moves to next time control
-	//depth	integer
-	//nodes	integer
-	//mate integer
-	//movetime integer im millisec
-	//infinite
-	//----------------------------------------------------------
-	if (command.compare(0, 2, "go") == 0)
-	{
-		game->startup(hashsize);
-	}
-	//----------------------------------------------------------
-	//> stop
-	//----------------------------------------------------------
-	//----------------------------------------------------------
-	//> quit
-	//----------------------------------------------------------
-	//----------------------------------------------------------
-	//>ponderhit   Ponder played
-	//----------------------------------------------------------
-	//----------------------------------------------------------
-	// > setoption name MultiPV value 3   3 komplette Berechnungen gleichzeitig
-	//----------------------------------------------------------
-	if (command.compare(0,4,"quit")==0)
-	{
-		game->shutdown();
-		this->end = true;
+		word = pch;
+		//--------------------------------------------------------
+		//> setoption name Hash value 1
+		//--------------------------------------------------------
+		//--------------------------------------------------------
+		//> setoption name Clear Book Learning | >setoption name Clear Book Learning value true 
+		//--------------------------------------------------------
+		//--------------------------------------------------------
+		//> ucinewgame
+		//--------------------------------------------------------
+		if (word.compare("ucinewgame") == 0)
+		{
+			this->game->startAction(RESETGAME);
+		}
+		//--------------------------------------------------------
+		//> position startpos
+		//--------------------------------------------------------
+		//--------------------------------------------------------
+		//>position startpos moves g1f3 d7d5 b2b3 c8g4 c1b2 b8c6 h2h3
+		//--------------------------------------------------------
+		//--------------------------------------------------------
+		//>position fen 8/1K6/1Q6/8/5r2/4rk2/8/8 w - - 0 0 
+		//--------------------------------------------------------
+		//--------------------------------------------------------
+		//> position fen 8/1K6/1Q6/8/5r2/4rk2/8/8 w - - 0 0 moves b6b1 e3e2 
+		//---------------------------------------------------------
+		//---------------------------------------------------------
+		// go Kommands:
+		//> go +
+		//searchmoves
+		//ponder bool
+		//wtime  integer
+		//btime	integer
+		//winc	integer
+		//binc	integer
+		//movestogo moves to next time control
+		//depth	integer
+		//nodes	integer
+		//mate integer
+		//movetime integer im millisec
+		//infinite
+		//----------------------------------------------------------
+		if (word.compare("go") == 0)//go Untermenu-------------------------------------
+		{
+			pch = strtok(NULL, " ");
+			while (pch != NULL)
+			{
+				word = pch;
+				if (word.compare("searchmoves")==0)
+				{
+					pch = strtok(NULL, " ");
+					while (pch != NULL)
+					{
+						word = pch;
+						if (this->ismove(pch,word.length()))
+						{
+							game->searchMoves(pch);
+							pch = strtok(NULL, " ");
+						}
+						else
+						{
+							break;
+						}
+					}
+				}
+				if (word.compare("ponder")==0)
+				{
+
+				}
+				if (word.compare("wtime")==0)
+				{
+
+				}
+				if (word.compare("btime") == 0)
+				{
+
+				}
+				if (word.compare("winc") == 0)
+				{
+
+				}
+				if (word.compare("binc") == 0)
+				{
+
+				}
+				if (word.compare("movestogo") == 0)
+				{
+
+				}
+				if (word.compare("depth") == 0)
+				{
+
+				}
+				if (word.compare("nodes") == 0)
+				{
+
+				}
+				if (word.compare("mate") == 0)
+				{
+
+				}
+				if (word.compare("movetime") == 0)
+				{
+
+				}
+				if (word.compare("invinite") == 0)
+				{
+
+				}
+				game->startup(hashsize);
+				if (pch != NULL)
+					pch = strtok(NULL, " ");
+			}
+		}
+		//----------------------------------------------------------
+		//> stop
+		//----------------------------------------------------------
+		//----------------------------------------------------------
+		//> quit
+		//----------------------------------------------------------
+		//----------------------------------------------------------
+		//>ponderhit   Ponder played
+		//----------------------------------------------------------
+		//----------------------------------------------------------
+		// > setoption name MultiPV value 3   3 komplette Berechnungen gleichzeitig
+		//----------------------------------------------------------
+		if (word.compare("quit")==0)
+		{
+			game->shutdown();
+			this->end = true;
+		}
+		if (pch != NULL)
+			pch = strtok(NULL, " ");
 	}
 	return false;
 }
 
 bool Compute::naked(std::string command)
 {
-	if (mode == -1)
+	char *cstr = new char[command.length() + 1];
+	strcpy(cstr, command.c_str());
+	char *pch;
+	pch = strtok(cstr, " ");
+	std::string word;
+	while (pch != NULL)
 	{
-		std::cout << "Schachmentor engine 1\n";
-		std::cout << "written by Wornik Hans\n";
-		std::cout << "Konsolenmodus\n";
-		game->startup(hashsize);
-		mode = NAKED;
+		word = pch;
+		if (mode == -1)
+		{
+			std::cout << "Schachmentor engine 1\n";
+			std::cout << "written by Wornik Hans\n";
+			std::cout << "Konsolenmodus\n";
+			game->startup(hashsize);
+			mode = NAKED;
+		}
+		if (word.compare(0, 10, "ucinewgame") == 0)
+		{
+			this->game->setFenString(STARTFEN);
+			this->game->startAction(SETBOARDWITHFEN);
+		}
+		if (word.compare(0, 4, "show") == 0)
+		{
+			this->game->startAction(PRINT);
+		}
+		if (word.compare(0, 7, "showfen") == 0)
+		{
+			this->game->startAction(SHOWFEN);
+		}
+		if (word.compare(0, 8, "makemove") == 0)
+		{
+			pch = strtok(NULL, " ");
+			word = pch;
+			this->game->setMoveMadebyGUI(word);
+			this->game->startAction(MAKEMOVE);
+		}
+		if (word.compare(0, 4, "quit") == 0)
+		{
+			game->shutdown();
+			this->end = true;
+		}
+		pch = strtok(NULL, " ");
 	}
-	if (command.compare(0,10,"ucinewgame") == 0)
-	{
-		this->game->setFenString(STARTFEN);
-		this->game->startAction(SETBOARDWITHFEN);
-	}
-	if (command.compare(0,4,"show") == 0)
-	{
-		this->game->startAction(PRINT);
-	}
-	if (command.compare(0,7,"showfen") == 0)
-	{
-		this->game->startAction(SHOWFEN);
-	}
-	if (command.compare(0, 8, "makemove") == 0)
-	{
-		this->game->setMoveMadebyGUI(command.substr(9, command.length()));
-		this->game->startAction(MAKEMOVE);
-	}
-	if (command.compare(0,4,"quit") == 0)
-	{
-		game->shutdown();
-		this->end = true;
-	}
+	delete[] cstr;
 	return false;
 }
 
@@ -224,9 +367,22 @@ bool Compute::setSearchmoves(std::string command)
 	return false;
 }
 
-int Compute::ismove(char * command)
+bool Compute::ismove(char * command,int lange)
 {
-	return 0;
+	if (lange < 4)
+		return false;
+	if (conv->getNumberofChar(command[0]) == -1)
+		return false;
+	if (!isdigit(command[1]))
+		return false;
+	if (conv->getNumberofChar(command[2]) == -1)
+		return false;
+	if (!isdigit(command[3]))
+		return false;
+	if (lange == 5)
+		if (conv->getWert(command[4] < 0 || command[4]>10))
+			return false;
+	return true;
 }
 
 void Compute::displayBoard()

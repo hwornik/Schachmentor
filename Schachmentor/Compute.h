@@ -6,6 +6,7 @@
 
 #include "Comunicate.h"
 #include "Spiel.h"
+#include "Convert.h"
 
 
 class Compute
@@ -16,6 +17,7 @@ public:
 	bool start();
 private:
 	Spiel *game;
+	Convert *conv;
 	bool end;
 	Comunicate *mycom;
 	int hashsize;
@@ -27,7 +29,7 @@ private:
 	bool setSearchmoves(std::string command);
 	int mode;
 	int myside;
-	int ismove(char * command);
+	bool ismove(char * command,int lange);
 	void displayBoard();
 	void printSearchHeader();
 	void printStats();

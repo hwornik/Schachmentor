@@ -19,7 +19,7 @@ typedef struct MyData {
 	int *input;
 	bool *ready;
 	std::string *fenstring;
-	std::string *movestodo;
+	char **movestodo;
 	std::string *movemade;
 	int val1;
 	int val2;
@@ -35,11 +35,9 @@ public:
 	int shutdown();
 	void setHash(std::string hash);
 	void setBoardwithFen(std::string fen);
-	void makeMoves(std::string moves);
-	void searchMoves(std::string);
+	void searchMoves(char *smove);
 	bool startAction(int action);
 	bool setFenString(std::string fen);
-	bool setMovestoMake(std::string moves);
 	bool setMoveMadebyGUI(std::string move);
 private:
 	Hashbrett **hasharray;
@@ -52,7 +50,8 @@ private:
 	int eingabe;
 	bool ready;
 	std::string fen;
-	std::string moves;
+	char **moves;
+	int indexmoves;
 	std::string move;
 };
 

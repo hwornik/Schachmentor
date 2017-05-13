@@ -823,7 +823,7 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 	moves[index][0] = -1;
 	moves[index][1] = -1;
 	moves[index][2] = 0;
-	return nullptr;
+	return moves;
 }
 
 bool Movemennt::proveMove(int ** move, Figur * fig, Brett * board)
@@ -1462,6 +1462,8 @@ bool Movemennt::makeMove(Brett * board, std::string move)
 				board->makeMove(fig, movemade[0][0], 3);
 			}
 		}
+		if (!board->getWhitetoMove())
+			board->setZugNr(board->getZugNr() + 1);
 		board->setWhitetoMove(!board->getWhitetoMove());
 		return true;
 	}

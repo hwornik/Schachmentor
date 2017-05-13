@@ -4,6 +4,8 @@
 Spiel::Spiel()
 {
 	beenden = false;
+	indexmoves = 0;
+	moves = new char*[32];
 }
 
 
@@ -37,7 +39,7 @@ int Spiel::startup(int hashsize)
 		pData->input = &eingabe;
 		pData->ready = &ready;
 		pData->fenstring = &fen;
-		pData->movestodo = &moves;
+		pData->movestodo = moves;
 		pData->movemade = &move;
 		// Create the thread to begin execution on its own.
 
@@ -90,12 +92,11 @@ void Spiel::setBoardwithFen(std::string fen)
 {
 }
 
-void Spiel::makeMoves(std::string moves)
-{
-}
 
-void Spiel::searchMoves(std::string)
+void Spiel::searchMoves(char *smove)
 {
+	moves[indexmoves] = smove;
+	indexmoves++;
 }
 
 bool Spiel::startAction(int action)
@@ -109,12 +110,6 @@ bool Spiel::startAction(int action)
 bool Spiel::setFenString(std::string fen)
 {
 	this->fen = fen;
-	return false;
-}
-
-bool Spiel::setMovestoMake(std::string moves)
-{
-	this->moves = moves;
 	return false;
 }
 
