@@ -6,6 +6,8 @@ Spiel::Spiel()
 	beenden = false;
 	indexmoves = 0;
 	moves = new char*[32];
+	hashsize = 512;
+	stop = false;
 }
 
 
@@ -13,7 +15,7 @@ Spiel::~Spiel()
 {
 }
 
-int Spiel::startup(int hashsize)
+int Spiel::startup()
 {
 	std::cout << "Hashsize=" << hashsize << "\n";
 	hasharray = new Hashbrett*[hashsize];
@@ -84,8 +86,9 @@ int Spiel::shutdown()
 	return 0;
 }
 
-void Spiel::setHash(std::string hash)
+void Spiel::setHashsize(int hash)
 {
+	this->hashsize = hash;
 }
 
 void Spiel::setBoardwithFen(std::string fen)
@@ -117,6 +120,126 @@ bool Spiel::setMoveMadebyGUI(std::string move)
 {
 	this->move = move;
 	return false;
+}
+
+bool Spiel::getPonder()
+{
+	return this->ponder;
+}
+
+void Spiel::setWTime(int wtime)
+{
+	this->wtime = wtime;
+}
+
+void Spiel::setBTime(int btime)
+{
+	this->btime = btime;
+}
+
+void Spiel::setWinc(int winc)
+{
+	this->winc = winc;
+}
+
+void Spiel::setBinc(int binc)
+{
+	this->binc = binc;
+}
+
+void Spiel::setMovestogo(int movestogo)
+{
+	this->movestogo = movestogo;
+}
+
+void Spiel::setDepth(int depth)
+{
+	this->depth = depth;
+}
+
+void Spiel::setNodes(int nodes)
+{
+	this->nodes = nodes;
+}
+
+void Spiel::setMate(int mate)
+{
+	this->mate = mate;
+}
+
+void Spiel::setMovetime(int movetime)
+{
+	this->movetime = movetime;
+}
+
+void Spiel::setGoinfinite(bool infinite)
+{
+	this->infinite = infinite;
+}
+
+int Spiel::getWTime()
+{
+	return this->wtime;
+}
+
+int Spiel::getBTime()
+{
+	return this->btime;
+}
+
+int Spiel::getWinc()
+{
+	return this->winc;
+}
+
+int Spiel::getBinc()
+{
+	return this->binc;
+}
+
+int Spiel::getMovestogo()
+{
+	return this->movestogo;
+}
+
+int Spiel::getDepth()
+{
+	return this->depth;
+}
+
+int Spiel::getNodes()
+{
+	return this->nodes;
+}
+
+int Spiel::getMate()
+{
+	return this->mate;
+}
+
+int Spiel::getMovetime()
+{
+	return this->movetime;
+}
+
+bool Spiel::getGoinfinite()
+{
+	return this->infinite;
+}
+
+int Spiel::getHashsize()
+{
+	return this->hashsize;
+}
+
+void Spiel::setPonder(bool ponder)
+{
+	this->ponder = ponder;
+}
+
+void Spiel::stopthinking()
+{
+	this->stop = true;
 }
 
 DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)

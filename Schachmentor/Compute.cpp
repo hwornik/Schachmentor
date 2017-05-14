@@ -44,15 +44,18 @@ void Compute::readInput()
 		this->naked(command);
 	else if (mode == -1)
 	{
-		for (int i = 0; i < command.length() - 2; i++)
+		if (command.length() > 1)
 		{
-			if (command.compare(i, 3, "uci") == 0)
+			for (int i = 0; i < (command.length() - 2); i++)
 			{
-				this->ucistartup(command);
-			}
-			else if (i < (command.length() - 4) && command.compare(i, 5, "naked") == 0)
-			{
-				this->naked(command);
+				if (i < (command.length() -2) && command.compare(i, 3, "uci") == 0)
+				{
+					this->ucistartup(command);
+				}
+				else if ((i < (command.length() - 4)) && command.compare(i, 5, "naked") == 0)
+				{
+					this->naked(command);
+				}
 			}
 		}
 	}
@@ -135,7 +138,9 @@ bool Compute::ucistartup(std::string command)
 											while (pch != NULL)
 											{
 												word = pch;
-												hashsize = this->getIntfromchar(word);
+												int x = this->getIntfromchar(word);
+												if(x> -1)
+													game->setHashsize(x);
 												pch = strtok(NULL, " ");
 											}
 										}
@@ -183,6 +188,13 @@ bool Compute::uci(std::string command)
 		//--------------------------------------------------------
 		//> setoption name Clear Book Learning | >setoption name Clear Book Learning value true 
 		//--------------------------------------------------------
+		//----------------------------------------------------------
+		// > setoption name MultiPV value 3   3 komplette Berechnungen gleichzeitig
+		//----------------------------------------------------------
+		if (word.compare("setoption") == 0)//go Untermenu-------------------------------------
+		{
+		}
+		word = pch;
 		//--------------------------------------------------------
 		//> ucinewgame
 		//--------------------------------------------------------
@@ -190,6 +202,7 @@ bool Compute::uci(std::string command)
 		{
 			this->game->startAction(RESETGAME);
 		}
+		word = pch;
 		//--------------------------------------------------------
 		//> position startpos
 		//--------------------------------------------------------
@@ -202,6 +215,10 @@ bool Compute::uci(std::string command)
 		//--------------------------------------------------------
 		//> position fen 8/1K6/1Q6/8/5r2/4rk2/8/8 w - - 0 0 moves b6b1 e3e2 
 		//---------------------------------------------------------
+		if (word.compare("position") == 0)//go Untermenu-------------------------------------
+		{
+		}
+		word = pch;
 		//---------------------------------------------------------
 		// go Kommands:
 		//> go +
@@ -241,70 +258,145 @@ bool Compute::uci(std::string command)
 						}
 					}
 				}
-				if (word.compare("ponder")==0)
+				if (pch != NULL)
 				{
+					word = pch;
+					if (word.compare("ponder") == 0)
+					{
 
+					}
+					if (word.compare("wtime") == 0)
+					{
+						pch = strtok(NULL, " ");
+						if (pch != NULL)
+						{
+							word = pch;
+							int x = this->getIntfromchar(word);
+							if (x > -1)
+								game->setWTime(x);
+						}
+					}
+					if (word.compare("btime") == 0)
+					{
+						pch = strtok(NULL, " ");
+						if (pch != NULL)
+						{
+							word = pch;
+							int x = this->getIntfromchar(word);
+							if (x > -1)
+								game->setBTime(x);
+						}
+					}
+					if (word.compare("winc") == 0)
+					{
+						pch = strtok(NULL, " ");
+						if (pch != NULL)
+						{
+							word = pch;
+							int x = this->getIntfromchar(word);
+							if (x > -1)
+								game->setWinc(x);
+						}
+					}
+					if (word.compare("binc") == 0)
+					{
+						pch = strtok(NULL, " ");
+						if (pch != NULL)
+						{
+							word = pch;
+							int x = this->getIntfromchar(word);
+							if (x > -1)
+								game->setBinc(x);
+						}
+					}
+					if (word.compare("movestogo") == 0)
+					{
+						pch = strtok(NULL, " ");
+						if (pch != NULL)
+						{
+							word = pch;
+							int x = this->getIntfromchar(word);
+							if (x > -1)
+								game->setMovestogo(x);
+						}
+					}
+					if (word.compare("depth") == 0)
+					{
+						pch = strtok(NULL, " ");
+						if (pch != NULL)
+						{
+							word = pch;
+							int x = this->getIntfromchar(word);
+							if (x > -1)
+								game->setDepth(x);
+						}
+					}
+					if (word.compare("nodes") == 0)
+					{
+						pch = strtok(NULL, " ");
+						if (pch != NULL)
+						{
+							word = pch;
+							int x = this->getIntfromchar(word);
+							if (x > -1)
+								game->setNodes(x);
+						}
+					}
+					if (word.compare("mate") == 0)
+					{
+						pch = strtok(NULL, " ");
+						if (pch != NULL)
+						{
+							word = pch;
+							int x = this->getIntfromchar(word);
+							if (x > -1)
+								game->setMate(x);
+						}
+					}
+					if (word.compare("movetime") == 0)
+					{
+						pch = strtok(NULL, " ");
+						if (pch != NULL)
+						{
+							word = pch;
+							int x = this->getIntfromchar(word);
+							if (x > -1)
+								game->setMovetime(x);
+						}
+					}
+					if (word.compare("invinite") == 0)
+					{
+						game->setGoinfinite(true);
+					}
 				}
-				if (word.compare("wtime")==0)
-				{
-
-				}
-				if (word.compare("btime") == 0)
-				{
-
-				}
-				if (word.compare("winc") == 0)
-				{
-
-				}
-				if (word.compare("binc") == 0)
-				{
-
-				}
-				if (word.compare("movestogo") == 0)
-				{
-
-				}
-				if (word.compare("depth") == 0)
-				{
-
-				}
-				if (word.compare("nodes") == 0)
-				{
-
-				}
-				if (word.compare("mate") == 0)
-				{
-
-				}
-				if (word.compare("movetime") == 0)
-				{
-
-				}
-				if (word.compare("invinite") == 0)
-				{
-
-				}
-				game->startup(hashsize);
 				if (pch != NULL)
 					pch = strtok(NULL, " ");
 			}
+			game->startup();
 		}
+		word = pch;
 		//----------------------------------------------------------
 		//> stop
 		//----------------------------------------------------------
+		if (word.compare("stop") == 0)
+		{
+			game->stopthinking();
+			this->end = true;
+		}
 		//----------------------------------------------------------
 		//> quit
 		//----------------------------------------------------------
+		if (word.compare("quit") == 0)
+		{
+			game->shutdown();
+			this->end = true;
+		}
 		//----------------------------------------------------------
 		//>ponderhit   Ponder played
 		//----------------------------------------------------------
-		//----------------------------------------------------------
-		// > setoption name MultiPV value 3   3 komplette Berechnungen gleichzeitig
-		//----------------------------------------------------------
-		if (word.compare("quit")==0)
+		if (word.compare("ponderhit") == 0)
 		{
-			game->shutdown();
+			game->setPonder(true);
 			this->end = true;
 		}
 		if (pch != NULL)
@@ -328,7 +420,7 @@ bool Compute::naked(std::string command)
 			std::cout << "Schachmentor engine 1\n";
 			std::cout << "written by Wornik Hans\n";
 			std::cout << "Konsolenmodus\n";
-			game->startup(hashsize);
+			game->startup();
 			mode = NAKED;
 		}
 		if (word.compare(0, 10, "ucinewgame") == 0)
@@ -418,7 +510,7 @@ int Compute::getIntfromchar(std::string command)
 {
 	const char *cstr = command.c_str();
 	int l = command.length();
-	int c, zahl = 0;
+	int c, zahl = -1;
 	for (int i = 0; i < l;i++)
 	{
 		c = cstr[i] - 48;
