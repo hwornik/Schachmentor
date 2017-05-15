@@ -99,6 +99,7 @@ void Spiel::setBoardwithFen(std::string fen)
 void Spiel::searchMoves(char *smove)
 {
 	moves[indexmoves] = smove;
+	std::cout << indexmoves << ". " <<  smove << "\n";
 	indexmoves++;
 }
 

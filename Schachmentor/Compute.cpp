@@ -135,7 +135,7 @@ bool Compute::ucistartup(std::string command)
 										if (word.compare("value"))// Hash value setzen------------------
 										{
 											pch = strtok(NULL, " ");
-											while (pch != NULL)
+											if (pch != NULL)
 											{
 												word = pch;
 												int x = this->getIntfromchar(word);
@@ -475,8 +475,13 @@ bool Compute::ismove(char * command,int lange)
 	if (!isdigit(command[3]))
 		return false;
 	if (lange == 5)
-		if (conv->getWert(command[4] < 0 || command[4]>10))
+	{
+		int x = conv->getWert(command[4]);
+		if (x < 0 || x>9)
+		{
 			return false;
+		}
+	}
 	return true;
 }
 
@@ -513,12 +518,19 @@ int Compute::getIntfromchar(std::string command)
 {
 	const char *cstr = command.c_str();
 	int l = command.length();
-	int c, zahl = -1;
+	int c, zahl = 0;
+	bool ok = false;
 	for (int i = 0; i < l;i++)
 	{
 		c = cstr[i] - 48;
 		if (c >= 0 && c < 10)
-			zahl = c+ zahl*10;
+		{
+			ok = true;
+			zahl = c + zahl * 10;
+		}
 	}
-	return zahl;
+	if (zahl >= 0 && ok)
+		return zahl;
+	else
+		return -1;
 }
