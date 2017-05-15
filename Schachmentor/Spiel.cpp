@@ -17,7 +17,6 @@ Spiel::~Spiel()
 
 int Spiel::startup()
 {
-	std::cout << "Hashsize=" << hashsize << "\n";
 	hasharray = new Hashbrett*[hashsize];
 		// Allocate memory for thread data.
 		//*hasharray = new Brett[hashsize];
@@ -99,7 +98,6 @@ void Spiel::setBoardwithFen(std::string fen)
 void Spiel::searchMoves(char *smove)
 {
 	moves[indexmoves] = smove;
-	std::cout << indexmoves << ". " <<  smove << "\n";
 	indexmoves++;
 }
 
@@ -267,8 +265,8 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 	Brett *board = new Brett();
 	Movemennt *moves = new Movemennt();
 	// Print the parameter values using thread-safe functions.
-	StringCchPrintf(msgBuf, BUF_SIZE, TEXT("Parameters = %d, %d\n"),
-		pData->val1, pData->val2);
+	StringCchPrintf(msgBuf, BUF_SIZE, TEXT("readyok\n"));
+	//	pData->val1, pData->val2);
 	StringCchLength(msgBuf, BUF_SIZE, &cchStringSize);
 	WriteConsole(hStdout, msgBuf, (DWORD)cchStringSize, &dwChars, NULL);
 	// Print thread ende
@@ -295,6 +293,18 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 		if (*pData->input == MAKEMOVE)
 		{
 			moves->makeMove(board, *pData->movemade);
+			*pData->input = WAITING;
+			*pData->ready = true;
+		}
+		if (*pData->input == STARTCOMPUTING)
+		{
+			std::cout << "computing......\n";
+			*pData->input = WAITING;
+			*pData->ready = true;
+		}
+		if (*pData->input == RESETGAME)
+		{
+			std::cout << "deleting Hash......\n";
 			*pData->input = WAITING;
 			*pData->ready = true;
 		}

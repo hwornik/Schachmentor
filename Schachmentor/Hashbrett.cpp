@@ -5,10 +5,8 @@
 Hashbrett::Hashbrett()
 {
 	board = NULL;
-	nextBrother = NULL;
-	previousBrother = NULL;
-	nextChild = NULL;
-	previousChild = NULL;
+	brother = NULL;
+	child = NULL;
 }
 
 
@@ -18,44 +16,24 @@ Hashbrett::~Hashbrett()
 		delete board;
 }
 
-Hashbrett * Hashbrett::getnextBrother()
+Hashbrett * Hashbrett::getBrother()
 {
-	return nextBrother;
+	return brother;
 }
 
-Hashbrett * Hashbrett::getpreviusBrother()
+Hashbrett * Hashbrett::getChild()
 {
-	return previousBrother;
+	return child;
 }
 
-Hashbrett * Hashbrett::getnextChild()
+void Hashbrett::setBrother(Hashbrett * hashboard)
 {
-	return nextChild;
+	this->brother = hashboard;
 }
 
-Hashbrett * Hashbrett::getpreviousChild()
+void Hashbrett::setChild(Hashbrett * hashboard)
 {
-	return previousChild;
-}
-
-void Hashbrett::setnextBrother(Hashbrett * hashboard)
-{
-	this->nextBrother = hashboard;
-}
-
-void Hashbrett::setpreviusBrother(Hashbrett * hashboard)
-{
-	this->previousBrother = hashboard;
-}
-
-void Hashbrett::setnextChild(Hashbrett * hashboard)
-{
-	this->nextChild = hashboard;
-}
-
-void Hashbrett::setpreviousChild(Hashbrett * hashboard)
-{
-	this->previousChild = hashboard;
+	this->child = hashboard;
 }
 
 void Hashbrett::setZug(char zug[5])

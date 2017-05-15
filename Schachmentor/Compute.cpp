@@ -159,8 +159,8 @@ bool Compute::ucistartup(std::string command)
 		//< readyok
 		if (word.compare("isready") == 0)
 		{
+			game->startup();
 			mode = 1;	// wechsle in normalen ucimodus
-			std::cout << "readyok\n";
 			return true;
 		}
 		//--------------------------------------------------------
@@ -372,7 +372,7 @@ bool Compute::uci(std::string command)
 				if (pch != NULL)
 					pch = strtok(NULL, " ");
 			}
-			game->startup();
+			game->startAction(STARTCOMPUTING);
 		}
 		if (pch != NULL)
 		{

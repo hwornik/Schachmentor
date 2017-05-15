@@ -22,14 +22,16 @@ static const char BRETTFELDER[8][8] = { { '#',' ','#',' ','#',' ','#',' ' },
 { ' ','#',' ','#',' ','#',' ','#' },
 { '#',' ','#',' ','#',' ','#',' ' },
 { ' ','#',' ','#',' ','#',' ','#' } };
+
 //Befehle für Spiel:
 #define PRINT 11
 #define SHOWFEN 12
 #define WAITING -1
-#define RESETGAME 12
+#define RESETGAME 13
 #define SETBOARDWITHFEN 90
 #define MAKEMOVES	91
 #define MAKEMOVE 80
+#define STARTCOMPUTING 10
 
 //interne Befehle für Compute
 #define NAKED 0
