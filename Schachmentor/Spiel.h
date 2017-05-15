@@ -21,8 +21,9 @@ typedef struct MyData {
 	std::string *fenstring;
 	char **movestodo;
 	std::string *movemade;
-	int val1;
-	int val2;
+	Hashbrett *deleteone;
+	Hashbrett *deletetwo;
+	Hashbrett *gamehash;
 } MYDATA, *PMYDATA;
 
 

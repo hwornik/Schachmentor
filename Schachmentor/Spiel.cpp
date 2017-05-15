@@ -34,14 +34,14 @@ int Spiel::startup()
 		ready = true;
 		// Generate unique data for each thread to work with.
 		int i = 1;
-		pData->val1 = i;
-		pData->val2 = i + 100;
 		pData->quit = &beenden;
 		pData->input = &eingabe;
 		pData->ready = &ready;
 		pData->fenstring = &fen;
 		pData->movestodo = moves;
 		pData->movemade = &move;
+		pData->deleteone = NULL;
+		pData->deletetwo = NULL;
 		// Create the thread to begin execution on its own.
 
 		hThread = CreateThread(
