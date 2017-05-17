@@ -11,20 +11,8 @@
 #include "Convert.h"
 #include "Constants.h"
 #include "Movemennt.h"
-
-
-typedef struct MyData {
-	bool *quit;
-	bool *endsearch;
-	int *input;
-	bool *ready;
-	std::string *fenstring;
-	char **movestodo;
-	std::string *movemade;
-	Hashbrett *deleteone;
-	Hashbrett *deletetwo;
-	Hashbrett *gamehash;
-} MYDATA, *PMYDATA;
+#include "ThreadData.h"
+#include "Worker.h"
 
 
 class Spiel

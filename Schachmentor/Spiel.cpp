@@ -40,8 +40,7 @@ int Spiel::startup()
 		pData->fenstring = &fen;
 		pData->movestodo = moves;
 		pData->movemade = &move;
-		pData->deleteone = NULL;
-		pData->deletetwo = NULL;
+		pData->gamehash = NULL;
 		// Create the thread to begin execution on its own.
 
 		hThread = CreateThread(
@@ -250,6 +249,7 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 	size_t cchStringSize;
 	DWORD dwChars;
 
+	Worker *work = new Worker();
 	// Make sure there is a console to receive output results. 
 
 	hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -304,6 +304,8 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 		}
 		if (*pData->input == RESETGAME)
 		{
+			work->startupDelete(pData->gamehash, NULL);
+			pData->gamehash = NULL;
 			std::cout << "deleting Hash......\n";
 			*pData->input = WAITING;
 			*pData->ready = true;
@@ -316,6 +318,7 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 
 void Spiel::ErrorHandler(LPTSTR lpszFunction)
 {
+	HANDLE hStdout;
 	// Retrieve the system error message for the last-error code.
 
 	LPVOID lpMsgBuf;
@@ -347,4 +350,3 @@ void Spiel::ErrorHandler(LPTSTR lpszFunction)
 	LocalFree(lpMsgBuf);
 	LocalFree(lpDisplayBuf);
 }
-
