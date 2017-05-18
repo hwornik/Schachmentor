@@ -44,8 +44,8 @@ void Hashbrett::setZug(char zug[5])
 
 void Hashbrett::setBoard(Brett * board)
 {
-	if (board != NULL)
-		delete board;
+	if (this->board != NULL)
+		delete this->board;
 	this->board = board;
 }
 

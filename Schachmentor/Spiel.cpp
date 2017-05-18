@@ -250,6 +250,9 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 	DWORD dwChars;
 
 	Worker *work = new Worker();
+
+	bool rekonfigureHash = false;
+	bool stopsearchhash = false;
 	// Make sure there is a console to receive output results. 
 
 	hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -264,6 +267,7 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 	Convert *conv = new Convert();
 	Brett *board = new Brett();
 	Movemennt *moves = new Movemennt();
+	Hashbrett *oldhash;
 	// Print the parameter values using thread-safe functions.
 	StringCchPrintf(msgBuf, BUF_SIZE, TEXT("readyok\n"));
 	//	pData->val1, pData->val2);
@@ -274,13 +278,41 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 	{
 		if (*pData->input == PRINT)
 		{
-			conv->displayBoard(board);
+			if(pData->gamehash!=NULL)
+				if(pData->gamehash->getBoard()!=NULL)
+					conv->displayBoard(pData->gamehash->getBoard());
 			*pData->input = WAITING;
 			*pData->ready = true;
 		}
 		if (*pData->input == SETBOARDWITHFEN)
 		{
-			conv->setBoardwithFEN(board,*pData->fenstring);
+			if (pData->gamehash == NULL)
+			{
+				pData->gamehash = new Hashbrett();
+				board = new Brett();
+				conv->setBoardwithFEN(board, *pData->fenstring);
+				pData->gamehash->setBoard(board);
+				pData->gamehash->setFenString(conv->getBoardFen(pData->gamehash->getBoard()));
+			}
+			else if (pData->gamehash == NULL)
+			{
+				board = new Brett();
+				conv->setBoardwithFEN(board, *pData->fenstring);
+				pData->gamehash->setBoard(board);
+				pData->gamehash->setFenString(conv->getBoardFen(pData->gamehash->getBoard()));
+			}
+			else
+			{
+				oldhash = pData->gamehash;
+				pData->gamehash = new Hashbrett();
+				board = new Brett();
+				conv->setBoardwithFEN(board, *pData->fenstring);
+				pData->gamehash->setBoard(board);
+				std::string fenkey = conv->getBoardFen(pData->gamehash->getBoard());
+				pData->gamehash->setFenString(fenkey);
+				// search in hash ob board bereits vorkommt und linke dann die gefunden hashbretter zum Hauptbrett;
+				// work->rekonfHash(febkey,oldhash,pData->gamehash,&rekonfigureHash,&stopsearchhash);
+			}
 			*pData->input = WAITING;
 			*pData->ready = true;
 		}
@@ -306,13 +338,16 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 		{
 			work->startupDelete(pData->gamehash, NULL);
 			pData->gamehash = NULL;
-			std::cout << "deleting Hash......\n";
+			pData->gamehash = new Hashbrett();
+			Brett *board = new Brett();
+			conv->setBoardwithFEN(board, STARTFEN);
+			pData->gamehash->setBoard(board);
 			*pData->input = WAITING;
 			*pData->ready = true;
 		}
 		Sleep(100);
 	}
-	std::cout << "#Thread ende#";
+	std::cout << "#Tschau#\n";
 	return 0;
 }
 

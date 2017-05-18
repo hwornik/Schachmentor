@@ -16,3 +16,11 @@ typedef struct MyDData {
 	Hashbrett *deleteone;
 	Hashbrett *deletetwo;
 } MYDDATA, *PMYDDATA;
+
+typedef struct MyRData {
+	Hashbrett *deleteone;
+	Hashbrett *deletetwo;
+	Hashbrett *insertTree;
+	bool *rekonfigureHash ;
+	bool *stopsearchhash;
+} MYRDATA, *PMYRDATA;

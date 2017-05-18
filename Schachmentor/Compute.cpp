@@ -182,6 +182,10 @@ bool Compute::uci(std::string command)
 	while (pch != NULL)
 	{
 		word = pch;
+		if (word.compare("show") == 0)
+		{
+			this->game->startAction(PRINT);
+		}
 		//--------------------------------------------------------
 		//> setoption name Hash value 1
 		//--------------------------------------------------------
