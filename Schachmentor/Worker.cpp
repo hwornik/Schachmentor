@@ -194,6 +194,7 @@ DWORD WINAPI Worker::rekonfHashbrett(LPVOID lpParam)
 	// it was checked for NULL before the thread was created.
 	DeleteHash *delhash = new DeleteHash();
 	pRData = (PMYRDATA)lpParam;
+	Worker *delWorker = new Worker();
 	// Begin Work
 	Hashbrett *aktuell, *loschen;
 	aktuell=pRData->deleteone;
@@ -203,13 +204,19 @@ DWORD WINAPI Worker::rekonfHashbrett(LPVOID lpParam)
 		if (aktuell->getFenString().compare(pRData->fenkey) == 0)
 		{
 			pRData->insertTree = aktuell;
+			loschen = aktuell->getChild(!white);
+			aktuell->setChild(NULL, !white);
+			delWorker->startupDelete(loschen, NULL);
 		}
 		else
 		{
 			loschen = aktuell;
 			aktuell = aktuell->getChild(!white);
 			loschen->setChild(NULL,!white);
+			delWorker->startupDelete(loschen, NULL);
+
 		}
+
 	}
 	// Print thread ende
 	std::cout << "#Thread ende#";
