@@ -14,10 +14,8 @@ public:
 	void setKingPos(bool white, int x, int y);
 	int getBewertung();
 	void setBewertung(int wert);
-	Figur *touchSchwarz(int number);
-	Figur *touchWeiss(int number);
-	bool addnewFigurWeiss();
-	bool addnewFigurSchwarz();
+	Figur *touchFigur(int number, bool white);
+	bool addnewFigur(bool white);
 	bool deleteFigure(int boardint);
 	int getFigurmax(bool white);
 	void setFigurenwert(int wert);

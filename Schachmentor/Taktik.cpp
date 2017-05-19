@@ -17,14 +17,14 @@ int Taktik::bewertungFig(Brett *board)
 	int weisswert = 0, schwarzwert = 0, wi = 0, si = 0;
 	for (int i = 0; i < 16; i++)
 	{
-		if (board->touchWeiss(i) != NULL)
+		if (board->touchFigur(i,true) != NULL)
 		{
-			weisswert += conv->getWert(board->touchWeiss(i)->getTyp());
+			weisswert += conv->getWert(board->touchFigur(i,true)->getTyp());
 			wi++;
 		}
-		if (board->touchWeiss(i) != NULL)
+		if (board->touchFigur(i,false) != NULL)
 		{
-			schwarzwert += conv->getWert(board->touchWeiss(i)->getTyp());
+			schwarzwert += conv->getWert(board->touchFigur(i,false)->getTyp());
 		}
 	}
 	board->setFigurenwert(weisswert - schwarzwert);

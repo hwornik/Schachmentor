@@ -41,7 +41,7 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 			moves[index] = new int[3];
 			moves[index][0] = fig->getPosx() + 1;
 			moves[index][1] = fig->getPosy() + 1;
-			moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() + 1, fig->getPosy() + 1) + 1))->getTyp());
+			moves[index][2] = conv->getWert(board->touchFigur(-(board->getField(fig->getPosx() + 1, fig->getPosy() + 1) + 1),false)->getTyp());
 			index++;
 		}
 		if ((fig->getPosx() + 1) < 8 && (fig->getPosy() - 1) > -1 && board->getField(fig->getPosx() + 1, fig->getPosy() - 1) < 0)
@@ -49,7 +49,7 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 			moves[index] = new int[3];
 			moves[index][0] = fig->getPosx() + 1;
 			moves[index][1] = fig->getPosy() - 1;
-			moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() + 1, fig->getPosy() - 1) + 1))->getTyp());
+			moves[index][2] = conv->getWert(board->touchFigur(-(board->getField(fig->getPosx() + 1, fig->getPosy() - 1) + 1),false)->getTyp());
 			index++;
 		}
 	}
@@ -77,7 +77,7 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 			moves[index] = new int[3];
 			moves[index][0] = fig->getPosx() - 1;
 			moves[index][1] = fig->getPosy() + 1;
-			moves[index][2] = -conv->getWert(board->touchWeiss((board->getField(fig->getPosx() - 1, fig->getPosy() + 1) - 1))->getTyp());
+			moves[index][2] = -conv->getWert(board->touchFigur((board->getField(fig->getPosx() - 1, fig->getPosy() + 1) - 1),true)->getTyp());
 			index++;
 		}
 		if ((fig->getPosx() - 1) > -1 && (fig->getPosy() - 1) > -1 && board->getField(fig->getPosx() - 1, fig->getPosy() - 1) > 0)
@@ -85,7 +85,7 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 			moves[index] = new int[3];
 			moves[index][0] = fig->getPosx() - 1;
 			moves[index][1] = fig->getPosy() - 1;
-			moves[index][2] = -conv->getWert(board->touchWeiss((board->getField(fig->getPosx() - 1, fig->getPosy() - 1) - 1))->getTyp());
+			moves[index][2] = -conv->getWert(board->touchFigur((board->getField(fig->getPosx() - 1, fig->getPosy() - 1) - 1),false)->getTyp());
 			index++;
 		}
 	}
@@ -106,14 +106,14 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx() + 2;
 				moves[index][1] = fig->getPosy() + 1;
-				moves[index][2]= conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() + 2 , fig->getPosy() + 1) + 1))->getTyp());
+				moves[index][2]= conv->getWert(board->touchFigur(-(board->getField(fig->getPosx() + 2 , fig->getPosy() + 1) + 1),false)->getTyp());
 			}
 			else if (!isupper(fig->getTyp()) && board->getField(fig->getPosx() + 2, fig->getPosy() + 1) > 0)
 			{
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx() + 2;
 				moves[index][1] = fig->getPosy() + 1;
-				moves[index][2] = -conv->getWert(board->touchWeiss(board->getField(fig->getPosx() + 2, fig->getPosy() + 1) - 1)->getTyp());
+				moves[index][2] = -conv->getWert(board->touchFigur(board->getField(fig->getPosx() + 2, fig->getPosy() + 1) - 1,true)->getTyp());
 			}
 			index++;
 		}
@@ -131,14 +131,14 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx() + 2;
 				moves[index][1] = fig->getPosy() - 1;
-				moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() + 2, fig->getPosy() - 1) + 1))->getTyp());
+				moves[index][2] = conv->getWert(board->touchFigur(-(board->getField(fig->getPosx() + 2, fig->getPosy() - 1) + 1),false)->getTyp());
 			}
 			else if (!isupper(fig->getTyp()) && board->getField(fig->getPosx() + 2, fig->getPosy() - 1) > 0)
 			{
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx() + 2;
 				moves[index][1] = fig->getPosy() - 1;
-				moves[index][2] = -conv->getWert(board->touchWeiss(board->getField(fig->getPosx() + 2, fig->getPosy() - 1) - 1)->getTyp());
+				moves[index][2] = -conv->getWert(board->touchFigur(board->getField(fig->getPosx() + 2, fig->getPosy() - 1) - 1,true)->getTyp());
 			}
 			index++;
 		}
@@ -156,14 +156,14 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx() - 2;
 				moves[index][1] = fig->getPosy() + 1;
-				moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() - 2, fig->getPosy() + 1) + 1))->getTyp());
+				moves[index][2] = conv->getWert(board->touchFigur(-(board->getField(fig->getPosx() - 2, fig->getPosy() + 1) + 1),false)->getTyp());
 			}
 			else if (!isupper(fig->getTyp()) && board->getField(fig->getPosx() - 2, fig->getPosy() + 1) > 0)
 			{
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx() - 2;
 				moves[index][1] = fig->getPosy() + 1;
-				moves[index][2] = -conv->getWert(board->touchWeiss(board->getField(fig->getPosx() - 2, fig->getPosy() + 1) - 1)->getTyp());
+				moves[index][2] = -conv->getWert(board->touchFigur(board->getField(fig->getPosx() - 2, fig->getPosy() + 1) - 1,true)->getTyp());
 			}
 			index++;
 		}
@@ -181,14 +181,14 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx() - 2;
 				moves[index][1] = fig->getPosy() - 1;
-				moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() - 2, fig->getPosy() - 1) + 1))->getTyp());
+				moves[index][2] = conv->getWert(board->touchFigur(-(board->getField(fig->getPosx() - 2, fig->getPosy() - 1) + 1),false)->getTyp());
 			}
 			else if (!isupper(fig->getTyp()) && board->getField(fig->getPosx() - 2, fig->getPosy() - 1) > 0)
 			{
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx() - 2;
 				moves[index][1] = fig->getPosy() - 1;
-				moves[index][2] = -conv->getWert(board->touchWeiss(board->getField(fig->getPosx() - 2, fig->getPosy() - 1) - 1)->getTyp());
+				moves[index][2] = -conv->getWert(board->touchFigur(board->getField(fig->getPosx() - 2, fig->getPosy() - 1) - 1,true)->getTyp());
 			}
 			index++;
 		}
@@ -206,14 +206,14 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx() + 1;
 				moves[index][1] = fig->getPosy() + 2;
-				moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() + 1, fig->getPosy() + 2) + 1))->getTyp());
+				moves[index][2] = conv->getWert(board->touchFigur(-(board->getField(fig->getPosx() + 1, fig->getPosy() + 2) + 1),false)->getTyp());
 			}
 			else if (!isupper(fig->getTyp()) && board->getField(fig->getPosx() + 1, fig->getPosy() + 2) > 0)
 			{
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx() + 1;
 				moves[index][1] = fig->getPosy() + 2;
-				moves[index][2] = -conv->getWert(board->touchWeiss(board->getField(fig->getPosx() + 1, fig->getPosy() + 2) - 1)->getTyp());
+				moves[index][2] = -conv->getWert(board->touchFigur(board->getField(fig->getPosx() + 1, fig->getPosy() + 2) - 1,true)->getTyp());
 			}
 			index++;
 		}
@@ -231,14 +231,14 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx() - 1;
 				moves[index][1] = fig->getPosy() + 2;
-				moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() - 1, fig->getPosy() + 2) + 1))->getTyp());
+				moves[index][2] = conv->getWert(board->touchFigur(-(board->getField(fig->getPosx() - 1, fig->getPosy() + 2) + 1),false)->getTyp());
 			}
 			else if (!isupper(fig->getTyp()) && board->getField(fig->getPosx() - 1, fig->getPosy() + 2) > 0)
 			{
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx() - 1;
 				moves[index][1] = fig->getPosy() + 2;
-				moves[index][2] = -conv->getWert(board->touchWeiss(board->getField(fig->getPosx() - 1, fig->getPosy() + 2) - 1)->getTyp());
+				moves[index][2] = -conv->getWert(board->touchFigur(board->getField(fig->getPosx() - 1, fig->getPosy() + 2) - 1,true)->getTyp());
 			}
 			index++;
 		}
@@ -256,14 +256,14 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx() + 1;
 				moves[index][1] = fig->getPosy() - 2;
-				moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() + 1, fig->getPosy() - 2) + 1))->getTyp());
+				moves[index][2] = conv->getWert(board->touchFigur(-(board->getField(fig->getPosx() + 1, fig->getPosy() - 2) + 1),false)->getTyp());
 			}
 			else if (!isupper(fig->getTyp()) && board->getField(fig->getPosx() + 1, fig->getPosy() - 2) > 0)
 			{
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx() + 1;
 				moves[index][1] = fig->getPosy() - 2;
-				moves[index][2] = -conv->getWert(board->touchWeiss(board->getField(fig->getPosx() + 1, fig->getPosy() - 2) - 1)->getTyp());
+				moves[index][2] = -conv->getWert(board->touchFigur(board->getField(fig->getPosx() + 1, fig->getPosy() - 2) - 1,true)->getTyp());
 			}
 			index++;
 		}
@@ -281,14 +281,14 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx() - 1;
 				moves[index][1] = fig->getPosy() - 2;
-				moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() - 1, fig->getPosy() - 2) + 1))->getTyp());
+				moves[index][2] = conv->getWert(board->touchFigur(-(board->getField(fig->getPosx() - 1, fig->getPosy() - 2) + 1),false)->getTyp());
 			}
 			else if (!isupper(fig->getTyp()) && board->getField(fig->getPosx() - 1, fig->getPosy() - 2) > 0)
 			{
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx() - 1;
 				moves[index][1] = fig->getPosy() - 2;
-				moves[index][2] = -conv->getWert(board->touchWeiss(board->getField(fig->getPosx() - 1, fig->getPosy() - 2) - 1)->getTyp());
+				moves[index][2] = -conv->getWert(board->touchFigur(board->getField(fig->getPosx() - 1, fig->getPosy() - 2) - 1,true)->getTyp());
 			}
 			index++;
 		}
@@ -320,7 +320,7 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 							moves[index] = new int[3];
 							moves[index][0] = fig->getPosx() + i;
 							moves[index][1] = fig->getPosy() + i;
-							moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() +i, fig->getPosy() +i) + 1))->getTyp());
+							moves[index][2] = conv->getWert(board->touchFigur(-(board->getField(fig->getPosx() +i, fig->getPosy() +i) + 1),false)->getTyp());
 							notend[0] = false;
 						}
 						else if (!isupper(fig->getTyp()) && board->getField(fig->getPosx() + i, fig->getPosy() + i) > 0)
@@ -328,7 +328,7 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 							moves[index] = new int[3];
 							moves[index][0] = fig->getPosx() + i;
 							moves[index][1] = fig->getPosy() + i;
-							moves[index][2] = -conv->getWert(board->touchWeiss((board->getField(fig->getPosx() + i, fig->getPosy() + i) - 1))->getTyp());
+							moves[index][2] = -conv->getWert(board->touchFigur((board->getField(fig->getPosx() + i, fig->getPosy() + i) - 1),true)->getTyp());
 							notend[0] = false;
 						}
 						index++;
@@ -351,7 +351,7 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 							moves[index] = new int[3];
 							moves[index][0] = fig->getPosx() + i;
 							moves[index][1] = fig->getPosy() - i;
-							moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() + i, fig->getPosy() - i) + 1))->getTyp());
+							moves[index][2] = conv->getWert(board->touchFigur(-(board->getField(fig->getPosx() + i, fig->getPosy() - i) + 1),false)->getTyp());
 							notend[1] = false;
 						}
 						else if (!isupper(fig->getTyp()) && board->getField(fig->getPosx() + i, fig->getPosy() - i) > 0)
@@ -359,7 +359,7 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 							moves[index] = new int[3];
 							moves[index][0] = fig->getPosx() + i;
 							moves[index][1] = fig->getPosy() - i;
-							moves[index][2] = -conv->getWert(board->touchWeiss((board->getField(fig->getPosx() + i, fig->getPosy() - i) - 1))->getTyp());
+							moves[index][2] = -conv->getWert(board->touchFigur((board->getField(fig->getPosx() + i, fig->getPosy() - i) - 1),true)->getTyp());
 							notend[1] = false;
 						}
 						index++;
@@ -382,7 +382,7 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 							moves[index] = new int[3];
 							moves[index][0] = fig->getPosx() - i;
 							moves[index][1] = fig->getPosy() + i;
-							moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() - i, fig->getPosy() + i) + 1))->getTyp());
+							moves[index][2] = conv->getWert(board->touchFigur(-(board->getField(fig->getPosx() - i, fig->getPosy() + i) + 1),false)->getTyp());
 							notend[2] = false;
 						}
 						else if (!isupper(fig->getTyp()) && board->getField(fig->getPosx() - i, fig->getPosy() + i) > 0)
@@ -390,7 +390,7 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 							moves[index] = new int[3];
 							moves[index][0] = fig->getPosx() - i;
 							moves[index][1] = fig->getPosy() + i;
-							moves[index][2] = -conv->getWert(board->touchWeiss((board->getField(fig->getPosx() - i, fig->getPosy() + i) - 1))->getTyp());
+							moves[index][2] = -conv->getWert(board->touchFigur((board->getField(fig->getPosx() - i, fig->getPosy() + i) - 1),true)->getTyp());
 							notend[2] = false;
 						}
 						index++;
@@ -413,7 +413,7 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 							moves[index] = new int[3];
 							moves[index][0] = fig->getPosx() - i;
 							moves[index][1] = fig->getPosy() - i;
-							moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() - i, fig->getPosy() - i) + 1))->getTyp());
+							moves[index][2] = conv->getWert(board->touchFigur(-(board->getField(fig->getPosx() - i, fig->getPosy() - i) + 1),false)->getTyp());
 							notend[3] = false;
 						}
 						else if (!isupper(fig->getTyp()) && board->getField(fig->getPosx() - i, fig->getPosy() - i) > 0)
@@ -421,7 +421,7 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 							moves[index] = new int[3];
 							moves[index][0] = fig->getPosx() - i;
 							moves[index][1] = fig->getPosy() - i;
-							moves[index][2] = -conv->getWert(board->touchWeiss((board->getField(fig->getPosx() - i, fig->getPosy() - i) - 1))->getTyp());
+							moves[index][2] = -conv->getWert(board->touchFigur((board->getField(fig->getPosx() - i, fig->getPosy() - i) - 1),true)->getTyp());
 							notend[3] = false;
 						}
 						index++;
@@ -456,7 +456,7 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 						moves[index] = new int[3];
 						moves[index][0] = fig->getPosx() + i;
 						moves[index][1] = fig->getPosy();
-						moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() + i, fig->getPosy()) + 1))->getTyp());
+						moves[index][2] = conv->getWert(board->touchFigur(-(board->getField(fig->getPosx() + i, fig->getPosy()) + 1),false)->getTyp());
 						notend[0] = false;
 					}
 					else if (!isupper(fig->getTyp()) && board->getField(fig->getPosx() + i, fig->getPosy()) > 0)
@@ -464,7 +464,7 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 						moves[index] = new int[3];
 						moves[index][0] = fig->getPosx() + i;
 						moves[index][1] = fig->getPosy();
-						moves[index][2] = -conv->getWert(board->touchWeiss((board->getField(fig->getPosx() + i, fig->getPosy()) - 1))->getTyp());
+						moves[index][2] = -conv->getWert(board->touchFigur((board->getField(fig->getPosx() + i, fig->getPosy()) - 1),true)->getTyp());
 						notend[0] = false;
 					}
 					index++;
@@ -487,7 +487,7 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 						moves[index] = new int[3];
 						moves[index][0] = fig->getPosx() - i;
 						moves[index][1] = fig->getPosy();
-						moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() - i, fig->getPosy()) + 1))->getTyp());
+						moves[index][2] = conv->getWert(board->touchFigur(-(board->getField(fig->getPosx() - i, fig->getPosy()) + 1),false)->getTyp());
 						notend[1] = false;
 					}
 					else if (!isupper(fig->getTyp()) && board->getField(fig->getPosx() - i, fig->getPosy()) > 0)
@@ -495,7 +495,7 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 						moves[index] = new int[3];
 						moves[index][0] = fig->getPosx() - i;
 						moves[index][1] = fig->getPosy();
-						moves[index][2] = -conv->getWert(board->touchWeiss((board->getField(fig->getPosx() - i, fig->getPosy()) - 1))->getTyp());
+						moves[index][2] = -conv->getWert(board->touchFigur((board->getField(fig->getPosx() - i, fig->getPosy()) - 1),true)->getTyp());
 						notend[1] = false;
 					}
 					index++;
@@ -518,7 +518,7 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 						moves[index] = new int[3];
 						moves[index][0] = fig->getPosx();
 						moves[index][1] = fig->getPosy() + i;
-						moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx(), fig->getPosy() + i) + 1))->getTyp());
+						moves[index][2] = conv->getWert(board->touchFigur(-(board->getField(fig->getPosx(), fig->getPosy() + i) + 1),false)->getTyp());
 						notend[2] = false;
 					}
 					else if (!isupper(fig->getTyp()) && board->getField(fig->getPosx() - i, fig->getPosy()) > 0)
@@ -526,7 +526,7 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 						moves[index] = new int[3];
 						moves[index][0] = fig->getPosx();
 						moves[index][1] = fig->getPosy() + i;
-						moves[index][2] = -conv->getWert(board->touchWeiss((board->getField(fig->getPosx() , fig->getPosy() + i) - 1))->getTyp());
+						moves[index][2] = -conv->getWert(board->touchFigur((board->getField(fig->getPosx() , fig->getPosy() + i) - 1),true)->getTyp());
 						notend[2] = false;
 					}
 					index++;
@@ -549,7 +549,7 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 						moves[index] = new int[3];
 						moves[index][0] = fig->getPosx();
 						moves[index][1] = fig->getPosy() - i;
-						moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() , fig->getPosy() - i) + 1))->getTyp());
+						moves[index][2] = conv->getWert(board->touchFigur(-(board->getField(fig->getPosx() , fig->getPosy() - i) + 1),false)->getTyp());
 						notend[3] = false;
 					}
 					else if (!isupper(fig->getTyp()) && board->getField(fig->getPosx(), fig->getPosy() - i) > 0)
@@ -557,7 +557,7 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 						moves[index] = new int[3];
 						moves[index][0] = fig->getPosx();
 						moves[index][1] = fig->getPosy() - i;
-						moves[index][2] = -conv->getWert(board->touchWeiss((board->getField(fig->getPosx(), fig->getPosy() - i) - 1))->getTyp());
+						moves[index][2] = -conv->getWert(board->touchFigur((board->getField(fig->getPosx(), fig->getPosy() - i) - 1),true)->getTyp());
 						notend[3] = false;
 					}
 					index++;
@@ -587,14 +587,14 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx() + 1;
 				moves[index][1] = fig->getPosy() + 1;
-				moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() + 1, fig->getPosy() + 1) + 1))->getTyp());
+				moves[index][2] = conv->getWert(board->touchFigur(-(board->getField(fig->getPosx() + 1, fig->getPosy() + 1) + 1),false)->getTyp());
 			}
 			else if (!isupper(fig->getTyp()) && board->getField(fig->getPosx() + 1, fig->getPosy() + 1) < 0)
 			{
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx() + 1;
 				moves[index][1] = fig->getPosy() + 1;
-				moves[index][2] = -conv->getWert(board->touchWeiss((board->getField(fig->getPosx() + 1, fig->getPosy() + 1) - 1))->getTyp());
+				moves[index][2] = -conv->getWert(board->touchFigur((board->getField(fig->getPosx() + 1, fig->getPosy() + 1) - 1),true)->getTyp());
 			}
 			index++;
 		}
@@ -612,14 +612,14 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx() + 1;
 				moves[index][1] = fig->getPosy() - 1;
-				moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() + 1, fig->getPosy() - 1) + 1))->getTyp());
+				moves[index][2] = conv->getWert(board->touchFigur(-(board->getField(fig->getPosx() + 1, fig->getPosy() - 1) + 1),false)->getTyp());
 			}
 			else if (!isupper(fig->getTyp()) && board->getField(fig->getPosx() + 1, fig->getPosy() - 1) < 0)
 			{
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx() + 1;
 				moves[index][1] = fig->getPosy() - 1;
-				moves[index][2] = -conv->getWert(board->touchWeiss((board->getField(fig->getPosx() + 1, fig->getPosy() - 1) - 1))->getTyp());
+				moves[index][2] = -conv->getWert(board->touchFigur((board->getField(fig->getPosx() + 1, fig->getPosy() - 1) - 1),true)->getTyp());
 			}
 			index++;
 		}
@@ -637,14 +637,14 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx() - 1;
 				moves[index][1] = fig->getPosy() + 1;
-				moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() - 1, fig->getPosy() + 1) + 1))->getTyp());
+				moves[index][2] = conv->getWert(board->touchFigur(-(board->getField(fig->getPosx() - 1, fig->getPosy() + 1) + 1),false)->getTyp());
 			}
 			else if (!isupper(fig->getTyp()) && board->getField(fig->getPosx() - 1, fig->getPosy() + 1) < 0)
 			{
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx() - 1;
 				moves[index][1] = fig->getPosy() + 1;
-				moves[index][2] = -conv->getWert(board->touchWeiss((board->getField(fig->getPosx() - 1, fig->getPosy() + 1) - 1))->getTyp());
+				moves[index][2] = -conv->getWert(board->touchFigur((board->getField(fig->getPosx() - 1, fig->getPosy() + 1) - 1),true)->getTyp());
 			}
 			index++;
 		}
@@ -662,14 +662,14 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx() - 1;
 				moves[index][1] = fig->getPosy() - 1;
-				moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() - 1, fig->getPosy() - 1) + 1))->getTyp());
+				moves[index][2] = conv->getWert(board->touchFigur(-(board->getField(fig->getPosx() - 1, fig->getPosy() - 1) + 1),false)->getTyp());
 			}
 			else if (!isupper(fig->getTyp()) && board->getField(fig->getPosx() - 1, fig->getPosy() - 1) < 0)
 			{
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx() - 1;
 				moves[index][1] = fig->getPosy() - 1;
-				moves[index][2] = -conv->getWert(board->touchWeiss((board->getField(fig->getPosx() - 1, fig->getPosy() - 1) - 1))->getTyp());
+				moves[index][2] = -conv->getWert(board->touchFigur((board->getField(fig->getPosx() - 1, fig->getPosy() - 1) - 1),true)->getTyp());
 			}
 			index++;
 		}
@@ -688,14 +688,14 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx();
 				moves[index][1] = fig->getPosy() + 1;
-				moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() , fig->getPosy() + 1) + 1))->getTyp());
+				moves[index][2] = conv->getWert(board->touchFigur(-(board->getField(fig->getPosx() , fig->getPosy() + 1) + 1),false)->getTyp());
 			}
 			else if (!isupper(fig->getTyp()) && board->getField(fig->getPosx() , fig->getPosy() + 1) < 0)
 			{
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx();
 				moves[index][1] = fig->getPosy() + 1;
-				moves[index][2] = -conv->getWert(board->touchWeiss((board->getField(fig->getPosx(), fig->getPosy() + 1) - 1))->getTyp());
+				moves[index][2] = -conv->getWert(board->touchFigur((board->getField(fig->getPosx(), fig->getPosy() + 1) - 1),true)->getTyp());
 			}
 			index++;
 		}
@@ -713,14 +713,14 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx();
 				moves[index][1] = fig->getPosy() - 1;
-				moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() , fig->getPosy() - 1) + 1))->getTyp());
+				moves[index][2] = conv->getWert(board->touchFigur(-(board->getField(fig->getPosx() , fig->getPosy() - 1) + 1),false)->getTyp());
 			}
 			else if (!isupper(fig->getTyp()) && board->getField(fig->getPosx(), fig->getPosy() - 1) < 0)
 			{
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx();
 				moves[index][1] = fig->getPosy() - 1;
-				moves[index][2] = -conv->getWert(board->touchWeiss((board->getField(fig->getPosx(), fig->getPosy() - 1) - 1))->getTyp());
+				moves[index][2] = -conv->getWert(board->touchFigur((board->getField(fig->getPosx(), fig->getPosy() - 1) - 1),true)->getTyp());
 			}
 			index++;
 		}
@@ -738,14 +738,14 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx() - 1;
 				moves[index][1] = fig->getPosy();
-				moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() - 1, fig->getPosy()) + 1))->getTyp());
+				moves[index][2] = conv->getWert(board->touchFigur(-(board->getField(fig->getPosx() - 1, fig->getPosy()) + 1),false)->getTyp());
 			}
 			else if (!isupper(fig->getTyp()) && board->getField(fig->getPosx() - 1, fig->getPosy()) < 0)
 			{
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx() - 1;
 				moves[index][1] = fig->getPosy();
-				moves[index][2] = -conv->getWert(board->touchWeiss((board->getField(fig->getPosx() - 1, fig->getPosy()))-1)->getTyp());
+				moves[index][2] = -conv->getWert(board->touchFigur((board->getField(fig->getPosx() - 1, fig->getPosy()))-1,true)->getTyp());
 			}
 			index++;
 		}
@@ -763,14 +763,14 @@ int ** Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx() + 1;
 				moves[index][1] = fig->getPosy();
-				moves[index][2] = conv->getWert(board->touchSchwarz(-(board->getField(fig->getPosx() + 1, fig->getPosy()) + 1))->getTyp());
+				moves[index][2] = conv->getWert(board->touchFigur(-(board->getField(fig->getPosx() + 1, fig->getPosy()) + 1),false)->getTyp());
 			}
 			else if (!isupper(fig->getTyp()) && board->getField(fig->getPosx() + 1, fig->getPosy()) < 0)
 			{
 				moves[index] = new int[3];
 				moves[index][0] = fig->getPosx() + 1;
 				moves[index][1] = fig->getPosy();
-				moves[index][2] = -conv->getWert(board->touchWeiss((board->getField(fig->getPosx() + 1, fig->getPosy()) - 1))->getTyp());
+				moves[index][2] = -conv->getWert(board->touchFigur((board->getField(fig->getPosx() + 1, fig->getPosy()) - 1),true)->getTyp());
 			}
 			index++;
 		}
@@ -1383,11 +1383,11 @@ bool Movemennt::makeMove(Brett * board, std::string move)
 		return false;
 	if (z > 0)
 	{
-		fig = board->touchWeiss(z - 1);
+		fig = board->touchFigur(z - 1,true);
 	}
 	else
 	{
-		fig = board->touchSchwarz(-(z + 1));
+		fig = board->touchFigur(-(z + 1),false);
 	}
 	if (this->proveMove(movemade, fig, board))
 	{
@@ -1419,12 +1419,12 @@ bool Movemennt::makeMove(Brett * board, std::string move)
 		{
 			if (ze > 0)
 			{
-				w = conv->getWert(board->touchWeiss(ze - 1)->getTyp());
+				w = conv->getWert(board->touchFigur(ze - 1,true)->getTyp());
 				board->setFigurenwert(board->getFigurenwert()-w);
 			}
 			else
 			{
-				w = conv->getWert(board->touchSchwarz(-(ze + 1))->getTyp());
+				w = conv->getWert(board->touchFigur(-(ze + 1),false)->getTyp());
 				board->setFigurenwert(board->getFigurenwert()+w);
 			}
 			board->deleteFigure(ze);
@@ -1437,12 +1437,12 @@ bool Movemennt::makeMove(Brett * board, std::string move)
 				return false;
 			if (z > 0)
 			{
-				fig = board->touchWeiss(z - 1);
+				fig = board->touchFigur(z - 1,true);
 				board->makeMove(fig, movemade[0][0],5);
 			}
 			else
 			{
-				fig = board->touchWeiss(-(z + 1));
+				fig = board->touchFigur(-(z + 1),false);
 				board->makeMove(fig, movemade[0][0], 5);
 			}
 		}
@@ -1453,12 +1453,12 @@ bool Movemennt::makeMove(Brett * board, std::string move)
 				return false;
 			if (z > 0)
 			{
-				fig = board->touchWeiss(z - 1);
+				fig = board->touchFigur(z - 1,true);
 				board->makeMove(fig, movemade[0][0], 3);
 			}
 			else
 			{
-				fig = board->touchWeiss(-(z + 1));
+				fig = board->touchFigur(-(z + 1),false);
 				board->makeMove(fig, movemade[0][0], 3);
 			}
 		}

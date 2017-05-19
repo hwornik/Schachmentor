@@ -1,6 +1,12 @@
 #include "stdafx.h"
 #include "Worker.h"
 
+/*
+
+				Weisszüge = Brother
+				Schwarzzüge = Child
+
+*/
 
 Worker::Worker()
 {
@@ -105,6 +111,7 @@ int Worker::startuprekonHash(std::string fenkey, Hashbrett * oldhash, Hashbrett 
 	}
 	pRData->deleteone = oldhash;
 	pRData->insertTree = gamehash;
+	pRData->fenkey = fenkey;
 	pRData->rekonfigureHash = rekonfigureHash;
 	pRData->stopsearchhash = stopsearchhash;
 
@@ -170,7 +177,7 @@ DWORD WINAPI Worker::DeleteHashbrett(LPVOID lpParam)
 DWORD WINAPI Worker::rekonfHashbrett(LPVOID lpParam)
 {
 	HANDLE hStdoutR;
-	PMYDDATA pRData;
+	PMYRDATA pRData;
 
 	TCHAR msgBuf[BUF_SIZE];
 	size_t cchStringSize;
@@ -186,7 +193,24 @@ DWORD WINAPI Worker::rekonfHashbrett(LPVOID lpParam)
 	// The pointer is known to be valid because 
 	// it was checked for NULL before the thread was created.
 	DeleteHash *delhash = new DeleteHash();
-	pRData = (PMYDDATA)lpParam;
+	pRData = (PMYRDATA)lpParam;
+	// Begin Work
+	Hashbrett *aktuell, *loschen;
+	aktuell=pRData->deleteone;
+	bool white = aktuell->getBoard()->getWhitetoMove();
+	while (aktuell->getChild(!white) != NULL)
+	{
+		if (aktuell->getFenString().compare(pRData->fenkey) == 0)
+		{
+			pRData->insertTree = aktuell;
+		}
+		else
+		{
+			loschen = aktuell;
+			aktuell = aktuell->getChild(!white);
+			loschen->setChild(NULL,!white);
+		}
+	}
 	// Print thread ende
 	std::cout << "#Thread ende#";
 	return 0;

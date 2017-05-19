@@ -7,10 +7,8 @@ class Hashbrett
 public:
 	Hashbrett();
 	~Hashbrett();
-	Hashbrett *getBrother();
-	Hashbrett *getChild();
-	void setBrother(Hashbrett *hashboard);
-	void setChild(Hashbrett *hashboard);
+	Hashbrett *getChild(bool white);
+	void setChild(Hashbrett *hashboard, bool white);
 	void setZug(char zug[5]);
 	void setBoard(Brett *board);
 	Brett * getBoard();
@@ -19,7 +17,7 @@ public:
 	void setFenString(std::string fenstring);
 private:
 	Brett *board;
-	Hashbrett *brother, *child;
+	Hashbrett *weiss, *schwarz;
 	char zug[5];
 	std::string fenstring;
 };

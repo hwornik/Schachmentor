@@ -21,6 +21,7 @@ typedef struct MyRData {
 	Hashbrett *deleteone;
 	Hashbrett *deletetwo;
 	Hashbrett *insertTree;
+	std::string fenkey;
 	bool *rekonfigureHash ;
 	bool *stopsearchhash;
 } MYRDATA, *PMYRDATA;

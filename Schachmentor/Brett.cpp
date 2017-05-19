@@ -71,37 +71,37 @@ void Brett::setBewertung(int wert)
 	this->bewertg = wert;
 }
 
-Figur * Brett::touchSchwarz(int number)
+Figur * Brett::touchFigur(int number, bool white)
 {
-	return Schwarz[number];
+	if(white)
+		return Weiss[number];
+	else
+		return Schwarz[number];
 }
 
-Figur * Brett::touchWeiss(int number)
+bool Brett::addnewFigur(bool white)
 {
-	return Weiss[number];
-}
-
-bool Brett::addnewFigurWeiss()
-{
-	if (this->maxweiss < 16)
+	if (white)
 	{
-		Weiss[maxweiss] = new Figur();
-		maxweiss++;
-		return true;
+		if (this->maxweiss < 16)
+		{
+			Weiss[maxweiss] = new Figur();
+			maxweiss++;
+			return true;
+		}
+	}
+	else
+	{
+		if (this->maxschwarz < 16)
+		{
+			Schwarz[maxschwarz] = new Figur();
+			maxschwarz++;
+			return true;
+		}
 	}
 	return false;
 }
 
-bool Brett::addnewFigurSchwarz()
-{
-	if (this->maxschwarz < 16)
-	{
-		Schwarz[maxschwarz] = new Figur();
-		maxschwarz++;
-		return true;
-	}
-	return false;
-}
 
 bool Brett::deleteFigure(int boardint)
 {

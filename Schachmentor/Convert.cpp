@@ -106,11 +106,11 @@ void Convert::setBoardwithFEN(Brett *board, std::string fen)
 					int wi;
 					if (isupper(pos[z]))
 					{
-						board->addnewFigurWeiss();
+						board->addnewFigur(true);
 						wi = board->getFigurmax(true) - 1;
-						board->touchWeiss(wi)->setTyp(pos[z]);
-						board->touchWeiss(wi)->setPosx(j);
-						board->touchWeiss(wi)->setPosy(i);
+						board->touchFigur(wi,true)->setTyp(pos[z]);
+						board->touchFigur(wi,true)->setPosx(j);
+						board->touchFigur(wi,true)->setPosy(i);
 						board->setField(j, i, wi+1);
 						if (pos[z] == 'K')
 						{
@@ -119,11 +119,11 @@ void Convert::setBoardwithFEN(Brett *board, std::string fen)
 					}
 					else
 					{
-						board->addnewFigurSchwarz();
+						board->addnewFigur(false);
 						wi = board->getFigurmax(false) - 1;
-						board->touchSchwarz(wi)->setTyp(pos[z]);
-						board->touchSchwarz(wi)->setPosx(j);
-						board->touchSchwarz(wi)->setPosy(i);
+						board->touchFigur(wi,false)->setTyp(pos[z]);
+						board->touchFigur(wi,false)->setPosx(j);
+						board->touchFigur(wi,false)->setPosy(i);
 						board->setField(j, i, -(wi+1));
 						if (pos[z] == 'k')
 						{
@@ -238,11 +238,11 @@ std::string Convert::getBoardFen(Brett * board)
 				}
 				if (board->getField(j, i) > 0)
 				{
-					fenstring[z] = board->touchWeiss(board->getField(j, i)-1)->getTyp();
+					fenstring[z] = board->touchFigur(board->getField(j, i)-1,true)->getTyp();
 				}
 				else
 				{
-					fenstring[z] = board->touchSchwarz(-(board->getField(j, i)+1))->getTyp();
+					fenstring[z] = board->touchFigur(-(board->getField(j, i)+1),false)->getTyp();
 				}
 
 				z++;
@@ -313,12 +313,12 @@ void Convert::displayBoard(Brett *board)
 				if (x > 0)
 				{
 					x = x - 1;
-					std::cout << board->touchWeiss(x)->getTyp();
+					std::cout << board->touchFigur(x,true)->getTyp();
 				}
 				else
 				{
 					x = -(x + 1);
-					std::cout << board->touchSchwarz(x)->getTyp();
+					std::cout << board->touchFigur(x,false)->getTyp();
 				}
 			}
 			else

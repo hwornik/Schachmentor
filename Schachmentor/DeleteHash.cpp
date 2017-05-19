@@ -14,8 +14,8 @@ DeleteHash::~DeleteHash()
 void DeleteHash::delHash(Hashbrett * board)
 {
 	if (board != NULL)
-		delHash(board->getBrother());
+		delHash(board->getChild(true));
 	if (board != NULL)
-		delHash(board->getChild());
+		delHash(board->getChild(false));
 	delete board;
 }

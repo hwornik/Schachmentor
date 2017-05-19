@@ -5,8 +5,8 @@
 Hashbrett::Hashbrett()
 {
 	board = NULL;
-	brother = NULL;
-	child = NULL;
+	weiss = NULL;
+	schwarz = NULL;
 }
 
 
@@ -16,24 +16,21 @@ Hashbrett::~Hashbrett()
 		delete board;
 }
 
-Hashbrett * Hashbrett::getBrother()
+Hashbrett * Hashbrett::getChild(bool white)
 {
-	return brother;
+	if (white)
+		return weiss;
+	else
+		return schwarz;
 }
 
-Hashbrett * Hashbrett::getChild()
-{
-	return child;
-}
 
-void Hashbrett::setBrother(Hashbrett * hashboard)
+void Hashbrett::setChild(Hashbrett * hashboard,bool white)
 {
-	this->brother = hashboard;
-}
-
-void Hashbrett::setChild(Hashbrett * hashboard)
-{
-	this->child = hashboard;
+	if(white)
+		this->weiss = hashboard;
+	else
+		this->schwarz = hashboard;
 }
 
 void Hashbrett::setZug(char zug[5])
