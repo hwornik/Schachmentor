@@ -196,27 +196,23 @@ DWORD WINAPI Worker::rekonfHashbrett(LPVOID lpParam)
 	pRData = (PMYRDATA)lpParam;
 	Worker *delWorker = new Worker();
 	// Begin Work
-	Hashbrett *aktuell, *loschen;
+	Hashbrett *aktuell, *loschenA, *loschenB;
 	aktuell=pRData->deleteone;
 	bool white = aktuell->getBoard()->getWhitetoMove();
 	while (aktuell->getChild(!white) != NULL)
 	{
 		if (aktuell->getFenString().compare(pRData->fenkey) == 0)
 		{
+
 			pRData->insertTree = aktuell;
-			loschen = aktuell->getChild(!white);
+			loschenB = aktuell->getChild(!white);
 			aktuell->setChild(NULL, !white);
-			delWorker->startupDelete(loschen, NULL);
+			loschenA->setChild(NULL, !white);
+			delWorker->startupDelete(pRData->deleteone, loschenB);
+			return 0;
 		}
-		else
-		{
-			loschen = aktuell;
-			aktuell = aktuell->getChild(!white);
-			loschen->setChild(NULL,!white);
-			delWorker->startupDelete(loschen, NULL);
-
-		}
-
+		loschenA = aktuell;
+		aktuell = aktuell->getChild(!white);
 	}
 	// Print thread ende
 	std::cout << "#Thread ende#";
