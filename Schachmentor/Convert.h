@@ -19,5 +19,7 @@ public:
 	void displayBoard(Brett * board);
 	int** getMoveIntfromChar(std::string move);
 	int getIntfromNumber(char n);
+	char getNumberfromInt(int n);
+	std::string getStringfromInt(int vonx, int vony, int nachx, int nachy, char promo);
 };
 

@@ -4,16 +4,17 @@
 
 Hashbrett::Hashbrett()
 {
-	board = NULL;
+	board = new Brett();
 	weiss = NULL;
 	schwarz = NULL;
+	zug = "";
 }
 
 
 Hashbrett::~Hashbrett()
 {
-	if (board != NULL)
-		delete board;
+	if (this->board != NULL)
+		delete this->board;
 }
 
 Hashbrett * Hashbrett::getChild(bool white)
@@ -33,10 +34,9 @@ void Hashbrett::setChild(Hashbrett * hashboard,bool white)
 		this->schwarz = hashboard;
 }
 
-void Hashbrett::setZug(char zug[5])
+void Hashbrett::setZug(std::string zug)
 {
-	for(int i=0;i<5;i++)
-		this->zug[i] = zug[i];
+		this->zug = zug;
 }
 
 void Hashbrett::setBoard(Brett * board)
@@ -51,7 +51,7 @@ Brett * Hashbrett::getBoard()
 	return this->board;
 }
 
-char * Hashbrett::getZug()
+std::string Hashbrett::getZug()
 {
 	return this->zug;
 }
@@ -65,3 +65,15 @@ void Hashbrett::setFenString(std::string fenstring)
 {
 	this->fenstring = fenstring;
 }
+
+std::string Hashbrett::getZugFolge()
+{
+	return this->zugfolge;
+}
+
+void Hashbrett::setZugFolge(std::string zugfolge)
+{
+	this->zugfolge = zugfolge;
+}
+
+

@@ -140,6 +140,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Brett.h" />
+    <ClInclude Include="Calculus.h" />
     <ClInclude Include="Compute.h" />
     <ClInclude Include="Comunicate.h" />
     <ClInclude Include="Constants.h" />
@@ -147,6 +148,7 @@
     <ClInclude Include="DeleteHash.h" />
     <ClInclude Include="Figur.h" />
     <ClInclude Include="Hashbrett.h" />
+    <ClInclude Include="Moving.h" />
     <ClInclude Include="ThreadData.h" />
     <ClInclude Include="Movemennt.h" />
     <ClInclude Include="resource.h" />
@@ -158,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Brett.cpp" />
+    <ClCompile Include="Calculus.cpp" />
     <ClCompile Include="Compute.cpp" />
     <ClCompile Include="Comunicate.cpp" />
     <ClCompile Include="Convert.cpp" />
@@ -165,6 +168,7 @@
     <ClCompile Include="Figur.cpp" />
     <ClCompile Include="Hashbrett.cpp" />
     <ClCompile Include="Movemennt.cpp" />
+    <ClCompile Include="Moving.cpp" />
     <ClCompile Include="Schachmentor.cpp" />
     <ClCompile Include="Spiel.cpp" />
     <ClCompile Include="stdafx.cpp">

@@ -18,6 +18,7 @@ Brett::Brett()
 	this->halbzug = 0;
 	maxweiss = 0;
 	maxschwarz = 0;
+	kingpos[2][2] = {};
 }
 
 
@@ -83,7 +84,7 @@ bool Brett::addnewFigur(bool white)
 {
 	if (white)
 	{
-		if (this->maxweiss < 16)
+		if (this->maxweiss < 15)
 		{
 			Weiss[maxweiss] = new Figur();
 			maxweiss++;
@@ -92,7 +93,7 @@ bool Brett::addnewFigur(bool white)
 	}
 	else
 	{
-		if (this->maxschwarz < 16)
+		if (this->maxschwarz < 15)
 		{
 			Schwarz[maxschwarz] = new Figur();
 			maxschwarz++;
@@ -114,7 +115,8 @@ bool Brett::deleteFigure(int boardint)
 			Schwarz[i] = Schwarz[i + 1];
 		}
 		maxschwarz--;
-		Schwarz[maxschwarz] = NULL;
+		for(int i=maxschwarz;i<16;i++)
+			Schwarz[i] = NULL;
 	}
 	else if (boardint > 0)
 	{
@@ -125,7 +127,8 @@ bool Brett::deleteFigure(int boardint)
 			Weiss[i] = Weiss[i + 1];
 		}
 		maxweiss--;
-		Weiss[maxweiss] = NULL;
+		for (int i = maxweiss; i<16; i++)
+			Weiss[i] = NULL;
 	}
 	else
 		return false;
@@ -140,6 +143,18 @@ int Brett::getFigurmax(bool white)
 	else
 	{
 		return maxschwarz;
+	}
+}
+
+Figur * Brett::getFigur(int nr, bool white)
+{
+	if (white)
+	{
+		return this->Weiss[nr];
+	}
+	else
+	{
+		return this->Schwarz[nr];
 	}
 }
 

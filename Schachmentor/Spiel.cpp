@@ -40,7 +40,12 @@ int Spiel::startup()
 		pData->fenstring = &fen;
 		pData->movestodo = moves;
 		pData->movemade = &move;
-		pData->gamehash = NULL;
+		pData->gamehash = new Hashbrett();
+		Brett *board = new Brett();
+		Convert *conv = new Convert();
+		conv->setBoardwithFEN(board, STARTFEN);
+		pData->gamehash->setBoard(board);
+		delete conv;
 		// Create the thread to begin execution on its own.
 
 		hThread = CreateThread(
@@ -268,6 +273,7 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 	Brett *board = new Brett();
 	Movemennt *moves = new Movemennt();
 	Hashbrett *oldhash;
+	bool timeout = false;
 	// Print the parameter values using thread-safe functions.
 	StringCchPrintf(msgBuf, BUF_SIZE, TEXT("readyok\n"));
 	//	pData->val1, pData->val2);
@@ -324,21 +330,28 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 		}
 		if (*pData->input == MAKEMOVE)
 		{
-			moves->makeMove(board, *pData->movemade);
+			moves->makeMove(pData->gamehash, *pData->movemade);
 			*pData->input = WAITING;
 			*pData->ready = true;
 		}
 		if (*pData->input == STARTCOMPUTING)
 		{
-			std::cout << "computing......\n";
+			Hashbrett *one, *two;
+			one = pData->gamehash->getChild(true);
+			two = pData->gamehash->getChild(false);
+			pData->gamehash->setChild(NULL, false);
+			pData->gamehash->setChild(NULL,true);
+			work->startupDelete(pData->gamehash->getChild(true), pData->gamehash->getChild(false));
+			work->startupSearch(pData->gamehash, pData->quit, pData->endsearch, &timeout);
 			*pData->input = WAITING;
 			*pData->ready = true;
 		}
 		if (*pData->input == RESETGAME)
 		{
-			work->startupDelete(pData->gamehash, NULL);
-			pData->gamehash = NULL;
+			Hashbrett *loschen;
+			loschen = pData->gamehash->getChild(true);
 			pData->gamehash = new Hashbrett();
+			work->startupDelete(loschen, NULL);
 			Brett *board = new Brett();
 			conv->setBoardwithFEN(board, STARTFEN);
 			pData->gamehash->setBoard(board);

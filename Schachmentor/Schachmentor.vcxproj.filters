@@ -66,6 +66,12 @@
     <ClInclude Include="Worker.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Moving.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Calculus.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -105,6 +111,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Worker.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Moving.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Calculus.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

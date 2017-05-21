@@ -25,3 +25,10 @@ typedef struct MyRData {
 	bool *rekonfigureHash ;
 	bool *stopsearchhash;
 } MYRDATA, *PMYRDATA;
+
+typedef struct MySData {
+	Hashbrett *searchtree;
+	bool *endatDepthakt;
+	bool *stopsearch;
+	bool *quitsearch;
+} MYSDATA, *PMYSDATA;

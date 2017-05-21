@@ -1,13 +1,6 @@
 #include "stdafx.h"
 #include "Worker.h"
 
-/*
-
-				Weisszüge = Brother
-				Schwarzzüge = Child
-
-*/
-
 Worker::Worker()
 {
 }
@@ -170,7 +163,6 @@ DWORD WINAPI Worker::DeleteHashbrett(LPVOID lpParam)
 	{
 		delhash->delHash(pDData->deletetwo);
 	}
-	std::cout << "#Thread ende#";
 	return 0;
 }
 
@@ -216,5 +208,103 @@ DWORD WINAPI Worker::rekonfHashbrett(LPVOID lpParam)
 	}
 	// Print thread ende
 	std::cout << "#Thread ende#";
+	return 0;
+}
+
+int Worker::startupSearch(Hashbrett *searchtree, bool *quit, bool *end, bool *endatDepth)
+{
+	// Allocate memory for thread data.
+	//*hasharray = new Brett[hashsize];
+	pSData = (PMYSDATA)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY,
+		sizeof(MYSDATA));
+
+	if (pSData == NULL)
+	{
+		// If the array allocation fails, the system is out of memory
+		// so there is no point in trying to print an error message.
+		// Just terminate execution.
+		ExitProcess(2);
+	}
+	pSData->searchtree = searchtree;
+	pSData->quitsearch = quit;
+	pSData->stopsearch = end;
+	pSData->endatDepthakt = endatDepth;
+
+	// Generate unique data for each thread to work with.
+	// Create the thread to begin execution on its own.
+
+	hThreadS = CreateThread(
+		NULL,                   // default security attributes
+		0,                      // use default stack size  
+		searchMove,         // thread function name
+		pSData,          // argument to thread function 
+		0,                      // use default creation flags 
+		&dwThreadIdS);   // returns the thread identifier 
+
+
+						 // Check the return value for success.
+						 // If CreateThread fails, terminate execution. 
+						 // This will automatically clean up threads and memory. 
+
+	if (hThreadS == NULL)
+	{
+		ErrorHandler(TEXT("CreateThread"));
+		ExitProcess(3);
+	}
+
+
+	return 0;
+}
+
+DWORD WINAPI Worker::searchMove(LPVOID lpParam)
+{
+	HANDLE hStdoutS;
+	PMYSDATA pSData;
+
+	TCHAR msgBuf[BUF_SIZE];
+	size_t cchStringSize;
+	DWORD dwChars;
+
+	pSData = (PMYSDATA)lpParam;
+	// Make sure there is a console to receive output results. 
+
+	hStdoutS = GetStdHandle(STD_OUTPUT_HANDLE);
+	if (hStdoutS == INVALID_HANDLE_VALUE)
+		return 1;
+	Movemennt *moves = new Movemennt();
+	Hashbrett * aktuell;
+	bool white=pSData->searchtree->getBoard()->getWhitetoMove();
+	Moving *movesperfig,*loschen;
+	int moveindex = 0;
+	int tiefe = 0;
+	int godepth = 2;
+	aktuell = pSData->searchtree;
+	Calculus *calc = new Calculus();
+	for (int i = 0; i < pSData->searchtree->getBoard()->getFigurmax(white); i++)
+	{
+		movesperfig=moves->getMovesperFigure(pSData->searchtree->getBoard(), pSData->searchtree->getBoard()->getFigur(i, white));
+		while (movesperfig->getnext() != NULL)
+		{
+			loschen = movesperfig;
+			movesperfig = movesperfig->getnext();
+			Hashbrett *hash = new Hashbrett();
+			hash->setBoard(moves->copyBoard(pSData->searchtree->getBoard()));
+			hash->getBoard()->setFigurenwert(pSData->searchtree->getBoard()->getFigurenwert() + movesperfig->getW());
+			hash->setChild(NULL, true);
+			hash->setChild(NULL, false);
+			moves->makeMove(pSData->searchtree->getBoard()->getFigur(i, white)->getPosx(), pSData->searchtree->getBoard()->getFigur(i, white)->getPosy(), movesperfig->getX(), movesperfig->getY(), ' ', hash);
+			hash->setZugFolge(hash->getZug());
+			aktuell->setChild(hash, white);
+			//std::cout << hash->getZug() << " ";
+			aktuell = aktuell->getChild(white);
+			calc->deepSearch(hash, moves, tiefe, godepth, hash->getZug());
+			delete loschen;
+			moveindex++;
+			std::cout << "---------------------------------------------------------\n";
+		}
+		delete movesperfig;
+	}
+
+	std::cout << moveindex << " Zuge gefunden\n";
 	return 0;
 }

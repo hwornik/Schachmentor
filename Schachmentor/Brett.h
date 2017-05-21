@@ -18,6 +18,7 @@ public:
 	bool addnewFigur(bool white);
 	bool deleteFigure(int boardint);
 	int getFigurmax(bool white);
+	Figur * getFigur(int nr,bool white);
 	void setFigurenwert(int wert);
 	int getFigurenwert();
 	bool getWhitetoMove();

@@ -378,3 +378,36 @@ int Convert::getIntfromNumber(char n)
 		return 7;
 	return -1;
 }
+
+char Convert::getNumberfromInt(int n)
+{
+	if (n == 0)
+		return '1';
+	if (n == 1)
+		return '2';
+	if (n == 2)
+		return '3';
+	if (n == 3)
+		return '4';
+	if (n == 4)
+		return '5';
+	if (n == 5)
+		return '6';
+	if (n == 6)
+		return '7';
+	if (n == 7)
+		return '8';
+	return ' ';
+}
+std::string Convert::getStringfromInt(int vonx, int vony, int nachx, int nachy, char promo)
+{
+	char word[5] = { ' ' };
+	word[0] = this->getcharfromNumber(vonx);
+	word[1] = this->getNumberfromInt(vony);
+	word[2] = this->getcharfromNumber(nachx);
+	word[3] = this->getNumberfromInt(nachy);
+	if(this->getWert(promo)>0)
+		word[4] = promo;
+	std::string str=word;
+	return str;
+}
