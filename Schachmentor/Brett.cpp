@@ -74,10 +74,10 @@ void Brett::setBewertung(int wert)
 
 Figur * Brett::touchFigur(int number, bool white)
 {
-	if(white)
-		return Weiss[number];
-	else
-		return Schwarz[number];
+		if (white)
+			return Weiss[number];
+		else
+			return Schwarz[number];
 }
 
 bool Brett::addnewFigur(bool white)

@@ -29,7 +29,7 @@ void Calculus::deepSearch(Hashbrett * boards, Movemennt * move, int tiefe, int g
 			Hashbrett *hash = new Hashbrett();
 			hash->setBoard(move->copyBoard(boards->getBoard()));
 			hash->getBoard()->setFigurenwert(boards->getBoard()->getFigurenwert() + movesperfig->getW());
-			move->makeMove(boards->getBoard()->getFigur(i, white)->getPosx(), boards->getBoard()->getFigur(i, white)->getPosy(), movesperfig->getX(), movesperfig->getY(),' ',hash);
+			move->makeMove(hash->getBoard()->getFigur(i, white), movesperfig->getX(), movesperfig->getY(),' ',hash);
 			hash->setZugFolge(boards->getZugFolge()+" "+hash->getZug());
 			aktuell->setChild(hash, white);
 			aktuell = aktuell->getChild(white);
@@ -39,12 +39,12 @@ void Calculus::deepSearch(Hashbrett * boards, Movemennt * move, int tiefe, int g
 			}
 			delete loschen;
 			if(godepth == tiefe)
-			std::cout << "info "+hash->getZugFolge() << " " << hash->getBoard()->getFigurenwert() << "\n";
+				std::cout << "info score cp " << hash->getBoard()->getFigurenwert()*10 <<" pv "+hash->getZugFolge() << " "  << "\n";
 			moveindex++;
 			//tiefe--;
 		}
 		delete movesperfig;
 		//std::cout << "---------------------------------------------------------\n";
 	}
-	std::cout << moveindex << " Zuge gefunden Depth\n";
+	//std::cout << moveindex << " Zuge gefunden Depth\n";
 }

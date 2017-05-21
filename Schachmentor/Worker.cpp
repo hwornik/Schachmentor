@@ -190,22 +190,24 @@ DWORD WINAPI Worker::rekonfHashbrett(LPVOID lpParam)
 	// Begin Work
 	Hashbrett *aktuell, *loschenA, *loschenB;
 	aktuell=pRData->deleteone;
-	bool white = aktuell->getBoard()->getWhitetoMove();
+	loschenA=pRData->deleteone;
+	bool white = !aktuell->getBoard()->getWhitetoMove();
 	while (aktuell->getChild(!white) != NULL)
 	{
 		if (aktuell->getFenString().compare(pRData->fenkey) == 0)
 		{
-
-			pRData->insertTree = aktuell;
-			loschenB = aktuell->getChild(!white);
-			aktuell->setChild(NULL, !white);
-			loschenA->setChild(NULL, !white);
-			delWorker->startupDelete(pRData->deleteone, loschenB);
+			std::cout << "found";
+			loschenA->setChild(NULL, true);
+			loschenA->setChild(NULL, false);
+			pRData->insertTree->setChild(aktuell->getChild(white),white);
+			loschenB=aktuell->getChild(!white);
+			//delete aktuell;
+			//delWorker->startupDelete(loschenA, loschenB);
 			return 0;
 		}
-		loschenA = aktuell;
 		aktuell = aktuell->getChild(!white);
 	}
+	delWorker->startupDelete(pRData->deleteone, NULL);
 	// Print thread ende
 	std::cout << "#Thread ende#";
 	return 0;
@@ -277,7 +279,8 @@ DWORD WINAPI Worker::searchMove(LPVOID lpParam)
 	Moving *movesperfig,*loschen;
 	int moveindex = 0;
 	int tiefe = 0;
-	int godepth = 2;
+	int godepth = 3;
+	Convert *conv = new Convert();
 	aktuell = pSData->searchtree;
 	Calculus *calc = new Calculus();
 	for (int i = 0; i < pSData->searchtree->getBoard()->getFigurmax(white); i++)
@@ -292,19 +295,20 @@ DWORD WINAPI Worker::searchMove(LPVOID lpParam)
 			hash->getBoard()->setFigurenwert(pSData->searchtree->getBoard()->getFigurenwert() + movesperfig->getW());
 			hash->setChild(NULL, true);
 			hash->setChild(NULL, false);
-			moves->makeMove(pSData->searchtree->getBoard()->getFigur(i, white)->getPosx(), pSData->searchtree->getBoard()->getFigur(i, white)->getPosy(), movesperfig->getX(), movesperfig->getY(), ' ', hash);
+			moves->makeMove(hash->getBoard()->getFigur(i, white), movesperfig->getX(), movesperfig->getY(), ' ', hash);
 			hash->setZugFolge(hash->getZug());
+			hash->setFenString(conv->getBoardFen(hash->getBoard()));
 			aktuell->setChild(hash, white);
 			//std::cout << hash->getZug() << " ";
 			aktuell = aktuell->getChild(white);
-			calc->deepSearch(hash, moves, tiefe, godepth, hash->getZug());
+			calc->deepSearch(aktuell, moves, tiefe, godepth, hash->getZug());
 			delete loschen;
 			moveindex++;
-			std::cout << "---------------------------------------------------------\n";
+			//std::cout << "---------------------------------------------------------\n";
 		}
 		delete movesperfig;
 	}
 
-	std::cout << moveindex << " Zuge gefunden\n";
+	//std::cout << moveindex << " Zuge gefunden\n";
 	return 0;
 }

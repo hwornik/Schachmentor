@@ -224,6 +224,14 @@ bool Compute::uci(std::string command)
 		}
 		word = pch;
 		//---------------------------------------------------------
+		if (word.compare("makemove") == 0)
+		{
+			pch = strtok(NULL, " ");
+			word = pch;
+			this->game->setMoveMadebyGUI(word);
+			this->game->startAction(MAKEMOVE);
+		}
+		//---------------------------------------------------------
 		// go Kommands:
 		//> go +
 		//searchmoves
@@ -443,10 +451,11 @@ bool Compute::naked(std::string command)
 		{
 			this->game->startAction(SHOWFEN);
 		}
-		if (word.compare(0, 8, "makemove") == 0)
+		if (word.compare(0, 8,"makemove") == 0)
 		{
 			pch = strtok(NULL, " ");
 			word = pch;
+			std::cout << "D";
 			this->game->setMoveMadebyGUI(word);
 			this->game->startAction(MAKEMOVE);
 		}

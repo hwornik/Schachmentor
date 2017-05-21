@@ -5,6 +5,7 @@
 Movemennt::Movemennt()
 {
 	conv = new Convert();
+	delhash = new DeleteHash();
 }
 
 
@@ -80,7 +81,7 @@ Moving * Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 			aktuell->setNext(moves);
 			aktuell = aktuell->getnext();
 		}
-		if ((fig->getPosx() - 1) < -1 && (fig->getPosy() + 1) < 8 && board->getField(fig->getPosx() - 1, fig->getPosy() + 1) > 0)
+		if ((fig->getPosx() - 1) > -1 && (fig->getPosy() + 1) < 8 && board->getField(fig->getPosx() - 1, fig->getPosy() + 1) > 0)
 		{
 			moves = new Moving();
 			moves->setX(fig->getPosx() - 1);
@@ -94,7 +95,7 @@ Moving * Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 			moves = new Moving();
 			moves->setX(fig->getPosx() - 1);
 			moves->setY(fig->getPosy() - 1);
-			moves->setW(-conv->getWert(board->touchFigur((board->getField(fig->getPosx() - 1, fig->getPosy() - 1) - 1),false)->getTyp()));
+			moves->setW(-conv->getWert(board->touchFigur((board->getField(fig->getPosx() - 1, fig->getPosy() - 1) - 1),true)->getTyp()));
 			aktuell->setNext(moves);
 			aktuell = aktuell->getnext();
 		}
@@ -102,7 +103,7 @@ Moving * Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 	// Springer ------------------------------------------------------------------------------------------------------------
 	else if (toupper(fig->getTyp()) == 'N' )
 	{
-		if ((fig->getPosx() + 2) < 7 && (fig->getPosy() + 1) < 8 ) 
+		if ((fig->getPosx() + 2) < 8 && (fig->getPosy() + 1) < 8 ) 
 		{
 			if (board->getField(fig->getPosx() + 2, fig->getPosy() + 1) == 0)
 			{
@@ -447,7 +448,7 @@ Moving * Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 							aktuell->setNext(moves);
 							aktuell = aktuell->getnext();
 						}
-						else if (board->getField(fig->getPosx() - i, fig->getPosy() + i) < 0)
+						else if (isupper(fig->getTyp()) && board->getField(fig->getPosx() - i, fig->getPosy() + i) < 0)
 						{
 							moves = new Moving();
 							moves->setX(fig->getPosx() - i);
@@ -487,7 +488,7 @@ Moving * Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 							aktuell->setNext(moves);
 							aktuell = aktuell->getnext();
 						}
-						else if (board->getField(fig->getPosx() - i, fig->getPosy() - i) < 0)
+						else if (isupper(fig->getTyp()) && board->getField(fig->getPosx() - i, fig->getPosy() - i) < 0)
 						{
 							moves = new Moving();
 							moves->setX(fig->getPosx() - i);
@@ -629,7 +630,7 @@ Moving * Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 						aktuell = aktuell->getnext();
 						notend[2] = false;
 					}
-					else if (!isupper(fig->getTyp()) && board->getField(fig->getPosx() - i, fig->getPosy()) > 0)
+					else if (!isupper(fig->getTyp()) && board->getField(fig->getPosx() , fig->getPosy() + i) > 0)
 					{
 						moves = new Moving();
 						moves->setX(fig->getPosx());
@@ -691,7 +692,6 @@ Moving * Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 			}
 		}
 	}
-
 	// König-------------------------------------------------------------------------------------------------------------------
 	else if (fig->getTyp() == 'K' || fig->getTyp() == 'k')
 	{
@@ -1534,26 +1534,38 @@ bool Movemennt::makeMove(Hashbrett * hash, std::string move)
 		promo = move.at(4);
 	}
 	movemade = conv->getMoveIntfromChar(move);
-	this->makeMove(movemade[0][0], movemade[0][1], movemade[1][0], movemade[1][1],promo, hash);
+	Figur * fig;
+	int z = hash->getBoard()->getField(movemade[0][0], movemade[0][1]);
+	if (z == 0)
+	return false;
+	if (z > 0)
+	{
+	fig = hash->getBoard()->touchFigur(z - 1,true);
+	}
+	else
+	{
+	fig = hash->getBoard()->touchFigur(-(z + 1),false);
+	}
+	this->makeMove(fig,movemade[1][0], movemade[1][1],promo, hash);
 	return true;
 }
-bool Movemennt::makeMove(int vonx,int vony,int nachx,int nachy, char promo, Hashbrett * hash)
+bool Movemennt::makeMove(Figur *fig, int nachx,int nachy, char promo, Hashbrett * hash)
 {
 	Brett * board = hash->getBoard();
-	hash->setZug(conv->getStringfromInt(vonx, vony, nachx, nachy,promo));
+	hash->setZug(conv->getStringfromInt(fig->getPosx(), fig->getPosy(), nachx, nachy,promo));
 	int wert;
 	bool trade = false, rochKS = false, rochQS = false;
 	int **movemade;
 	movemade = new int*[2];
 	movemade[0] = new int[2];
 	movemade[1] = new int[2];
-	movemade[0][0] = vonx;
-	movemade[0][1] = vony;
+	movemade[0][0] = fig->getPosx();
+	movemade[0][1] = fig->getPosy();
 	movemade[1][0] = nachx;
 	movemade[1][1] = nachy;
-	Figur *fig;
+	//Figur *fig;
 	int z,w=0;
-	z = board->getField(vonx, vony);
+	/*z = board->getField(vonx, vony);
 	if (z == 0)
 		return false;
 	if (z > 0)
@@ -1563,7 +1575,7 @@ bool Movemennt::makeMove(int vonx,int vony,int nachx,int nachy, char promo, Hash
 	else
 	{
 		fig = board->touchFigur(-(z + 1),false);
-	}
+	}*/
 	if (this->proveMove(movemade, fig, board))
 	{
 		if (fig->getTyp() == 'p' &&  promo!=' ' && fig->getPosy()==1)
@@ -1689,5 +1701,54 @@ Brett * Movemennt::copyBoard(Brett * board)
 	copy->setWhitetoMove(board->getWhitetoMove());
 	copy->setZugNr(board->getZugNr());
 	return copy;
+}
+
+void Movemennt::printHash(Hashbrett * hbrett)
+{
+	Hashbrett *hb;
+	std::cout << hbrett->getZug() << " Mom\n";
+	hb = hbrett->getChild(true);
+	if (hb)
+	{
+		std::cout << hb->getZug() << " white\n";
+	}
+	hb = hbrett->getChild(false);
+	if (hb)
+	{
+		while (hb)
+		{
+			std::cout << hb->getZug() << " ";
+			hb = hb->getChild(false);
+		}
+	}
+	
+}
+
+Hashbrett * Movemennt::rekonfHash(Hashbrett * oldhash, std::string fenstring)
+{
+	// Begin Work
+	Hashbrett *aktuell, *loschenA, *loschenB,*tree;
+	aktuell = oldhash;
+	bool white = !aktuell->getBoard()->getWhitetoMove();
+	while (aktuell->getChild(!white) != NULL)
+	{
+		if (aktuell->getFenString().compare(fenstring) == 0)
+		{
+			std::cout << "found";
+			loschenB = aktuell->getChild(!white);
+			delhash->delHash(loschenB);
+			tree = aktuell->getChild(white);
+			aktuell->setChild(NULL, white);
+			aktuell->setChild(NULL, !white);
+			delete aktuell;
+			return tree;
+		}
+		loschenA = aktuell;
+		aktuell = aktuell->getChild(!white);
+		loschenA->setChild(NULL, !white);
+		delhash->delHash(loschenA);
+	}
+	delhash->delHash(aktuell);
+	return NULL;
 }
 

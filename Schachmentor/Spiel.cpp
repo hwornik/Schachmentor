@@ -330,18 +330,26 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 		}
 		if (*pData->input == MAKEMOVE)
 		{
+			Hashbrett *loschen;
+			loschen = pData->gamehash;
+			pData->gamehash=new Hashbrett();
+			pData->gamehash->setBoard(moves->copyBoard(loschen->getBoard()));
 			moves->makeMove(pData->gamehash, *pData->movemade);
+			bool rekonf = true, stops = false;
+			pData->gamehash->setFenString(conv->getBoardFen(pData->gamehash->getBoard()));
+			pData->gamehash->setChild(moves->rekonfHash(loschen, pData->gamehash->getFenString()),pData->gamehash->getBoard()->getWhitetoMove());
+			moves->printHash(pData->gamehash);
 			*pData->input = WAITING;
 			*pData->ready = true;
 		}
 		if (*pData->input == STARTCOMPUTING)
 		{
-			Hashbrett *one, *two;
+			/*Hashbrett *one, *two;
 			one = pData->gamehash->getChild(true);
 			two = pData->gamehash->getChild(false);
 			pData->gamehash->setChild(NULL, false);
 			pData->gamehash->setChild(NULL,true);
-			work->startupDelete(pData->gamehash->getChild(true), pData->gamehash->getChild(false));
+			work->startupDelete(one, two);*/
 			work->startupSearch(pData->gamehash, pData->quit, pData->endsearch, &timeout);
 			*pData->input = WAITING;
 			*pData->ready = true;
@@ -349,7 +357,7 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 		if (*pData->input == RESETGAME)
 		{
 			Hashbrett *loschen;
-			loschen = pData->gamehash->getChild(true);
+			loschen = pData->gamehash;
 			pData->gamehash = new Hashbrett();
 			work->startupDelete(loschen, NULL);
 			Brett *board = new Brett();
