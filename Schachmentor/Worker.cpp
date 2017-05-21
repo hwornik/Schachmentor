@@ -88,43 +88,42 @@ int Worker::startupDelete(Hashbrett *deleteone, Hashbrett *deletetwo)
 	return 0;
 }
 
-int Worker::startuprekonHash(std::string fenkey, Hashbrett * oldhash, Hashbrett * gamehash, bool * rekonfigureHash, bool * stopsearchhash)
+int Worker::startupSearchTree(Hashbrett *searchtree, bool *quit, bool *end, bool *endatDepth)
 {
 	// Allocate memory for thread data.
 	//*hasharray = new Brett[hashsize];
-	pRData = (PMYRDATA)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY,
-		sizeof(MYRDATA));
+	pSData = (PMYSDATA)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY,
+		sizeof(MYSDATA));
 
-	if (pRData == NULL)
+	if (pSData == NULL)
 	{
 		// If the array allocation fails, the system is out of memory
 		// so there is no point in trying to print an error message.
 		// Just terminate execution.
 		ExitProcess(2);
 	}
-	pRData->deleteone = oldhash;
-	pRData->insertTree = gamehash;
-	pRData->fenkey = fenkey;
-	pRData->rekonfigureHash = rekonfigureHash;
-	pRData->stopsearchhash = stopsearchhash;
+	pSData->searchtree = searchtree;
+	pSData->quitsearch = quit;
+	pSData->stopsearch = end;
+	pSData->endatDepthakt = endatDepth;
 
 	// Generate unique data for each thread to work with.
 	// Create the thread to begin execution on its own.
 
-	hThreadR = CreateThread(
+	hThreadS = CreateThread(
 		NULL,                   // default security attributes
 		0,                      // use default stack size  
-		rekonfHashbrett,         // thread function name
-		pRData,          // argument to thread function 
+		searchMoveTree,         // thread function name
+		pSData,          // argument to thread function 
 		0,                      // use default creation flags 
-		&dwThreadIdR);   // returns the thread identifier 
+		&dwThreadIdS);   // returns the thread identifier 
 
 
 						 // Check the return value for success.
 						 // If CreateThread fails, terminate execution. 
 						 // This will automatically clean up threads and memory. 
 
-	if (hThreadR == NULL)
+	if (hThreadS == NULL)
 	{
 		ErrorHandler(TEXT("CreateThread"));
 		ExitProcess(3);
@@ -166,10 +165,10 @@ DWORD WINAPI Worker::DeleteHashbrett(LPVOID lpParam)
 	return 0;
 }
 
-DWORD WINAPI Worker::rekonfHashbrett(LPVOID lpParam)
+DWORD WINAPI Worker::searchMoveTree(LPVOID lpParam)
 {
-	HANDLE hStdoutR;
-	PMYRDATA pRData;
+	HANDLE hStdoutS;
+	PMYSDATA pSData;
 
 	TCHAR msgBuf[BUF_SIZE];
 	size_t cchStringSize;
@@ -177,37 +176,21 @@ DWORD WINAPI Worker::rekonfHashbrett(LPVOID lpParam)
 
 	// Make sure there is a console to receive output results. 
 
-	hStdoutR = GetStdHandle(STD_OUTPUT_HANDLE);
-	if (hStdoutR == INVALID_HANDLE_VALUE)
+	hStdoutS = GetStdHandle(STD_OUTPUT_HANDLE);
+	if (hStdoutS == INVALID_HANDLE_VALUE)
 		return 1;
 
 	// Cast the parameter to the correct data type.
 	// The pointer is known to be valid because 
 	// it was checked for NULL before the thread was created.
-	DeleteHash *delhash = new DeleteHash();
-	pRData = (PMYRDATA)lpParam;
-	Worker *delWorker = new Worker();
+	pSData = (PMYRDATA)lpParam;
 	// Begin Work
-	Hashbrett *aktuell, *loschenA, *loschenB;
-	aktuell=pRData->deleteone;
-	loschenA=pRData->deleteone;
-	bool white = !aktuell->getBoard()->getWhitetoMove();
-	while (aktuell->getChild(!white) != NULL)
+	Calculus *calc = new Calculus();
+	int white = pSData->searchtree->getBoard()->getWhitetoMove();
+	while (pSData->searchtree->getChild(white) != NULL)
 	{
-		if (aktuell->getFenString().compare(pRData->fenkey) == 0)
-		{
-			std::cout << "found";
-			loschenA->setChild(NULL, true);
-			loschenA->setChild(NULL, false);
-			pRData->insertTree->setChild(aktuell->getChild(white),white);
-			loschenB=aktuell->getChild(!white);
-			//delete aktuell;
-			//delWorker->startupDelete(loschenA, loschenB);
-			return 0;
-		}
-		aktuell = aktuell->getChild(!white);
+
 	}
-	delWorker->startupDelete(pRData->deleteone, NULL);
 	// Print thread ende
 	std::cout << "#Thread ende#";
 	return 0;

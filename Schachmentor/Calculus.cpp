@@ -48,3 +48,12 @@ void Calculus::deepSearch(Hashbrett * boards, Movemennt * move, int tiefe, int g
 	}
 	//std::cout << moveindex << " Zuge gefunden Depth\n";
 }
+
+void Calculus::traversSearch(Hashbrett * boards, Movemennt * move, int tiefe, int godepth, std::string zug)
+{
+	if (boards->getChild(true) != NULL)
+		traversSearch(boards->getChild(true),move,tiefe,godepth,zug);
+	if (boards->getChild(false) != NULL)
+		traversSearch(boards->getChild(false), move, tiefe, godepth, zug);
+	this->deepSearch(boards, move, tiefe, godepth, zug);
+}
