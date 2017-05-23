@@ -9,6 +9,7 @@
 #include "Constants.h"
 #include "Movemennt.h"
 #include "Calculus.h"
+#include "CooWorker.h"
 
 class Worker
 {

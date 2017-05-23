@@ -43,7 +43,7 @@ void Calculus::deepSearch(Hashbrett * boards, Movemennt * move, int tiefe, int g
 			}
 			if (godepth == tiefe)
 			{
-				std::cout << "info score cp " << hash->getBoard()->getFigurenwert() * 10 << " pv " + hash->getZugFolge() << " " << "\n";
+				//std::cout << "info score cp " << hash->getBoard()->getFigurenwert() * 10 << " pv " + hash->getZugFolge() << " " << "\n";
 				if(*whitesearch)
 				{
 					if (*wertzug < hash->getBoard()->getFigurenwert())

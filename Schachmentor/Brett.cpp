@@ -8,11 +8,6 @@ Brett::Brett()
 	{
 		Schwarz[i] = NULL;
 		Weiss[i] = NULL ;
-		if (i < 8)
-		{
-			for (int j = 0; j < 8; j++)
-				board[i][j] = 0;
-		}
 	}
 	this->zugnr = 1;
 	this->halbzug = 0;
@@ -37,14 +32,18 @@ Brett::~Brett()
 
 int Brett::getField(int i, int j)
 {
-	return board[i][j];
+	for (int i = 0; i < maxweiss; i++)
+	{
+		if (Weiss[i]->getPosx() == i && Weiss[i]->getPosy() == j)
+			return i + 1;
+	}
+	for (int i = 0; i < maxschwarz; i++)
+	{
+		if (Schwarz[i]->getPosx() == i && Schwarz[i]->getPosy() == j)
+			return -(i + 1);
+	}
+	return 0;
 }
-
-void Brett::setField(int i, int j, int wert)
-{
-	board[i][j] = wert;
-}
-
 int Brett::getKingPos(bool white, bool xwert)
 {
 	int i=1,j=1;
@@ -76,10 +75,22 @@ void Brett::setBewertung(int wert)
 
 Figur * Brett::touchFigur(int number, bool white)
 {
-		if (white)
+	if (white)
+		if (number < maxweiss)
 			return Weiss[number];
 		else
+		{
+			std::cout << "rrrrrrr" << number;
+			return Weiss[0];
+		}
+	else
+		if (number < maxschwarz)
 			return Schwarz[number];
+		else
+		{
+			std::cout << "rrrrrrr" << number;
+			return Schwarz[0];
+		}
 }
 
 bool Brett::addnewFigur(bool white)
@@ -111,7 +122,6 @@ bool Brett::deleteFigure(int boardint)
 	if (boardint < 0)
 	{
 		boardint = -(boardint + 1);
-		board[Schwarz[boardint]->getPosx()][Schwarz[boardint]->getPosy()] = 0;
 		delete Schwarz[boardint];
 		for (int i = boardint; i < (maxschwarz -1); i++)
 		{
@@ -124,7 +134,6 @@ bool Brett::deleteFigure(int boardint)
 	else if (boardint > 0)
 	{
 		boardint = boardint - 1;
-		board[Weiss[boardint]->getPosx()][Weiss[boardint]->getPosy()] = 0;
 		delete Weiss[boardint];
 		for (int i = boardint; i < (maxweiss - 1); i++)
 		{
@@ -259,24 +268,14 @@ void Brett::reset()
 			Weiss[i] = NULL;
 		}
 	}
-	for (int i = 0; i < 8; i++)
-	{
-		for (int j = 0; j < 8; j++)
-		{
-			board[i][j] = 0;
-		}
-	}
 	bewertg = 0;
 	figwert = 0;
 }
 
 void Brett::makeMove(Figur * fig, int nachx, int nachy)
 {
-	int oldnr=board[fig->getPosx()][fig->getPosy()];
-	board[fig->getPosx()][fig->getPosy()] = 0;
 	fig->setPosx(nachx);
 	fig->setPosy(nachy);
-	board[nachx][nachy] = oldnr;
 }
 
 

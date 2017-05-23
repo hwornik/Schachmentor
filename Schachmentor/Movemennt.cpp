@@ -18,7 +18,6 @@ Moving * Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 	Moving *moves,*aktuell;
 	Moving *liste=new Moving();
 	aktuell = liste;
-
 	// Felder für Pawn-----------------------------------------------------------------------------------------------------------------
 	// Weiss-------------------------------------------------------------------------------------------------------------------------
 	if (fig->getTyp() == 'P')
@@ -1603,7 +1602,7 @@ bool Movemennt::makeMove(Figur *fig, int nachx,int nachy, char promo, Hashbrett 
 	}*/
 	// (this->proveMove(movemade, fig, board))
 	{
-		if (fig->getTyp() == 'p' &&  promo!=' ' && fig->getPosy()==1)
+		if (fig->getTyp() == 'p' &&  promo != ' ' && fig->getPosy() == 1)
 		{
 			wert = conv->getWert(promo);
 			if (wert > 0 && wert < 10)
@@ -1624,57 +1623,66 @@ bool Movemennt::makeMove(Figur *fig, int nachx,int nachy, char promo, Hashbrett 
 			}
 		}
 		//Figurenwert ändern
-		z=board->getField(movemade[1][0], movemade[1][1]);
-		if (z != 0)
+		//if (movemade[1][0] > -1 && movemade[1][0] < 8 && movemade[1][1] > -1 && movemade[1][1] < 8)
 		{
-			if (z > 0)
+			z = board->getField(movemade[1][0], movemade[1][1]);
+			if (z != 0)
 			{
-				w = conv->getWert(board->touchFigur(z - 1,true)->getTyp());
-				board->setFigurenwert(board->getFigurenwert()-w);
+				if (z > 0)
+				{
+					if (board->touchFigur(z - 1, true) != NULL)
+						w = conv->getWert(board->touchFigur(z - 1, true)->getTyp());
+					else
+						w = 0;
+					board->setFigurenwert(board->getFigurenwert() - w);
+				}
+				else if (z < 0)
+				{
+					if (board->touchFigur(z - 1, true) != NULL)
+						w = conv->getWert(board->touchFigur(-(z + 1), false)->getTyp());
+					else
+						w = 0;
+					board->setFigurenwert(board->getFigurenwert() + w);
+				}
+				board->deleteFigure(z);
 			}
-			else if(z < 0)
+			board->makeMove(fig, movemade[1][0], movemade[1][1]);
+			// König sonderzüge
+			if ((toupper(fig->getTyp())) == 'K'  && movemade[0][0] == 4 && movemade[1][0] == 6)
 			{
-				w = conv->getWert(board->touchFigur(-(z + 1),false)->getTyp());
-				board->setFigurenwert(board->getFigurenwert()+w);
+				z = board->getField(movemade[0][0], 7);
+				if (z > 0)
+				{
+					figk = board->touchFigur(z - 1, true);
+					board->makeMove(figk, movemade[0][0], 5);
+				}
+				else if (z < 0)
+				{
+					figk = board->touchFigur(-(z + 1), false);
+					board->makeMove(figk, movemade[0][0], 5);
+				}
 			}
-			board->deleteFigure(z);
+			if ((toupper(fig->getTyp())) == 'K'  && movemade[0][0] == 4 && movemade[1][0] == 2)
+			{
+				z = board->getField(movemade[0][0], 0);
+				if (z > 0)
+				{
+					figk = board->touchFigur(z - 1, true);
+					board->makeMove(figk, movemade[0][0], 3);
+				}
+				else if (z < 0)
+				{
+					figk = board->touchFigur(-(z + 1), false);
+					board->makeMove(figk, movemade[0][0], 3);
+				}
+			}
+			if (!board->getWhitetoMove())
+				board->setZugNr(board->getZugNr() + 1);
+			board->setWhitetoMove(!board->getWhitetoMove());
+			return true;
 		}
-		board->makeMove(fig, movemade[1][0], movemade[1][1]);
-		// König sonderzüge
-		if ((toupper(fig->getTyp())) == 'K'  && movemade[0][0] == 4 && movemade[1][0] == 6)
-		{
-			z = board->getField(movemade[0][0],7);
-			if (z > 0)
-			{
-				figk = board->touchFigur(z - 1,true);
-				board->makeMove(figk, movemade[0][0],5);
-			}
-			else if (z<0)
-			{
-				figk = board->touchFigur(-(z + 1),false);
-				board->makeMove(figk, movemade[0][0], 5);
-			}
-		}
-		if ((toupper(fig->getTyp())) == 'K'  && movemade[0][0] == 4 && movemade[1][0] == 2)
-		{
-			z = board->getField(movemade[0][0], 0);
-			if (z > 0)
-			{
-				figk = board->touchFigur(z - 1,true);
-				board->makeMove(figk, movemade[0][0], 3);
-			}
-			else if (z<0)
-			{
-				figk = board->touchFigur(-(z + 1),false);
-				board->makeMove(figk, movemade[0][0], 3);
-			}
-		}
-		if (!board->getWhitetoMove())
-			board->setZugNr(board->getZugNr() + 1);
-		board->setWhitetoMove(!board->getWhitetoMove());
-		return true;
 	}
-	//return false;
+	return false;
 }
 
 bool Movemennt::testRochadeAngriffKS(Brett * board, Figur * fig)
@@ -1690,13 +1698,6 @@ bool Movemennt::testRochadeAngriffQS(Brett * board, Figur * fig)
 Brett * Movemennt::copyBoard(Brett * board)
 {
 	Brett *copy = new Brett();
-	for (int i = 0; i < 8; i++)
-	{
-		for (int j = 0; j < 8; j++)
-		{
-			copy->setField(i, j, board->getField(i, j));
-		}
-	}
 	for (int i = 0; i < board->getFigurmax(true); i++)
 	{
 		copy->addnewFigur(true);

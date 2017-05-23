@@ -111,7 +111,6 @@ void Convert::setBoardwithFEN(Brett *board, std::string fen)
 						board->touchFigur(wi,true)->setTyp(pos[z]);
 						board->touchFigur(wi,true)->setPosx(j);
 						board->touchFigur(wi,true)->setPosy(i);
-						board->setField(j, i, wi+1);
 						if (pos[z] == 'K')
 						{
 							board->setKingPos(true, j, i);
@@ -124,7 +123,6 @@ void Convert::setBoardwithFEN(Brett *board, std::string fen)
 						board->touchFigur(wi,false)->setTyp(pos[z]);
 						board->touchFigur(wi,false)->setPosx(j);
 						board->touchFigur(wi,false)->setPosy(i);
-						board->setField(j, i, -(wi+1));
 						if (pos[z] == 'k')
 						{
 							board->setKingPos(true, j, i);

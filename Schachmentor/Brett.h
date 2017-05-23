@@ -1,5 +1,6 @@
 #pragma once
 #include <ctype.h>
+#include <iostream>
 
 #include "Figur.h"
 
@@ -9,7 +10,6 @@ public:
 	Brett();
 	~Brett();
 	int getField(int i, int j);
-	void setField(int i, int j,int wert);
 	int getKingPos(bool white,bool xwert);
 	void setKingPos(bool white, int x, int y);
 	int getBewertung();
@@ -37,7 +37,6 @@ public:
 	void makeMove(Figur *fig, int nachx, int nachy);
 
 private:
-	int board[8][8];
 	int maxschwarz;
 	int maxweiss;
 	Figur *Schwarz[16];

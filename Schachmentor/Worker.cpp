@@ -273,7 +273,7 @@ DWORD WINAPI Worker::searchMove(LPVOID lpParam)
 	Moving *movesperfig,*loschen;
 	int moveindex = 0;
 	int tiefe = 0;
-	int godepth = 2;
+	int godepth = 3;
 	Convert *conv = new Convert();
 	aktuell = pSData->searchtree;
 	Calculus *calc = new Calculus();
@@ -285,7 +285,19 @@ DWORD WINAPI Worker::searchMove(LPVOID lpParam)
 	bestmove = &best;
 	ponder = &pond;
 	wertzug = &wert;
-
+	CooWorker *coop = new CooWorker();
+	int threads = 0;
+	bool proof = true;
+	int werte[THREADCOUNT];
+	std::string bester[THREADCOUNT], pondi[THREADCOUNT];
+	for (int i = 0; i < THREADCOUNT; i++)
+	{
+		werte[i] = 1000;
+		if (*pSData->whitesearch)
+			werte[i] = -1000;
+		bester[i] = " ";
+		pondi[i] = " ";
+	}
 	for (int i = 0; i < pSData->searchtree->getBoard()->getFigurmax(white); i++)
 	{
 		movesperfig=moves->getMovesperFigure(pSData->searchtree->getBoard(), pSData->searchtree->getBoard()->getFigur(i, white));
@@ -299,17 +311,52 @@ DWORD WINAPI Worker::searchMove(LPVOID lpParam)
 			hash->setChild(NULL, true);
 			hash->setChild(NULL, false);
 			moves->makeMove(hash->getBoard()->getFigur(i, white), movesperfig->getX(), movesperfig->getY(), ' ', hash);
-			hash->setZugFolge(hash->getZug());
-			hash->setFenString(conv->getBoardFen(hash->getBoard()));
-			aktuell->setChild(hash, white);
-			//std::cout << hash->getZug() << " ";
-			aktuell = aktuell->getChild(white);
-			calc->deepSearch(aktuell, moves, tiefe, godepth, hash->getZug(), wertzug, bestmove, ponder, pSData->whitesearch);
+		
+				hash->setZugFolge(hash->getZug());
+				hash->setFenString(conv->getBoardFen(hash->getBoard()));
+				aktuell->setChild(hash, white);
+				//std::cout << hash->getZug() << " ";
+				aktuell = aktuell->getChild(white);
+				/// Threads starten
+				//calc->deepSearch(aktuell, moves, tiefe, godepth, hash->getZug(), wertzug, bestmove, ponder, pSData->whitesearch);
+				coop->startupCalc(threads, aktuell, moves, tiefe, godepth, hash->getZug(), &werte[threads], &bester[threads], &pondi[threads], pSData->whitesearch);
+				threads++;
+				if (threads > THREADCOUNT)
+				{
+					coop->waitdownCalc();
+					threads = 0;
+				}
+				
+			///// threads ende
 			delete loschen;
 			moveindex++;
 		}
 
 		delete movesperfig;
+	}
+	coop->shutdownCalc();
+	*bestmove = bester[0];
+	wert = werte[0];
+	for (int i = 0; i < THREADCOUNT-1; i++)
+	{
+		if (white)
+		{
+			if (werte[i] < werte[i + 1])
+			{
+				*bestmove = bester[i+1];
+				*ponder = *bestmove;
+				wert = werte[i+1];
+			}
+		}
+		else
+		{
+			if (werte[i] > werte[i + 1])
+			{
+				*bestmove = bester[i+1];
+				*ponder = *bestmove;
+				wert = werte[i+1];
+			}
+		}
 	}
 	std::cout << "bestmove " << *bestmove << " ponder " << *ponder << " " << wert;
 	return 0;
