@@ -6,7 +6,7 @@
 #include "Calculus.h"
 
 //#define MAX_SEM_COUNT 10
-#define THREADCOUNT 8
+#define THREADCOUNT 12
 //HANDLE ghSemaphore;
 
 typedef struct MySCData {

@@ -326,6 +326,35 @@ DWORD WINAPI Worker::searchMove(LPVOID lpParam)
 					coop->waitdownCalc();
 					threads = 0;
 				}
+				for (int i = 0; i < THREADCOUNT ; i++)
+				{
+					if (white)
+					{
+						if (wert < werte[i])
+						{
+							*bestmove = bester[i];
+							*ponder = *bestmove;
+							wert = werte[i];
+						}
+					}
+					else
+					{
+						if (wert > werte[i])
+						{
+							*bestmove = bester[i];
+							*ponder = *bestmove;
+							wert = werte[i];
+						}
+					}
+				}
+				for (int i = 0; i < THREADCOUNT; i++)
+				{
+					werte[i] = 1000;
+					if (*pSData->whitesearch)
+						werte[i] = -1000;
+					bester[i] = " ";
+					pondi[i] = " ";
+				}
 				
 			///// threads ende
 			delete loschen;
@@ -335,29 +364,6 @@ DWORD WINAPI Worker::searchMove(LPVOID lpParam)
 		delete movesperfig;
 	}
 	coop->shutdownCalc();
-	*bestmove = bester[0];
-	wert = werte[0];
-	for (int i = 0; i < THREADCOUNT-1; i++)
-	{
-		if (white)
-		{
-			if (werte[i] < werte[i + 1])
-			{
-				*bestmove = bester[i+1];
-				*ponder = *bestmove;
-				wert = werte[i+1];
-			}
-		}
-		else
-		{
-			if (werte[i] > werte[i + 1])
-			{
-				*bestmove = bester[i+1];
-				*ponder = *bestmove;
-				wert = werte[i+1];
-			}
-		}
-	}
 	std::cout << "bestmove " << *bestmove << " ponder " << *ponder << " " << wert;
 	return 0;
 }
