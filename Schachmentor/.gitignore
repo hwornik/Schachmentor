@@ -2,3 +2,4 @@
 /Release/
 *.rc
 /resource.h
+/x64/
