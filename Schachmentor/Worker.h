@@ -17,8 +17,8 @@ public:
 	~Worker();
 	void ErrorHandler(LPTSTR lpszFunction);
 	int startupDelete(Hashbrett *deleteone, Hashbrett *deletetwo);
-	int startupSearchTree(Hashbrett *searchtree, bool *quit, bool *end, bool *endatDepth);
-	int startupSearch(Hashbrett *searchtree, bool *quit,bool *end,bool *endatDepth);
+	int startupSearchTree(Hashbrett *searchtree, bool *quit, bool *end, bool *endatDepth, bool *whitesearch);
+	int startupSearch(Hashbrett *searchtree, bool *quit,bool *end,bool *endatDepth, bool *whitesearch);
 private:
 	static DWORD WINAPI DeleteHashbrett(LPVOID lpParam);
 	DWORD   dwThreadIdD;

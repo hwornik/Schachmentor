@@ -1226,7 +1226,7 @@ bool Movemennt::proveMove(int ** move, Figur * fig, Brett * board)
 				{
 					if (move[1][0] == (fig->getPosx() - i) && (fig->getPosy() + i) == move[1][1] && board->getField(fig->getPosx() - i, fig->getPosy() + i) == 0)
 						return true;
-					if (board->getField(fig->getPosx() - i, fig->getPosy() + i) < 0)
+					if (isupper(fig->getTyp()) && board->getField(fig->getPosx() - i, fig->getPosy() + i) < 0)
 					{
 						notend[2] = false;
 						if (move[1][0] == (fig->getPosx() - i) && (fig->getPosy() + i) == move[1][1])
@@ -1247,7 +1247,7 @@ bool Movemennt::proveMove(int ** move, Figur * fig, Brett * board)
 				{
 					if (move[1][0] == (fig->getPosx() - i) && (fig->getPosy() - i) == move[1][1] && board->getField(fig->getPosx() - i, fig->getPosy() - i) == 0)
 						return true;
-					if (board->getField(fig->getPosx() - i, fig->getPosy() - i) < 0)
+					if (isupper(fig->getTyp()) && board->getField(fig->getPosx() - i, fig->getPosy() - i) < 0)
 					{
 						notend[3] = false;
 						if (move[1][0] == (fig->getPosx() - i) && (fig->getPosy() - i) == move[1][1])
@@ -1525,6 +1525,30 @@ bool Movemennt::proveMove(int ** move, Figur * fig, Brett * board)
 	return nullptr;
 }
 
+bool Movemennt::proveMove(Hashbrett * hash, std::string move)
+{
+	int **movemade;
+	char promo = ' ';
+	if (move.length() > 4)
+	{
+		promo = move.at(4);
+	}
+	movemade = conv->getMoveIntfromChar(move);
+	Figur * fig;
+	int z = hash->getBoard()->getField(movemade[0][0], movemade[0][1]);
+	if (z == 0)
+		return false;
+	if (z > 0)
+	{
+		fig = hash->getBoard()->touchFigur(z - 1, true);
+	}
+	else
+	{
+		fig = hash->getBoard()->touchFigur(-(z + 1), false);
+	}
+	return proveMove(movemade, fig, hash->getBoard());
+}
+
 bool Movemennt::makeMove(Hashbrett * hash, std::string move)
 {
 	int **movemade;
@@ -1540,11 +1564,11 @@ bool Movemennt::makeMove(Hashbrett * hash, std::string move)
 	return false;
 	if (z > 0)
 	{
-	fig = hash->getBoard()->touchFigur(z - 1,true);
+		fig = hash->getBoard()->touchFigur(z - 1,true);
 	}
 	else
 	{
-	fig = hash->getBoard()->touchFigur(-(z + 1),false);
+		fig = hash->getBoard()->touchFigur(-(z + 1),false);
 	}
 	this->makeMove(fig,movemade[1][0], movemade[1][1],promo, hash);
 	return true;
@@ -1552,6 +1576,7 @@ bool Movemennt::makeMove(Hashbrett * hash, std::string move)
 bool Movemennt::makeMove(Figur *fig, int nachx,int nachy, char promo, Hashbrett * hash)
 {
 	Brett * board = hash->getBoard();
+	Figur *figk;
 	hash->setZug(conv->getStringfromInt(fig->getPosx(), fig->getPosy(), nachx, nachy,promo));
 	int wert;
 	bool trade = false, rochKS = false, rochQS = false;
@@ -1576,7 +1601,7 @@ bool Movemennt::makeMove(Figur *fig, int nachx,int nachy, char promo, Hashbrett 
 	{
 		fig = board->touchFigur(-(z + 1),false);
 	}*/
-	if (this->proveMove(movemade, fig, board))
+	// (this->proveMove(movemade, fig, board))
 	{
 		if (fig->getTyp() == 'p' &&  promo!=' ' && fig->getPosy()==1)
 		{
@@ -1598,52 +1623,50 @@ bool Movemennt::makeMove(Figur *fig, int nachx,int nachy, char promo, Hashbrett 
 				fig->setTyp(promo);
 			}
 		}
-		int ze=board->getField(movemade[1][0], movemade[1][1]);
-		if (ze != 0)
+		//Figurenwert ändern
+		z=board->getField(movemade[1][0], movemade[1][1]);
+		if (z != 0)
 		{
-			if (ze > 0)
+			if (z > 0)
 			{
-				w = conv->getWert(board->touchFigur(ze - 1,true)->getTyp());
+				w = conv->getWert(board->touchFigur(z - 1,true)->getTyp());
 				board->setFigurenwert(board->getFigurenwert()-w);
 			}
-			else
+			else if(z < 0)
 			{
-				w = conv->getWert(board->touchFigur(-(ze + 1),false)->getTyp());
+				w = conv->getWert(board->touchFigur(-(z + 1),false)->getTyp());
 				board->setFigurenwert(board->getFigurenwert()+w);
 			}
-			board->deleteFigure(ze);
+			board->deleteFigure(z);
 		}
 		board->makeMove(fig, movemade[1][0], movemade[1][1]);
+		// König sonderzüge
 		if ((toupper(fig->getTyp())) == 'K'  && movemade[0][0] == 4 && movemade[1][0] == 6)
 		{
 			z = board->getField(movemade[0][0],7);
-			if (z == 0)
-				return false;
 			if (z > 0)
 			{
-				fig = board->touchFigur(z - 1,true);
-				board->makeMove(fig, movemade[0][0],5);
+				figk = board->touchFigur(z - 1,true);
+				board->makeMove(figk, movemade[0][0],5);
 			}
-			else
+			else if (z<0)
 			{
-				fig = board->touchFigur(-(z + 1),false);
-				board->makeMove(fig, movemade[0][0], 5);
+				figk = board->touchFigur(-(z + 1),false);
+				board->makeMove(figk, movemade[0][0], 5);
 			}
 		}
 		if ((toupper(fig->getTyp())) == 'K'  && movemade[0][0] == 4 && movemade[1][0] == 2)
 		{
 			z = board->getField(movemade[0][0], 0);
-			if (z == 0)
-				return false;
 			if (z > 0)
 			{
-				fig = board->touchFigur(z - 1,true);
-				board->makeMove(fig, movemade[0][0], 3);
+				figk = board->touchFigur(z - 1,true);
+				board->makeMove(figk, movemade[0][0], 3);
 			}
-			else
+			else if (z<0)
 			{
-				fig = board->touchFigur(-(z + 1),false);
-				board->makeMove(fig, movemade[0][0], 3);
+				figk = board->touchFigur(-(z + 1),false);
+				board->makeMove(figk, movemade[0][0], 3);
 			}
 		}
 		if (!board->getWhitetoMove())
@@ -1651,7 +1674,7 @@ bool Movemennt::makeMove(Figur *fig, int nachx,int nachy, char promo, Hashbrett 
 		board->setWhitetoMove(!board->getWhitetoMove());
 		return true;
 	}
-	return false;
+	//return false;
 }
 
 bool Movemennt::testRochadeAngriffKS(Brett * board, Figur * fig)
@@ -1706,22 +1729,27 @@ Brett * Movemennt::copyBoard(Brett * board)
 void Movemennt::printHash(Hashbrett * hbrett)
 {
 	Hashbrett *hb;
+	std::cout << "-------\n";
 	std::cout << hbrett->getZug() << " Mom\n";
 	hb = hbrett->getChild(true);
 	if (hb)
 	{
-		std::cout << hb->getZug() << " white\n";
+		while (hb)
+		{
+			std::cout << hb->getZug() << " white\n";
+			hb = hb->getChild(false);
+		}
 	}
 	hb = hbrett->getChild(false);
 	if (hb)
 	{
 		while (hb)
 		{
-			std::cout << hb->getZug() << " ";
+			std::cout << hb->getZug() << " black\n";
 			hb = hb->getChild(false);
 		}
 	}
-	
+	std::cout << "\n--------------------\n";
 }
 
 Hashbrett * Movemennt::rekonfHash(Hashbrett * oldhash, std::string fenstring)
@@ -1729,17 +1757,20 @@ Hashbrett * Movemennt::rekonfHash(Hashbrett * oldhash, std::string fenstring)
 	// Begin Work
 	Hashbrett *aktuell, *loschenA, *loschenB,*tree;
 	aktuell = oldhash;
+	int runde = 0;
 	bool white = !aktuell->getBoard()->getWhitetoMove();
 	while (aktuell->getChild(!white) != NULL)
 	{
+		std::cout << fenstring << " " << aktuell->getFenString() << aktuell->getZug() << "\n";
+		runde++;
 		if (aktuell->getFenString().compare(fenstring) == 0)
 		{
-			std::cout << "found";
+			std::cout << "found in" << runde <<  "\n";
 			loschenB = aktuell->getChild(!white);
+			aktuell->setChild(NULL, !white);
 			delhash->delHash(loschenB);
 			tree = aktuell->getChild(white);
 			aktuell->setChild(NULL, white);
-			aktuell->setChild(NULL, !white);
 			delete aktuell;
 			return tree;
 		}
@@ -1748,6 +1779,7 @@ Hashbrett * Movemennt::rekonfHash(Hashbrett * oldhash, std::string fenstring)
 		loschenA->setChild(NULL, !white);
 		delhash->delHash(loschenA);
 	}
+	std::cout << "not found in" << runde << "\n";
 	delhash->delHash(aktuell);
 	return NULL;
 }

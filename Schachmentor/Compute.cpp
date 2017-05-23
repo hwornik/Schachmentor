@@ -227,9 +227,12 @@ bool Compute::uci(std::string command)
 		if (word.compare("makemove") == 0)
 		{
 			pch = strtok(NULL, " ");
-			word = pch;
-			this->game->setMoveMadebyGUI(word);
-			this->game->startAction(MAKEMOVE);
+			if (pch != NULL)
+			{
+				word = pch;
+				this->game->setMoveMadebyGUI(word);
+				this->game->startAction(MAKEMOVE);
+			}
 		}
 		//---------------------------------------------------------
 		// go Kommands:

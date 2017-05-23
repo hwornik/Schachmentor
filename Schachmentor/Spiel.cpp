@@ -274,6 +274,7 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 	Movemennt *moves = new Movemennt();
 	Hashbrett *oldhash;
 	bool timeout = false;
+	bool white;
 	// Print the parameter values using thread-safe functions.
 	StringCchPrintf(msgBuf, BUF_SIZE, TEXT("readyok\n"));
 	//	pData->val1, pData->val2);
@@ -287,6 +288,7 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 			if(pData->gamehash!=NULL)
 				if(pData->gamehash->getBoard()!=NULL)
 					conv->displayBoard(pData->gamehash->getBoard());
+			moves->printHash(pData->gamehash);
 			*pData->input = WAITING;
 			*pData->ready = true;
 		}
@@ -332,25 +334,53 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 		{
 			Hashbrett *loschen;
 			loschen = pData->gamehash;
-			pData->gamehash=new Hashbrett();
+			pData->gamehash = new Hashbrett();
 			pData->gamehash->setBoard(moves->copyBoard(loschen->getBoard()));
-			moves->makeMove(pData->gamehash, *pData->movemade);
-			bool rekonf = true, stops = false;
-			pData->gamehash->setFenString(conv->getBoardFen(pData->gamehash->getBoard()));
-			pData->gamehash->setChild(moves->rekonfHash(loschen, pData->gamehash->getFenString()),pData->gamehash->getBoard()->getWhitetoMove());
-			moves->printHash(pData->gamehash);
+			if (moves->proveMove(pData->gamehash, *pData->movemade))
+			{
+				moves->makeMove(pData->gamehash, *pData->movemade);
+				int white = pData->gamehash->getBoard()->getWhitetoMove();
+				bool rekonf = true, stops = false;
+				pData->gamehash->setFenString(conv->getBoardFen(pData->gamehash->getBoard()));
+				Hashbrett *newgame = moves->rekonfHash(loschen, pData->gamehash->getFenString());
+				if (newgame != NULL)
+				{
+					pData->gamehash->setChild(newgame, white);
+					rekonfigureHash = true;
+				}
+				else
+				{
+					rekonfigureHash = false;
+				}
+			}
+			else
+			{
+				pData->gamehash = loschen;
+			}
 			*pData->input = WAITING;
 			*pData->ready = true;
 		}
 		if (*pData->input == STARTCOMPUTING)
 		{
-			/*Hashbrett *one, *two;
-			one = pData->gamehash->getChild(true);
-			two = pData->gamehash->getChild(false);
-			pData->gamehash->setChild(NULL, false);
-			pData->gamehash->setChild(NULL,true);
-			work->startupDelete(one, two);*/
-			work->startupSearch(pData->gamehash, pData->quit, pData->endsearch, &timeout);
+			moves->printHash(pData->gamehash);
+			if (rekonfigureHash)
+			{
+				rekonfigureHash = false;
+				white = pData->gamehash->getBoard()->getWhitetoMove();
+				work->startupSearchTree(pData->gamehash, pData->quit, pData->endsearch, &timeout,&white);
+				moves->printHash(pData->gamehash);
+			}
+			else
+			{
+				Hashbrett *one, *two;
+				one = pData->gamehash->getChild(true);
+				two = pData->gamehash->getChild(false);
+				pData->gamehash->setChild(NULL, false);
+				pData->gamehash->setChild(NULL,true);
+				work->startupDelete(one, two);
+				white = pData->gamehash->getBoard()->getWhitetoMove();
+				work->startupSearch(pData->gamehash, pData->quit, pData->endsearch, &timeout,&white);
+			}
 			*pData->input = WAITING;
 			*pData->ready = true;
 		}

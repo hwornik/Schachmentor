@@ -216,7 +216,7 @@ void Convert::setBoardwithFEN(Brett *board, std::string fen)
 
 std::string Convert::getBoardFen(Brett * board)
 {
-	char fenstring[85];
+	char fenstring[100];
 	int z = 0;
 	int leer;
 	for (int i = 7; i >= 0; i--)
@@ -236,16 +236,16 @@ std::string Convert::getBoardFen(Brett * board)
 					leer = 0;
 					z++;
 				}
-				if (board->getField(j, i) > 0)
+				if (board->getField(j, i) > 0 && board->getField(j, i) < board->getFigurmax(true))
 				{
-					fenstring[z] = board->touchFigur(board->getField(j, i)-1,true)->getTyp();
+					fenstring[z] = board->touchFigur(board->getField(j, i) - 1, true)->getTyp();
+					z++;
 				}
-				else
+				else if (board->getField(j, i) < 0 && board->getField(j, i) > -board->getFigurmax(false))
 				{
-					fenstring[z] = board->touchFigur(-(board->getField(j, i)+1),false)->getTyp();
+					fenstring[z] = board->touchFigur(-(board->getField(j, i) + 1), false)->getTyp();
+					z++;
 				}
-
-				z++;
 			}
 		}
 		if (leer > 0)
@@ -313,12 +313,12 @@ void Convert::displayBoard(Brett *board)
 				if (x > 0)
 				{
 					x = x - 1;
-					std::cout << board->touchFigur(x,true)->getTyp();
+					std::cout << board->touchFigur(x, true)->getTyp();
 				}
 				else
 				{
 					x = -(x + 1);
-					std::cout << board->touchFigur(x,false)->getTyp();
+					std::cout << board->touchFigur(x, false)->getTyp();
 				}
 			}
 			else

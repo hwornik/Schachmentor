@@ -72,6 +72,9 @@
     <ClInclude Include="Calculus.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="CooWorker.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -117,6 +120,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Calculus.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="CooWorker.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

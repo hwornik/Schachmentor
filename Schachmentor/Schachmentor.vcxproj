@@ -145,6 +145,7 @@
     <ClInclude Include="Comunicate.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Convert.h" />
+    <ClInclude Include="CooWorker.h" />
     <ClInclude Include="DeleteHash.h" />
     <ClInclude Include="Figur.h" />
     <ClInclude Include="Hashbrett.h" />
@@ -164,6 +165,7 @@
     <ClCompile Include="Compute.cpp" />
     <ClCompile Include="Comunicate.cpp" />
     <ClCompile Include="Convert.cpp" />
+    <ClCompile Include="CooWorker.cpp" />
     <ClCompile Include="DeleteHash.cpp" />
     <ClCompile Include="Figur.cpp" />
     <ClCompile Include="Hashbrett.cpp" />

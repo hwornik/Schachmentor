@@ -88,7 +88,7 @@ int Worker::startupDelete(Hashbrett *deleteone, Hashbrett *deletetwo)
 	return 0;
 }
 
-int Worker::startupSearchTree(Hashbrett *searchtree, bool *quit, bool *end, bool *endatDepth)
+int Worker::startupSearchTree(Hashbrett *searchtree, bool *quit, bool *end, bool *endatDepth, bool *whitesearch)
 {
 	// Allocate memory for thread data.
 	//*hasharray = new Brett[hashsize];
@@ -106,7 +106,7 @@ int Worker::startupSearchTree(Hashbrett *searchtree, bool *quit, bool *end, bool
 	pSData->quitsearch = quit;
 	pSData->stopsearch = end;
 	pSData->endatDepthakt = endatDepth;
-
+	pSData->whitesearch = whitesearch;
 	// Generate unique data for each thread to work with.
 	// Create the thread to begin execution on its own.
 
@@ -183,20 +183,31 @@ DWORD WINAPI Worker::searchMoveTree(LPVOID lpParam)
 	// Cast the parameter to the correct data type.
 	// The pointer is known to be valid because 
 	// it was checked for NULL before the thread was created.
-	pSData = (PMYRDATA)lpParam;
+	pSData = (PMYSDATA)lpParam;
 	// Begin Work
 	Calculus *calc = new Calculus();
+	Movemennt *move = new Movemennt();
 	int white = pSData->searchtree->getBoard()->getWhitetoMove();
-	while (pSData->searchtree->getChild(white) != NULL)
+	//std::cout << "#Thread start#";
+	int *wertzug,wert=1000;
+	if (*pSData->whitesearch)
+		wert = -1000;
+	std::string *bestmove, *ponder;
+	std::string best, pond;
+	bestmove = &best;
+	ponder = &pond;
+	wertzug = &wert;
+	//while (pSData->searchtree->getChild(white) != NULL)
 	{
-
+		calc->traversSearch(pSData->searchtree->getChild(white), move, 0, 0, "",wertzug, bestmove, ponder, pSData->whitesearch);
 	}
-	// Print thread ende
-	std::cout << "#Thread ende#";
+	// Print thread ende *move
+	//std::cout << "#Thread ende#";
+	std::cout << "bestmove " << *bestmove << " ponder " << *ponder << " " << wert;
 	return 0;
 }
 
-int Worker::startupSearch(Hashbrett *searchtree, bool *quit, bool *end, bool *endatDepth)
+int Worker::startupSearch(Hashbrett *searchtree, bool *quit, bool *end, bool *endatDepth, bool *whitesearch)
 {
 	// Allocate memory for thread data.
 	//*hasharray = new Brett[hashsize];
@@ -214,7 +225,7 @@ int Worker::startupSearch(Hashbrett *searchtree, bool *quit, bool *end, bool *en
 	pSData->quitsearch = quit;
 	pSData->stopsearch = end;
 	pSData->endatDepthakt = endatDepth;
-
+	pSData->whitesearch = whitesearch;
 	// Generate unique data for each thread to work with.
 	// Create the thread to begin execution on its own.
 
@@ -262,10 +273,19 @@ DWORD WINAPI Worker::searchMove(LPVOID lpParam)
 	Moving *movesperfig,*loschen;
 	int moveindex = 0;
 	int tiefe = 0;
-	int godepth = 3;
+	int godepth = 2;
 	Convert *conv = new Convert();
 	aktuell = pSData->searchtree;
 	Calculus *calc = new Calculus();
+	int *wertzug , wert=1000;
+	if (*pSData->whitesearch)
+		wert = -1000;
+	std::string *bestmove, *ponder;
+	std::string pond,best;
+	bestmove = &best;
+	ponder = &pond;
+	wertzug = &wert;
+
 	for (int i = 0; i < pSData->searchtree->getBoard()->getFigurmax(white); i++)
 	{
 		movesperfig=moves->getMovesperFigure(pSData->searchtree->getBoard(), pSData->searchtree->getBoard()->getFigur(i, white));
@@ -284,14 +304,13 @@ DWORD WINAPI Worker::searchMove(LPVOID lpParam)
 			aktuell->setChild(hash, white);
 			//std::cout << hash->getZug() << " ";
 			aktuell = aktuell->getChild(white);
-			calc->deepSearch(aktuell, moves, tiefe, godepth, hash->getZug());
+			calc->deepSearch(aktuell, moves, tiefe, godepth, hash->getZug(), wertzug, bestmove, ponder, pSData->whitesearch);
 			delete loschen;
 			moveindex++;
-			//std::cout << "---------------------------------------------------------\n";
 		}
+
 		delete movesperfig;
 	}
-
-	//std::cout << moveindex << " Zuge gefunden\n";
+	std::cout << "bestmove " << *bestmove << " ponder " << *ponder << " " << wert;
 	return 0;
 }

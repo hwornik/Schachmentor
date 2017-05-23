@@ -16,6 +16,7 @@ public:
 	~Movemennt();
 	Moving * getMovesperFigure(Brett *board, Figur *fig);
 	bool proveMove(int** move,Figur *fig, Brett *board);
+	bool proveMove(Hashbrett * hash, std::string move);
 	bool makeMove(Hashbrett * hash, std::string move);
 	bool makeMove(Figur *fig, int nachx, int nachy,char promo, Hashbrett * hash);
 	bool testRochadeAngriffKS(Brett *board, Figur *fig);

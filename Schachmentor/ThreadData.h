@@ -31,4 +31,5 @@ typedef struct MySData {
 	bool *endatDepthakt;
 	bool *stopsearch;
 	bool *quitsearch;
+	bool *whitesearch;
 } MYSDATA, *PMYSDATA;
