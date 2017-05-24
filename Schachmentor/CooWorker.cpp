@@ -72,23 +72,25 @@ bool CooWorker::startupCalc(int ThreadNr, Hashbrett *boards, Movemennt * move, i
 			return 1;
 		}
 	}
-
 	return 0;
 }
 int CooWorker::waitdownCalc()
 {
 	WaitForMultipleObjects(THREADCOUNT, aThread, TRUE, INFINITE);
-	return 0;
+	return -1;
 }
-int CooWorker::shutdownCalc()
+
+
+int CooWorker::shutdownCalc(int maxthread)
 {
 	// Wait for all threads to terminate
 
 	WaitForMultipleObjects(THREADCOUNT, aThread, TRUE, INFINITE);
 
 	// Close thread and semaphore handles
-
-	for (int i = 0; i < THREADCOUNT; i++)
+	if (maxthread > THREADCOUNT)
+		maxthread = THREADCOUNT;
+	for (int i = 0; i < maxthread; i++)
 		CloseHandle(aThread[i]);
 
 	//CloseHandle(ghSemaphore);

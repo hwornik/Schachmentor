@@ -49,3 +49,5 @@ static const char BRETTFELDER[8][8] = { { '#',' ','#',' ','#',' ','#',' ' },
 //Anweisung für Roched in zugarray auf pos 3
 #define ROCHADE 100
 
+//deppsearch const
+#define THREADCOUNT 8

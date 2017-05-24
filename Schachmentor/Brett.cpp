@@ -32,15 +32,15 @@ Brett::~Brett()
 
 int Brett::getField(int i, int j)
 {
-	for (int i = 0; i < maxweiss; i++)
+	for (int ix = 0; ix < maxweiss; ix++)
 	{
-		if (Weiss[i]->getPosx() == i && Weiss[i]->getPosy() == j)
-			return i + 1;
+		if (Weiss[ix]->getPosx() == i && Weiss[ix]->getPosy() == j)
+			return ix + 1;
 	}
-	for (int i = 0; i < maxschwarz; i++)
+	for (int ix = 0; ix < maxschwarz; ix++)
 	{
-		if (Schwarz[i]->getPosx() == i && Schwarz[i]->getPosy() == j)
-			return -(i + 1);
+		if (Schwarz[ix]->getPosx() == i && Schwarz[ix]->getPosy() == j)
+			return -(ix + 1);
 	}
 	return 0;
 }

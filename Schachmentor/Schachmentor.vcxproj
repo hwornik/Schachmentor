@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClInclude Include="Brett.h" />
     <ClInclude Include="Calculus.h" />
+    <ClInclude Include="CalculusTree.h" />
     <ClInclude Include="Compute.h" />
     <ClInclude Include="Comunicate.h" />
     <ClInclude Include="Constants.h" />
@@ -162,6 +163,7 @@
   <ItemGroup>
     <ClCompile Include="Brett.cpp" />
     <ClCompile Include="Calculus.cpp" />
+    <ClCompile Include="CalculusTree.cpp" />
     <ClCompile Include="Compute.cpp" />
     <ClCompile Include="Comunicate.cpp" />
     <ClCompile Include="Convert.cpp" />

@@ -2,11 +2,10 @@
 #include <windows.h>
 #include <stdio.h>
 
-
+#include "Constants.h"
 #include "Calculus.h"
 
 //#define MAX_SEM_COUNT 10
-#define THREADCOUNT 12
 //HANDLE ghSemaphore;
 
 typedef struct MySCData {
@@ -27,7 +26,7 @@ public:
 	CooWorker();
 	~CooWorker();
 	bool startupCalc(int ThreadNr, Hashbrett *boards, Movemennt * move, int tiefe, int godepth, std::string zug, int *wertzug, std::string *bestmove, std::string *ponder, bool *whitesearch);
-	int shutdownCalc();
+	int shutdownCalc(int maxthread);
 	int waitdownCalc();
 private:
 	static DWORD WINAPI Calc(LPVOID);
