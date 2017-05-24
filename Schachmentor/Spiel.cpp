@@ -362,12 +362,12 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 		}
 		if (*pData->input == STARTCOMPUTING)
 		{
-			moves->printHash(pData->gamehash);
+			//moves->printHash(pData->gamehash);
 			if (rekonfigureHash)
 			{
 				rekonfigureHash = false;
 				white = pData->gamehash->getBoard()->getWhitetoMove();
-				work->startupSearchTree(pData->gamehash, pData->quit, pData->endsearch, &timeout,&white);
+				work->startupSearch(pData->gamehash, pData->quit, pData->endsearch, &timeout,&white,true);
 				moves->printHash(pData->gamehash);
 			}
 			else
@@ -379,7 +379,7 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 				pData->gamehash->setChild(NULL,true);
 				work->startupDelete(one, two);
 				white = pData->gamehash->getBoard()->getWhitetoMove();
-				work->startupSearch(pData->gamehash, pData->quit, pData->endsearch, &timeout,&white);
+				work->startupSearch(pData->gamehash, pData->quit, pData->endsearch, &timeout,&white,false);
 			}
 			*pData->input = WAITING;
 			*pData->ready = true;

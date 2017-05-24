@@ -13,7 +13,7 @@ CooWorker::~CooWorker()
 
 
 
-bool CooWorker::startupCalc(int ThreadNr, Hashbrett *boards, Movemennt * move, int tiefe, int godepth, std::string zug, int *wertzug, std::string *bestmove, std::string *ponder, bool *whitesearch)
+bool CooWorker::startupCalc(bool tree, int ThreadNr, Hashbrett *boards, Movemennt * move, int tiefe, int godepth, std::string zug, int *wertzug, std::string *bestmove, std::string *ponder, bool *whitesearch)
 {
 	// Allocate memory for thread data.
 	//*hasharray = new Brett[hashsize];
@@ -55,21 +55,42 @@ bool CooWorker::startupCalc(int ThreadNr, Hashbrett *boards, Movemennt * move, i
 	}*/
 
 	// Create worker threads
-
-	if (ThreadNr < THREADCOUNT)
+	if (tree)
 	{
-		aThread[ThreadNr] = CreateThread(
-			NULL,       // default security attributes
-			0,          // default stack size
-			(LPTHREAD_START_ROUTINE)Calc,
-			pSCData,       // no thread function arguments
-			0,          // default creation flags
-			&ThreadID); // receive thread identifier
-
-		if (aThread[ThreadNr] == NULL)
+		if (ThreadNr < THREADCOUNT)
 		{
-			printf("CreateThread error: %d\n", GetLastError());
-			return 1;
+			aThread[ThreadNr] = CreateThread(
+				NULL,       // default security attributes
+				0,          // default stack size
+				(LPTHREAD_START_ROUTINE)CalcTree,
+				pSCData,       // no thread function arguments
+				0,          // default creation flags
+				&ThreadID); // receive thread identifier
+
+			if (aThread[ThreadNr] == NULL)
+			{
+				printf("CreateThread error: %d\n", GetLastError());
+				return 1;
+			}
+		}
+	}
+	else
+	{
+		if (ThreadNr < THREADCOUNT)
+		{
+			aThread[ThreadNr] = CreateThread(
+				NULL,       // default security attributes
+				0,          // default stack size
+				(LPTHREAD_START_ROUTINE)Calc,
+				pSCData,       // no thread function arguments
+				0,          // default creation flags
+				&ThreadID); // receive thread identifier
+
+			if (aThread[ThreadNr] == NULL)
+			{
+				printf("CreateThread error: %d\n", GetLastError());
+				return 1;
+			}
 		}
 	}
 	return 0;
@@ -150,5 +171,23 @@ DWORD WINAPI CooWorker::Calc(LPVOID lpParam)
 		}
 	}*/
 	// kritischer Bereich ende
+	return TRUE;
+}
+
+DWORD WINAPI CooWorker::CalcTree(LPVOID lpParam)
+{
+	HANDLE hStdoutS;
+	PMYSCDATA pSCData;
+
+	TCHAR msgBuf[BUF_SIZE];
+	size_t cchStringSize;
+	DWORD dwChars;
+
+	pSCData = (PMYSCDATA)lpParam;
+
+	DWORD dwWaitResult;
+	BOOL bContinue = TRUE;
+	Calculus *calc = new Calculus();
+	calc->traversSearch(pSCData->boards, pSCData->move, pSCData->tiefe, pSCData->godepth, pSCData->zug, pSCData->wertzug, pSCData->bestmove, pSCData->ponder, pSCData->whitesearch);
 	return TRUE;
 }

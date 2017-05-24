@@ -46,7 +46,7 @@ void Calculus::deepSearch(Hashbrett * boards, Movemennt * move, int tiefe, int g
 				//std::cout << "info score cp " << hash->getBoard()->getFigurenwert() * 10 << " pv " + hash->getZugFolge() << " " << "\n";
 				if(*whitesearch)
 				{
-					if (*wertzug < hash->getBoard()->getFigurenwert())
+					if (*wertzug <= hash->getBoard()->getFigurenwert())
 					{
 						*wertzug = hash->getBoard()->getFigurenwert();
 						*ponder = *bestmove;
@@ -55,7 +55,7 @@ void Calculus::deepSearch(Hashbrett * boards, Movemennt * move, int tiefe, int g
 				}
 				else
 				{
-					if (*wertzug > hash->getBoard()->getFigurenwert())
+					if (*wertzug >= hash->getBoard()->getFigurenwert())
 					{
 						*wertzug = hash->getBoard()->getFigurenwert();
 						*ponder = *bestmove;
@@ -74,7 +74,7 @@ void Calculus::deepSearch(Hashbrett * boards, Movemennt * move, int tiefe, int g
 
 void Calculus::traversSearch(Hashbrett * boards, Movemennt * move, int tiefe, int godepth, std::string zug, int *wertzug, std::string *bestmove, std::string *ponder, bool *whitesearch)
 {
-	godepth = 1;
+	godepth = 2;
 	if (boards->getChild(true) != NULL)
 		traversSearch(boards->getChild(true),move,tiefe,godepth,zug, wertzug, bestmove, ponder, whitesearch);
 	if (boards->getChild(false) != NULL)
@@ -82,7 +82,7 @@ void Calculus::traversSearch(Hashbrett * boards, Movemennt * move, int tiefe, in
 	if (boards->getChild(boards->getBoard()->getWhitetoMove()) == NULL)
 	{
 		tiefe = 0;
-		boards->setZugFolge(boards->getZugFolge().substr(5, boards->getZugFolge().length()));
+		//boards->setZugFolge(boards->getZugFolge().substr(5, boards->getZugFolge().length()));
 		this->deepSearch(boards, move, tiefe, godepth, zug, wertzug, bestmove, ponder, whitesearch);
 	}
 }

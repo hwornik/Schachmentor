@@ -15,7 +15,6 @@ Brett::Brett()
 	this->figwert = 0;
 	maxweiss = 0;
 	maxschwarz = 0;
-	kingpos[2][2] = {};
 }
 
 
@@ -46,21 +45,68 @@ int Brett::getField(int i, int j)
 }
 int Brett::getKingPos(bool white, bool xwert)
 {
-	int i=1,j=1;
 	if (white)
-		i = 0;
-	if (xwert)
-		j = 0;
-	return this->kingpos[i][j];
+	{
+		for (int i = 0; i < maxweiss; i++)
+		{
+			if (Weiss[i]->getTyp() == 'K')
+			{
+				if (xwert)
+				{
+					return Weiss[i]->getPosx();
+				}
+				else
+				{
+					return Weiss[i]->getPosy();
+				}
+			}
+		}
+	}
+	else
+	{
+		for (int i = 0; i < maxschwarz; i++)
+		{
+			if (Schwarz[i]->getTyp() == 'k')
+			{
+				if (xwert)
+				{
+					return Schwarz[i]->getPosx();
+				}
+				else
+				{
+					return Schwarz[i]->getPosy();
+				}
+			}
+		}
+	}
+
+
 }
 
 void Brett::setKingPos(bool white, int x, int y)
 {
-	int i = 1;
 	if (white)
-		i = 0;
-	this->kingpos[i][0] = x;
-	this->kingpos[i][1] = y;
+	{
+		for (int i = 0; i < maxweiss; i++)
+		{
+			if (Weiss[i]->getTyp() == 'K')
+			{
+					Weiss[i]->setPosx(x);
+					Weiss[i]->setPosy(y);
+			}
+		}
+	}
+	else
+	{
+		for (int i = 0; i < maxschwarz; i++)
+		{
+			if (Schwarz[i]->getTyp() == 'k')
+			{
+				Schwarz[i]->setPosx(x);
+				Schwarz[i]->setPosy(y);
+			}
+		}
+	}
 }
 
 int Brett::getBewertung()

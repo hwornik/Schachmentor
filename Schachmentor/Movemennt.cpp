@@ -1738,7 +1738,7 @@ void Movemennt::printHash(Hashbrett * hbrett)
 		while (hb)
 		{
 			std::cout << hb->getZug() << " white\n";
-			hb = hb->getChild(false);
+			hb = hb->getChild(true);
 		}
 	}
 	hb = hbrett->getChild(false);

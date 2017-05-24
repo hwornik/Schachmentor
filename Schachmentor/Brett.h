@@ -41,7 +41,6 @@ private:
 	int maxweiss;
 	Figur *Schwarz[16];
 	Figur *Weiss[16];
-	int kingpos[2][2];
 	int bewertg;
 	int figwert;
 	bool whitetoMove;
