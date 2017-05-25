@@ -189,7 +189,7 @@ DWORD WINAPI Worker::searchMove(LPVOID lpParam)
 	Moving *movesperfig,*loschen;
 	int moveindex = 0;
 	int tiefe = 0;
-	int godepth = 4;
+	int godepth = 3;
 	Convert *conv = new Convert();
 	aktuell = pSData->searchtree;
 	Calculus *calc = new Calculus();

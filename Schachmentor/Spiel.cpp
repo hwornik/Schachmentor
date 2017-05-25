@@ -343,19 +343,23 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 				bool rekonf = true, stops = false;
 				pData->gamehash->setFenString(conv->getBoardFen(pData->gamehash->getBoard()));
 				Hashbrett *newgame = moves->rekonfHash(loschen, pData->gamehash->getFenString());
-				if (newgame != NULL)
+				//Sleep(500);
+				if (newgame)
 				{
+					std::cout << "tree";
 					pData->gamehash->setChild(newgame, white);
 					rekonfigureHash = true;
 				}
 				else
 				{
+					std::cout << "nottree";
 					rekonfigureHash = false;
 				}
 			}
 			else
 			{
 				pData->gamehash = loschen;
+				loschen = NULL;
 			}
 			*pData->input = WAITING;
 			*pData->ready = true;

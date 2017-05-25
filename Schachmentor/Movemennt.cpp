@@ -1762,18 +1762,18 @@ Hashbrett * Movemennt::rekonfHash(Hashbrett * oldhash, std::string fenstring)
 	bool white = !aktuell->getBoard()->getWhitetoMove();
 	while (aktuell->getChild(!white) != NULL)
 	{
-		std::cout << fenstring << " " << aktuell->getFenString() << aktuell->getZug() << "\n";
+		//std::cout << fenstring << " " << aktuell->getFenString() << aktuell->getZug() << "\n";
 		runde++;
 		if (aktuell->getFenString().compare(fenstring) == 0)
 		{
 			std::cout << "found in" << runde <<  "\n";
-			loschenB = aktuell->getChild(!white);
-			aktuell->setChild(NULL, !white);
-			delhash->delHash(loschenB);
-			tree = aktuell->getChild(white);
-			aktuell->setChild(NULL, white);
-			delete aktuell;
-			return tree;
+			//loschenB = aktuell->getChild(!white);
+			//aktuell->setChild(NULL, !white);
+			//delhash->delHash(loschenB);
+			//tree = aktuell->getChild(white);
+			//aktuell->setChild(NULL, white);
+			//delete aktuell;
+			return aktuell;
 		}
 		loschenA = aktuell;
 		aktuell = aktuell->getChild(!white);

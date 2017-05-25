@@ -1,4 +1,9 @@
 #pragma once
+#include <strsafe.h>
+#include <windows.h>
+#include <tchar.h>
+#include <atlstr.h>
+
 #include "Figur.h"
 #include "Movemennt.h"
 #include "Hashbrett.h"

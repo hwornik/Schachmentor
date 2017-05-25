@@ -176,17 +176,11 @@ DWORD WINAPI CooWorker::Calc(LPVOID lpParam)
 
 DWORD WINAPI CooWorker::CalcTree(LPVOID lpParam)
 {
-	HANDLE hStdoutS;
-	PMYSCDATA pSCData;
 
-	TCHAR msgBuf[BUF_SIZE];
-	size_t cchStringSize;
-	DWORD dwChars;
+	PMYSCDATA pSCData;
 
 	pSCData = (PMYSCDATA)lpParam;
 
-	DWORD dwWaitResult;
-	BOOL bContinue = TRUE;
 	Calculus *calc = new Calculus();
 	calc->traversSearch(pSCData->boards, pSCData->move, pSCData->tiefe, pSCData->godepth, pSCData->zug, pSCData->wertzug, pSCData->bestmove, pSCData->ponder, pSCData->whitesearch);
 	return TRUE;

@@ -220,6 +220,11 @@ std::string Convert::getBoardFen(Brett * board)
 	for (int i = 7; i >= 0; i--)
 	{
 		leer = 0;
+		if (i != 0)
+		{
+			fenstring[z] = '/';
+			z++;
+		}
 		for (int j = 0; j < 8; j++)
 		{
 			if (board->getField(j,i) == 0)
@@ -253,6 +258,8 @@ std::string Convert::getBoardFen(Brett * board)
 			z++;
 		}
 	}
+	fenstring[z] = ' ';
+	z++;
 	if (board->getWhitetoMove())
 	{
 		fenstring[z] = 'w';
@@ -261,6 +268,8 @@ std::string Convert::getBoardFen(Brett * board)
 	{
 		fenstring[z] = 'b';
 	}
+	z++;
+	fenstring[z] = ' ';
 	z++;
 	if (board->getCastlKingside(true))
 	{
@@ -282,6 +291,8 @@ std::string Convert::getBoardFen(Brett * board)
 		fenstring[z] = 'q';
 		z++;
 	}
+	fenstring[z] = ' ';
+	z++;
 	if (board->getEnPassant() < 0)
 	{
 		fenstring[z] = '-';
@@ -290,6 +301,14 @@ std::string Convert::getBoardFen(Brett * board)
 	{		
 		fenstring[z] = this->getcharfromNumber(board->getEnPassant());
 	}
+	z++;
+	fenstring[z] = ' ';
+	z++;
+	fenstring[z] = (char)board->getHalbzug() + 48;
+	z++;
+	fenstring[z] = ' ';
+	z++;
+	fenstring[z] = (char)board->getZugNr() + 48;
 	z++;
 	fenstring[z] = '\n';
 	std::string strfen = fenstring;
