@@ -95,6 +95,10 @@ void Calculus::deepSearch(Hashbrett * boards, Movemennt * move, int tiefe, int g
 
 void Calculus::traversSearch(Hashbrett * boards, Movemennt * move, int tiefe, int godepth, std::string zug, int *wertzug, std::string *bestmove, std::string *ponder, bool *whitesearch)
 {
+	if (boards->getChild(!boards->getBoard()->getWhitetoMove()) != NULL)
+	{
+		traversSearch(boards->getChild(!boards->getBoard()->getWhitetoMove()), move, tiefe, godepth, zug, wertzug, bestmove, ponder, whitesearch);
+	}
 	if (boards->getChild(boards->getBoard()->getWhitetoMove()) != NULL)
 	{
 		traversSearch(boards->getChild(boards->getBoard()->getWhitetoMove()), move, tiefe, godepth, zug, wertzug, bestmove, ponder, whitesearch);
