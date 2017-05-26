@@ -12,6 +12,7 @@ class DeepSearch
 public:
 	DeepSearch();
 	~DeepSearch();
-	void searchMove(Hashbrett * searchtree, bool * quit, bool * end, bool * endatDepth, bool * whitesearch, bool tree);
+	void searchMove(Hashbrett * searchtree, bool * quit, bool * end, bool * endatDepth, bool * whitesearch);
+	void searchMoveToTree(Hashbrett * searchtree, bool * quit, bool * end, bool * endatDepth, bool * whitesearch);
 };
 

@@ -335,6 +335,7 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 			Hashbrett *loschen;
 			loschen = pData->gamehash;
 			pData->gamehash = new Hashbrett();
+			rekonfigureHash = true;
 			pData->gamehash->setBoard(moves->copyBoard(loschen->getBoard()));
 			if (moves->proveMove(pData->gamehash, *pData->movemade))
 			{
@@ -371,8 +372,10 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 			{
 				rekonfigureHash = false;
 				white = pData->gamehash->getBoard()->getWhitetoMove();
-				deep->searchMove(pData->gamehash, pData->quit, pData->endsearch, &timeout,&white,true);
-				moves->printHash(pData->gamehash);
+				Calculus *calc = new Calculus();
+				deep->searchMoveToTree(pData->gamehash, pData->quit, pData->endsearch, &timeout,&white);
+				//deep->searchMove(pData->gamehash, pData->quit, pData->endsearch, &timeout, &white, true);
+				//moves->printHash(pData->gamehash);
 			}
 			else
 			{
@@ -383,7 +386,7 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 				pData->gamehash->setChild(NULL,true);
 				work->startupDelete(one, two);
 				white = pData->gamehash->getBoard()->getWhitetoMove();
-				deep->searchMove(pData->gamehash, pData->quit, pData->endsearch, &timeout,&white,false);
+				deep->searchMove(pData->gamehash, pData->quit, pData->endsearch, &timeout,&white);
 			}
 			*pData->input = WAITING;
 			*pData->ready = true;

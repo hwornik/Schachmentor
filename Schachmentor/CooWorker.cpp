@@ -98,6 +98,8 @@ bool CooWorker::startupCalc(bool tree, int ThreadNr, Hashbrett *boards, Movemenn
 int CooWorker::waitdownCalc()
 {
 	WaitForMultipleObjects(THREADCOUNT, aThread, TRUE, INFINITE);
+	for (int i = 0; i < THREADCOUNT; i++)
+		CloseHandle(aThread[i]);
 	return -1;
 }
 

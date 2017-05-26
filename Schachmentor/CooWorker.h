@@ -25,7 +25,7 @@ class CooWorker
 public:
 	CooWorker();
 	~CooWorker();
-	bool startupCalc(bool tree, int ThreadNr, Hashbrett *boards, Movemennt * move, int tiefe, int godepth, std::string zug, int *wertzug, std::string *bestmove, std::string *ponder, bool *whitesearch);
+	bool startupCalc(bool tree,int ThreadNr, Hashbrett *boards, Movemennt * move, int tiefe, int godepth, std::string zug, int *wertzug, std::string *bestmove, std::string *ponder, bool *whitesearch);
 	int shutdownCalc(int maxthread);
 	int waitdownCalc();
 private:
