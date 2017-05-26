@@ -41,8 +41,6 @@ void Calculus::deepSearch(Hashbrett * boards, Movemennt * move, int tiefe, int g
 			movesperfig = movesperfig->getnext();
 			loschen->setNext(NULL);
 			delete loschen;
-			if (godepth >= tiefe)
-			{
 				Hashbrett *hash = new Hashbrett();
 				hash->setBoard(move->copyBoard(boards->getBoard()));
 				hash->getBoard()->setFigurenwert(boards->getBoard()->getFigurenwert() + movesperfig->getW());
@@ -52,9 +50,12 @@ void Calculus::deepSearch(Hashbrett * boards, Movemennt * move, int tiefe, int g
 				hash->setFenString(conv->getBoardFen(hash->getBoard()));
 				aktuell->setChild(hash, white);
 				aktuell = aktuell->getChild(white);
+				if (godepth > tiefe)
+				{
+
 				this->deepSearch(aktuell, move, tiefe, godepth, zug, wertzug, bestmove, ponder, whitesearch);
 			}
-			if(godepth == tiefe)
+			if(godepth > tiefe)
 			{
 				//std::cout << "info score cp " << hash->getBoard()->getFigurenwert() * 10 << " pv " + hash->getZugFolge() << " " << "\n";
 				std::string str= aktuell->getZugFolge();
@@ -63,8 +64,8 @@ void Calculus::deepSearch(Hashbrett * boards, Movemennt * move, int tiefe, int g
 				//As much as we'd love to, we can't use memcpy() because
 				//sizeof(TCHAR)==sizeof(char) may not be true:
 				std::copy(str.begin(), str.end(), param);
-				StringCchPrintf(msgBuf, BUF_SIZE, TEXT("info score cp %d pv %d.Zug %s\n"),
-					aktuell->getBoard()->getFigurenwert() * 10,aktuell->getBoard()->getZugNr(), param);
+				StringCchPrintf(msgBuf, BUF_SIZE, TEXT("info score cp %d pv %d.Zug %s %d\n"),
+					aktuell->getBoard()->getFigurenwert() * 10,aktuell->getBoard()->getZugNr(), param,tiefe);
 				StringCchLength(msgBuf, BUF_SIZE, &cchStringSize);
 				WriteConsole(hStdout, msgBuf, (DWORD)cchStringSize, &dwChars, NULL);
 				if(*whitesearch)
@@ -97,7 +98,7 @@ void Calculus::deepSearch(Hashbrett * boards, Movemennt * move, int tiefe, int g
 
 void Calculus::traversSearch(Hashbrett * boards, Movemennt * move, int tiefe, int godepth, std::string zug, int *wertzug, std::string *bestmove, std::string *ponder, bool *whitesearch)
 {
-	if (boards->getChild(true) != NULL)
+	if (boards->getChild(true))
 	{
 		traversSearch(boards->getChild(true), move, tiefe, godepth, zug, wertzug, bestmove, ponder, whitesearch);
 	}

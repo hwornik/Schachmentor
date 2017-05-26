@@ -1796,3 +1796,30 @@ Hashbrett * Movemennt::rekonfHash(Hashbrett * oldhash, std::string fenstring)
 	return NULL;
 }
 
+void Movemennt::showHash(Hashbrett * boards)
+{
+	if (boards->getChild(true) != NULL)
+	{
+		std::cout << boards->getZug() << " ";
+		showHash(boards->getChild(true));
+	}
+	else
+		std::cout << "\n";
+	if (boards->getChild(false) != NULL)
+	{
+		std::cout << boards->getZug() << " ";
+		showHash(boards->getChild(false));
+	//if (boards->getChild(false) != NULL)
+	//	traversSearch(boards->getChild(false), move, tiefe, godepth, zug, wertzug, bestmove, ponder, whitesearch);
+	}
+	else
+		std::cout << "\n";
+	/*if (boards->getChild(true) == NULL && boards->getChild(false) == NULL)
+	{
+		godepth = 2;
+		tiefe = 0;
+		this->deepSearch(boards, move, tiefe, godepth, zug, wertzug, bestmove, ponder, whitesearch);
+	}*/
+}
+
+

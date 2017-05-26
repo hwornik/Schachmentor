@@ -24,6 +24,7 @@ public:
 	Brett *copyBoard(Brett *board);
 	void printHash(Hashbrett *hbrett);
 	Hashbrett *rekonfHash(Hashbrett* oldhash, std::string fenstring);
+	void showHash(Hashbrett *boards);
 private:
 	Convert *conv;
 	DeleteHash *delhash;
