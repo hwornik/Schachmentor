@@ -12,6 +12,7 @@
 #include "Constants.h"
 #include "Movemennt.h"
 #include "ThreadData.h"
+#include "DeepSearch.h"
 #include "Worker.h"
 
 

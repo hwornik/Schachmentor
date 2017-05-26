@@ -226,14 +226,14 @@ DWORD WINAPI Worker::searchMove(LPVOID lpParam)
 			hash->setBoard(moves->copyBoard(pSData->searchtree->getBoard()));
 			hash->getBoard()->setFigurenwert(pSData->searchtree->getBoard()->getFigurenwert() + movesperfig->getW());
 			moves->makeMove(hash->getBoard()->getFigur(i, white), movesperfig->getX(), movesperfig->getY(), ' ', hash);
-			hash->setZugFolge(hash->getZug());
+			hash->setZugFolge(pSData->searchtree->getZugFolge()+" "+hash->getZug());
 			hash->setFenString(conv->getBoardFen(hash->getBoard()));
 			aktuell->setChild(hash, white);
 			//std::cout << hash->getZug() << " ";
 			aktuell = aktuell->getChild(white);
 			/// Threads starten
-			//calc->deepSearch(aktuell, moves, tiefe, godepth, hash->getZug(), wertzug, bestmove, ponder, pSData->whitesearch);
-			coop->startupCalc(pSData->tree,thread, aktuell, moves, tiefe, godepth, hash->getZug(), &werte[thread], &bester[thread], &pondi[thread], pSData->whitesearch);
+			calc->deepSearch(aktuell, moves, tiefe, godepth, hash->getZug(), wertzug, bestmove, ponder, pSData->whitesearch);
+			//coop->startupCalc(pSData->tree,thread, aktuell, moves, tiefe, godepth, hash->getZug(), &werte[thread], &bester[thread], &pondi[thread], pSData->whitesearch);
 			thread++;
 			maxthread++;
 			if (thread >= THREADCOUNT)
@@ -301,6 +301,61 @@ DWORD WINAPI Worker::searchMove(LPVOID lpParam)
 		bester[i] = " ";
 		pondi[i] = " ";
 	}
+
+	coop->shutdownCalc(maxthread);
+	std::cout << "bestmove " << *bestmove << " ponder " << *ponder << " " << wert;
+	return 0;
+}
+
+DWORD WINAPI Worker::searchTree(LPVOID lpParam)
+{
+	HANDLE hStdoutS;
+	PMYSDATA pSData;
+
+	TCHAR msgBuf[BUF_SIZE];
+	size_t cchStringSize;
+	DWORD dwChars;
+
+	pSData = (PMYSDATA)lpParam;
+	// Make sure there is a console to receive output results. 
+
+	hStdoutS = GetStdHandle(STD_OUTPUT_HANDLE);
+	if (hStdoutS == INVALID_HANDLE_VALUE)
+		return 1;
+	Movemennt *moves = new Movemennt();
+	Hashbrett * aktuell;
+	bool white = pSData->searchtree->getBoard()->getWhitetoMove();
+	Moving *movesperfig, *loschen;
+	int moveindex = 0;
+	int tiefe = 0;
+	int godepth = 3;
+	Convert *conv = new Convert();
+	aktuell = pSData->searchtree;
+	Calculus *calc = new Calculus();
+	int *wertzug, wert = 1000;
+	if (*pSData->whitesearch)
+		wert = -1000;
+	std::string *bestmove, *ponder;
+	std::string pond, best;
+	bestmove = &best;
+	ponder = &pond;
+	wertzug = &wert;
+	CooWorker *coop = new CooWorker();
+	int thread = 0;
+	bool proof = true;
+	int werte[THREADCOUNT];
+	int maxthread = 0;
+	std::string bester[THREADCOUNT], pondi[THREADCOUNT];
+	for (int i = 0; i < THREADCOUNT; i++)
+	{
+		werte[i] = 1000;
+		if (*pSData->whitesearch)
+			werte[i] = -1000;
+		bester[i] = " ";
+		pondi[i] = " ";
+	}
+
+			calc->deepSearch(aktuell, moves, tiefe, godepth, aktuell->getZug(), wertzug, bestmove, ponder, pSData->whitesearch);
 
 	coop->shutdownCalc(maxthread);
 	std::cout << "bestmove " << *bestmove << " ponder " << *ponder << " " << wert;

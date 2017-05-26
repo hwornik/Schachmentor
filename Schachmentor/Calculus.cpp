@@ -41,21 +41,20 @@ void Calculus::deepSearch(Hashbrett * boards, Movemennt * move, int tiefe, int g
 			movesperfig = movesperfig->getnext();
 			loschen->setNext(NULL);
 			delete loschen;
-				Hashbrett *hash = new Hashbrett();
-				hash->setBoard(move->copyBoard(boards->getBoard()));
-				hash->getBoard()->setFigurenwert(boards->getBoard()->getFigurenwert() + movesperfig->getW());
-				move->makeMove(hash->getBoard()->getFigur(i, white), movesperfig->getX(), movesperfig->getY(), ' ', hash);
-				hash->setZugFolge(boards->getZugFolge() + " " + hash->getZug());
-				//str=hash->getZugFolge();
-				hash->setFenString(conv->getBoardFen(hash->getBoard()));
-				aktuell->setChild(hash, white);
-				aktuell = aktuell->getChild(white);
-				if (godepth > tiefe)
-				{
-
+			Hashbrett *hash = new Hashbrett();
+			hash->setBoard(move->copyBoard(boards->getBoard()));
+			hash->getBoard()->setFigurenwert(boards->getBoard()->getFigurenwert() + movesperfig->getW());
+			move->makeMove(hash->getBoard()->getFigur(i, white), movesperfig->getX(), movesperfig->getY(), ' ', hash);
+			hash->setZugFolge(boards->getZugFolge() + " " + hash->getZug());
+			//str=hash->getZugFolge();
+			hash->setFenString(conv->getBoardFen(hash->getBoard()));
+			aktuell->setChild(hash, white);
+			aktuell = aktuell->getChild(white);
+			if (godepth > tiefe)
+			{
 				this->deepSearch(aktuell, move, tiefe, godepth, zug, wertzug, bestmove, ponder, whitesearch);
 			}
-			if(godepth > tiefe)
+			if(godepth == tiefe)
 			{
 				//std::cout << "info score cp " << hash->getBoard()->getFigurenwert() * 10 << " pv " + hash->getZugFolge() << " " << "\n";
 				std::string str= aktuell->getZugFolge();

@@ -255,7 +255,7 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 	DWORD dwChars;
 
 	Worker *work = new Worker();
-
+	DeepSearch *deep = new DeepSearch();
 	bool rekonfigureHash = false;
 	bool stopsearchhash = false;
 	// Make sure there is a console to receive output results. 
@@ -371,7 +371,7 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 			{
 				rekonfigureHash = false;
 				white = pData->gamehash->getBoard()->getWhitetoMove();
-				work->startupSearch(pData->gamehash, pData->quit, pData->endsearch, &timeout,&white,true);
+				deep->searchMove(pData->gamehash, pData->quit, pData->endsearch, &timeout,&white,true);
 				moves->printHash(pData->gamehash);
 			}
 			else
@@ -383,7 +383,7 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 				pData->gamehash->setChild(NULL,true);
 				work->startupDelete(one, two);
 				white = pData->gamehash->getBoard()->getWhitetoMove();
-				work->startupSearch(pData->gamehash, pData->quit, pData->endsearch, &timeout,&white,false);
+				deep->searchMove(pData->gamehash, pData->quit, pData->endsearch, &timeout,&white,false);
 			}
 			*pData->input = WAITING;
 			*pData->ready = true;

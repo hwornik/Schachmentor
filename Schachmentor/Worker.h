@@ -25,6 +25,7 @@ private:
 	HANDLE  hThreadD;
 	PMYDDATA pDData;
 	static DWORD WINAPI searchMove(LPVOID lpParam);
+	static DWORD WINAPI searchTree(LPVOID lpParam);
 	DWORD   dwThreadIdS;
 	HANDLE  hThreadS;
 	PMYSDATA pSData;
