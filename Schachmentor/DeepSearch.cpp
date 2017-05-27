@@ -151,7 +151,11 @@ void DeepSearch::searchMoveToTree(Hashbrett *searchtree, bool *quit, bool *end, 
 	int werte[THREADCOUNT];
 	std::string *bestmove, *ponder;
 	std::string bester[THREADCOUNT], pondi[THREADCOUNT];
+	std::string pond, best;
+	bestmove = &best;
+	ponder = &pond;
 	int *wertzug, wert = 1000;
+	wertzug = &wert;
 	if (whitesearch)
 		wert = -1000;
 	for (int i = 0; i < THREADCOUNT; i++)
@@ -165,61 +169,90 @@ void DeepSearch::searchMoveToTree(Hashbrett *searchtree, bool *quit, bool *end, 
 	Movemennt *moves = new Movemennt();
 	if (searchtree->getChild(*whitesearch))
 	{
-		aktuell = searchtree->getChild(*whitesearch);
+		aktuell = searchtree->getChild(*whitesearch);//richtiger knoten
 		std::cout << aktuell->getZug() +"Mom";
 		if (aktuell->getChild(!*whitesearch))
 		{
-			links = aktuell->getChild(!*whitesearch);
-			std::cout << "Son " +links->getZug()+"\n";
+			links=aktuell->getChild(!*whitesearch);
+			if (links->getChild(*whitesearch))
+			{
+				links = links->getChild(*whitesearch);
+			}
 		}
 	}
-	while (aktuell->getChild(!*whitesearch))
+	if (links)
 	{
-		std::cout << "r " +aktuell->getZug()+" ";
-		aktuell=aktuell->getChild(!*whitesearch);
 		while (links->getChild(*whitesearch))
 		{
-			std::cout << "l:"+links->getZug()+" ";
-			links = links->getChild(*whitesearch);
+			std::cout << "l:" + links->getZug() + " ";
+
+				coop->startupCalc(true, thread, links, moves, tiefe, godepth, searchtree->getZug(), &werte[thread], &bester[thread], &pondi[thread], whitesearch);
+				thread++;
+				maxthread++;
+				if (thread >= THREADCOUNT)
+				{
+					coop->waitdownCalc();
+					maxthread = 0;
+					thread = 0;
+					for (int i = 0; i < THREADCOUNT; i++)
+					{
+						if (*whitesearch)
+						{
+							if (wert < werte[i])
+							{
+								//std::cout << bester[i] << "\n";
+								*ponder = *bestmove;
+								*bestmove = bester[i];
+								wert = werte[i];
+							}
+						}
+						else
+						{
+							if (wert > werte[i])
+							{
+								*ponder = *bestmove;
+								*bestmove = bester[i];
+								wert = werte[i];
+							}
+						}
+						werte[i] = 1000;
+						if (*whitesearch)
+							werte[i] = -1000;
+						bester[i] = " ";
+						pondi[i] = " ";
+					}
+				}
+				///// threads ende
+				links = links->getChild(*whitesearch);
 		}
-		std::cout << "l:" + links->getZug() + " ";
-		std::cout << "\n";
-		links = aktuell;
-	/*	coop->startupCalc(true, thread, aktuell, moves, tiefe, godepth, searchtree->getZug(), &werte[thread], &bester[thread], &pondi[thread], whitesearch);
-		thread++;
-		maxthread++;
-		if (thread >= THREADCOUNT)
+		for (int i = 0; i < maxthread; i++)
 		{
-			coop->waitdownCalc();
-			maxthread = 0;
-			for (int i = 0; i < THREADCOUNT; i++)
+			if (*whitesearch)
 			{
-				if (*whitesearch)
+				if (wert < werte[i])
 				{
-					if (wert < werte[i])
-					{
-						//std::cout << bester[i] << "\n";
-						*ponder = *bestmove;
-						*bestmove = bester[i];
-						wert = werte[i];
-					}
+					*bestmove = bester[i];
+					*ponder = pond;
+					wert = werte[i];
 				}
-				else
-				{
-					if (wert > werte[i])
-					{
-						*ponder = *bestmove;
-						*bestmove = bester[i];
-						wert = werte[i];
-					}
-				}
-				werte[i] = 1000;
-				if (*whitesearch)
-					werte[i] = -1000;
-				bester[i] = " ";
-				pondi[i] = " ";
 			}
-		}*/
-		///// threads ende
+			else
+			{
+				if (wert > werte[i])
+				{
+					*bestmove = bester[i];
+					*ponder = *bestmove;
+					wert = werte[i];
+				}
+			}
+			werte[i] = 1000;
+			if (*whitesearch)
+				werte[i] = -1000;
+			bester[i] = " ";
+			pondi[i] = " ";
+		}
+		coop->shutdownCalc(maxthread);
+		std::cout << "bestmove " << *bestmove << " ponder " << *ponder << " " << wert;
 	}
+
 }

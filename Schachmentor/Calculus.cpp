@@ -162,11 +162,11 @@ void Calculus::deepSearchT(Hashbrett * boards, Movemennt * move, int tiefe, int 
 				param[str.size()] = 0;
 				//As much as we'd love to, we can't use memcpy() because
 				//sizeof(TCHAR)==sizeof(char) may not be true:
-			/*	std::copy(str.begin(), str.end(), param);
+				std::copy(str.begin(), str.end(), param);
 				StringCchPrintf(msgBuf, BUF_SIZE, TEXT("info score cp %d pv %d.Zug %s %d\n"),
 					aktuell->getBoard()->getFigurenwert() * 10, aktuell->getBoard()->getZugNr(), param, tiefe);
 				StringCchLength(msgBuf, BUF_SIZE, &cchStringSize);
-				WriteConsole(hStdout, msgBuf, (DWORD)cchStringSize, &dwChars, NULL);*/
+				WriteConsole(hStdout, msgBuf, (DWORD)cchStringSize, &dwChars, NULL);
 				if (*whitesearch)
 				{
 					if (*wertzug <= aktuell->getBoard()->getFigurenwert())
