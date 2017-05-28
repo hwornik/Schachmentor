@@ -420,6 +420,8 @@ bool Compute::uci(std::string command)
 		if (pch != NULL)
 			pch = strtok(NULL, " ");
 	}
+	word = "";
+	pch = "";
 	return false;
 }
 

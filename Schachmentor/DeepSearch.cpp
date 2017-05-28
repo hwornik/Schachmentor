@@ -68,7 +68,7 @@ void DeepSearch::searchMove(Hashbrett *searchtree, bool *quit, bool *end, bool *
 			maxthread++;
 			if (thread > THREADCOUNT)
 			{
-				//std::cout <<"#########################" << maxthread << "\n";
+				std::cout <<"#########################" << maxthread << "\n";
 				coop->waitdownCalc();
 				maxthread = 0;
 				thread = 0;
@@ -107,6 +107,7 @@ void DeepSearch::searchMove(Hashbrett *searchtree, bool *quit, bool *end, bool *
 
 		delete movesperfig;
 	}
+	coop->shutdownCalc(maxthread);
 	for (int i = 0; i < maxthread; i++)
 	{
 		if (*whitesearch)
@@ -133,15 +134,13 @@ void DeepSearch::searchMove(Hashbrett *searchtree, bool *quit, bool *end, bool *
 		bester[i] = " ";
 		pondi[i] = " ";
 	}
-
-	coop->shutdownCalc(maxthread);
 	std::cout << "bestmove " << *bestmove << " ponder " << *ponder << " " << wert;
 	//return 0;
 }
 
 void DeepSearch::searchMoveToTree(Hashbrett *searchtree, bool *quit, bool *end, bool *endatDepth, bool *whitesearch)
 {
-	Hashbrett *aktuell,*links;
+	Hashbrett *aktuell,*links,*getrennnt[THREADCOUNT],*links2;
 	aktuell = searchtree;
 	int maxthread = 0;
 	CooWorker *coop = new CooWorker();
@@ -156,7 +155,7 @@ void DeepSearch::searchMoveToTree(Hashbrett *searchtree, bool *quit, bool *end, 
 	ponder = &pond;
 	int *wertzug, wert = 1000;
 	wertzug = &wert;
-	if (whitesearch)
+	if (*whitesearch)
 		wert = -1000;
 	for (int i = 0; i < THREADCOUNT; i++)
 	{
@@ -184,9 +183,12 @@ void DeepSearch::searchMoveToTree(Hashbrett *searchtree, bool *quit, bool *end, 
 	{
 		while (links->getChild(*whitesearch))
 		{
-			std::cout << "l:" + links->getZug() + " ";
-
-				coop->startupCalc(true, thread, links, moves, tiefe, godepth, searchtree->getZug(), &werte[thread], &bester[thread], &pondi[thread], whitesearch);
+			links->setZugFolge(links->getZugFolge().substr(5, links->getZugFolge().length()));
+			std::cout << "l:" + links->getZugFolge() + " ";
+			getrennnt[thread] = links;
+			links2 = links->getChild(*whitesearch);
+			getrennnt[thread]->setChild(NULL, *whitesearch);
+				coop->startupCalc(true, thread, links, moves, tiefe, godepth, links->getZug(), &werte[thread], &bester[thread], &pondi[thread], whitesearch);
 				thread++;
 				maxthread++;
 				if (thread >= THREADCOUNT)
@@ -196,11 +198,16 @@ void DeepSearch::searchMoveToTree(Hashbrett *searchtree, bool *quit, bool *end, 
 					thread = 0;
 					for (int i = 0; i < THREADCOUNT; i++)
 					{
+						if(i<THREADCOUNT+1)
+							getrennnt[thread]->setChild(getrennnt[thread+1], *whitesearch);
+						if(i==THREADCOUNT)
+							getrennnt[thread]->setChild(links2, *whitesearch);
+						std::cout << wert << " " << werte[i] << bester[i]+ "\n";
 						if (*whitesearch)
 						{
 							if (wert < werte[i])
 							{
-								//std::cout << bester[i] << "\n";
+								std::cout << bester[i] << "\n";
 								*ponder = *bestmove;
 								*bestmove = bester[i];
 								wert = werte[i];
@@ -210,23 +217,32 @@ void DeepSearch::searchMoveToTree(Hashbrett *searchtree, bool *quit, bool *end, 
 						{
 							if (wert > werte[i])
 							{
+								std::cout << bester[i] << "\n";
 								*ponder = *bestmove;
 								*bestmove = bester[i];
 								wert = werte[i];
 							}
 						}
-						werte[i] = 1000;
-						if (*whitesearch)
-							werte[i] = -1000;
+
 						bester[i] = " ";
 						pondi[i] = " ";
 					}
 				}
 				///// threads ende
-				links = links->getChild(*whitesearch);
+				links = links2;
 		}
+		std::cout << "l:" + links->getZug() + " ";
+		coop->startupCalc(true, thread, links, moves, tiefe, godepth, searchtree->getZug(), &werte[thread], &bester[thread], &pondi[thread], whitesearch);
+		thread++;
+		maxthread++;
+		coop->shutdownCalc(maxthread);
 		for (int i = 0; i < maxthread; i++)
 		{
+			if (i<maxthread + 1)
+				getrennnt[thread]->setChild(getrennnt[thread + 1], *whitesearch);
+			//if (i == THREADCOUNT)
+			//	getrennnt[thread]->setChild(links2, *whitesearch);
+			std::cout << wert << " " << werte[i] << bester[i] + "\n";
 			if (*whitesearch)
 			{
 				if (wert < werte[i])
@@ -245,13 +261,7 @@ void DeepSearch::searchMoveToTree(Hashbrett *searchtree, bool *quit, bool *end, 
 					wert = werte[i];
 				}
 			}
-			werte[i] = 1000;
-			if (*whitesearch)
-				werte[i] = -1000;
-			bester[i] = " ";
-			pondi[i] = " ";
 		}
-		coop->shutdownCalc(maxthread);
 		std::cout << "bestmove " << *bestmove << " ponder " << *ponder << " " << wert;
 	}
 

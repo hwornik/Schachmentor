@@ -50,4 +50,4 @@ static const char BRETTFELDER[8][8] = { { '#',' ','#',' ','#',' ','#',' ' },
 #define ROCHADE 100
 
 //deppsearch const
-#define THREADCOUNT 20
+#define THREADCOUNT 12
