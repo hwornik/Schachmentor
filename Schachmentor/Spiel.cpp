@@ -302,24 +302,29 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 				pData->gamehash->setBoard(board);
 				pData->gamehash->setFenString(conv->getBoardFen(pData->gamehash->getBoard()));
 			}
-			else if (pData->gamehash == NULL)
-			{
-				board = new Brett();
-				conv->setBoardwithFEN(board, *pData->fenstring);
-				pData->gamehash->setBoard(board);
-				pData->gamehash->setFenString(conv->getBoardFen(pData->gamehash->getBoard()));
-			}
 			else
 			{
 				oldhash = pData->gamehash;
-				pData->gamehash = new Hashbrett();
-				board = new Brett();
-				conv->setBoardwithFEN(board, *pData->fenstring);
-				pData->gamehash->setBoard(board);
-				std::string fenkey = conv->getBoardFen(pData->gamehash->getBoard());
-				pData->gamehash->setFenString(fenkey);
+				pData->gamehash = NULL;
 				// search in hash ob board bereits vorkommt und linke dann die gefunden hashbretter zum Hauptbrett;
-				// work->rekonfHash(febkey,oldhash,pData->gamehash,&rekonfigureHash,&stopsearchhash);
+				Hashbrett *newgame = moves->rekonfHash(oldhash, *pData->fenstring);
+				//Sleep(500);
+				if (newgame)
+				{
+					std::cout << "tree";
+					pData->gamehash->setChild(newgame, white);
+					rekonfigureHash = true;
+				}
+				else
+				{
+					std::cout << "nottree";
+					board = new Brett();
+					conv->setBoardwithFEN(board, *pData->fenstring);
+					pData->gamehash->setBoard(board);
+					std::string fenkey = conv->getBoardFen(pData->gamehash->getBoard());
+					pData->gamehash->setFenString(fenkey);
+					rekonfigureHash = false;
+				}
 			}
 			*pData->input = WAITING;
 			*pData->ready = true;
@@ -332,23 +337,23 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 		}
 		if (*pData->input == MAKEMOVE)
 		{
-			Hashbrett *loschen;
-			loschen = pData->gamehash;
-			pData->gamehash = new Hashbrett();
 			rekonfigureHash = true;
-			pData->gamehash->setBoard(moves->copyBoard(loschen->getBoard()));
+			//pData->gamehash->setBoard(moves->copyBoard(loschen->getBoard()));
 			if (moves->proveMove(pData->gamehash, *pData->movemade))
 			{
-				moves->makeMove(pData->gamehash, *pData->movemade);
+				Hashbrett *loschen;
 				int white = pData->gamehash->getBoard()->getWhitetoMove();
+				loschen = pData->gamehash->getChild(white);
+				pData->gamehash->setChild(NULL,white);
+				moves->makeMove(pData->gamehash, *pData->movemade);
 				bool rekonf = true, stops = false;
 				pData->gamehash->setFenString(conv->getBoardFen(pData->gamehash->getBoard()));
-				Hashbrett *newgame = moves->rekonfHash(loschen, pData->gamehash->getFenString());
+				Hashbrett *newgame = moves->rekonfHash(loschen, loschen->getFenString());
 				//Sleep(500);
 				if (newgame)
 				{
 					std::cout << "tree";
-					pData->gamehash->setChild(newgame, white);
+					pData->gamehash->setChild(newgame, !white);
 					rekonfigureHash = true;
 				}
 				else
@@ -356,11 +361,6 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 					std::cout << "nottree";
 					rekonfigureHash = false;
 				}
-			}
-			else
-			{
-				pData->gamehash = loschen;
-				loschen = NULL;
 			}
 			*pData->input = WAITING;
 			*pData->ready = true;
@@ -374,17 +374,21 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 				white = pData->gamehash->getBoard()->getWhitetoMove();
 				Calculus *calc = new Calculus();
 				deep->searchMoveToTree(pData->gamehash, pData->quit, pData->endsearch, &timeout,&white);
+				//deep->searchMoveToTree(pData->gamehash, pData->quit, pData->endsearch, &timeout, &white);
 				//deep->searchMove(pData->gamehash, pData->quit, pData->endsearch, &timeout, &white, true);
 				//moves->printHash(pData->gamehash);
 			}
 			else
 			{
-				Hashbrett *one, *two;
-				one = pData->gamehash->getChild(true);
-				two = pData->gamehash->getChild(false);
+				Hashbrett *one=NULL, *two=NULL;
+				if(pData->gamehash->getChild(true))
+					one = pData->gamehash->getChild(true);
+				if(pData->gamehash->getChild(false))
+					two = pData->gamehash->getChild(false);
 				pData->gamehash->setChild(NULL, false);
 				pData->gamehash->setChild(NULL,true);
 				work->startupDelete(one, two);
+				std::cout << "gelöscht";
 				white = pData->gamehash->getBoard()->getWhitetoMove();
 				deep->searchMove(pData->gamehash, pData->quit, pData->endsearch, &timeout,&white);
 			}

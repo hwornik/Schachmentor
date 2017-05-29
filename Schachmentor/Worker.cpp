@@ -172,7 +172,7 @@ DWORD WINAPI Worker::searchMove(LPVOID lpParam)
 {
 	HANDLE hStdoutS;
 	PMYSDATA pSData;
-
+	HANDLE aThread[THREADCOUNT];
 	TCHAR msgBuf[BUF_SIZE];
 	size_t cchStringSize;
 	DWORD dwChars;
@@ -238,7 +238,7 @@ DWORD WINAPI Worker::searchMove(LPVOID lpParam)
 			maxthread++;
 			if (thread >= THREADCOUNT)
 			{
-				coop->waitdownCalc();
+				coop->waitdownCalc(aThread);
 				maxthread = 0;
 				for (int i = 0; i < THREADCOUNT; i++)
 				{
@@ -302,7 +302,7 @@ DWORD WINAPI Worker::searchMove(LPVOID lpParam)
 		pondi[i] = " ";
 	}
 
-	coop->shutdownCalc(maxthread);
+	coop->shutdownCalc(maxthread, aThread);
 	std::cout << "bestmove " << *bestmove << " ponder " << *ponder << " " << wert;
 	return 0;
 }
@@ -315,6 +315,7 @@ DWORD WINAPI Worker::searchTree(LPVOID lpParam)
 	TCHAR msgBuf[BUF_SIZE];
 	size_t cchStringSize;
 	DWORD dwChars;
+	HANDLE aThread[THREADCOUNT];
 
 	pSData = (PMYSDATA)lpParam;
 	// Make sure there is a console to receive output results. 
@@ -357,7 +358,7 @@ DWORD WINAPI Worker::searchTree(LPVOID lpParam)
 
 			calc->deepSearch(aktuell, moves, tiefe, godepth, aktuell->getZug(), wertzug, bestmove, ponder, pSData->whitesearch);
 
-	coop->shutdownCalc(maxthread);
+	coop->shutdownCalc(maxthread, aThread);
 	std::cout << "bestmove " << *bestmove << " ponder " << *ponder << " " << wert;
 	return 0;
 }

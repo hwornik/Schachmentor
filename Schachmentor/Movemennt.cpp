@@ -1729,28 +1729,45 @@ Brett * Movemennt::copyBoard(Brett * board)
 
 void Movemennt::printHash(Hashbrett * hbrett)
 {
-	Hashbrett *hb;
+	Hashbrett *hb,*hbs,*hbst;
 	std::cout << "-------\n";
 	std::cout << hbrett->getZug() << " Mom\n";
 	hb = hbrett->getChild(true);
 	if (hb)
 	{
-		while (hb)
+		while (hb = hb->getChild(true))
 		{
 			std::cout << hb->getZug() << " white\n";
-			hb = hb->getChild(true);
+			if (hb->getChild(false))
+			{
+				hbs = hb->getChild(false);
+				while (hbs->getChild(false))
+				{
+					std::cout << "          "+hbs->getZug() << " black\n";
+					if (hbst->getChild(true))
+					{
+						hbst = hbs->getChild(false);
+						std::cout << "            " << hbst->getZug() << " white\n";
+						while (hbst->getChild(false))
+						{
+							std::cout << "                   " + hbst->getZug() << " black\n";
+							hbst = hbst->getChild(false);
+						}
+					}
+					hbs = hbs->getChild(false);
+				}
+			}
 		}
 	}
-	hb = hbrett->getChild(false);
-	if (hb)
+	if (hbrett->getChild(false))
 	{
-		while (hb)
+		hbs = hbrett->getChild(false);
+		while (hbs->getChild(false))
 		{
-			std::cout << hb->getZug() << " black\n";
-			hb = hb->getChild(false);
+			std::cout << "                   " + hbs->getZug() << " black\n";
+			hbs = hbs->getChild(false);
 		}
-	}
-	std::cout << "\n--------------------\n";
+	}	std::cout << "\n--------------------\n";
 }
 
 Hashbrett * Movemennt::rekonfHash(Hashbrett * oldhash, std::string fenstring)
@@ -1762,17 +1779,18 @@ Hashbrett * Movemennt::rekonfHash(Hashbrett * oldhash, std::string fenstring)
 	bool white = !aktuell->getBoard()->getWhitetoMove();
 	while (aktuell->getChild(!white) != NULL)
 	{
-		//std::cout << fenstring << " " << aktuell->getFenString() << aktuell->getZug() << "\n";
+		std::cout << fenstring << " " << aktuell->getFenString() << aktuell->getZug() << "\n";
 		runde++;
 		if (aktuell->getFenString().compare(fenstring) == 0)
 		{
 			std::cout << "found in" << runde <<  "\n";
+			
 			tree = aktuell->getChild(white);
-			tree=aktuell->getChild(!white);
-			loschenB = tree->getChild(!white);
-			tree->setChild(NULL, !white);
+			//tree=aktuell->getChild(!white);
+			loschenB = aktuell->getChild(!white);
+			//tree->setChild(NULL, !white);
 			delhash->delHash(loschenB);
-			return aktuell;
+			return tree;
 		}
 		loschenA = aktuell;
 		aktuell = aktuell->getChild(!white);
@@ -1782,7 +1800,12 @@ Hashbrett * Movemennt::rekonfHash(Hashbrett * oldhash, std::string fenstring)
 	if (aktuell->getFenString().compare(fenstring) == 0)
 	{
 		std::cout << "found in" << runde << "\n";
-		return aktuell;
+		tree = aktuell->getChild(white);
+		//tree=aktuell->getChild(!white);
+		loschenB = aktuell->getChild(!white);
+		//tree->setChild(NULL, !white);
+		delhash->delHash(loschenB);
+		return tree;
 	}
 	std::cout << "not found in" << runde << "\n";
 	delhash->delHash(aktuell);

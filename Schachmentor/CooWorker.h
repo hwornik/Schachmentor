@@ -25,14 +25,15 @@ class CooWorker
 public:
 	CooWorker();
 	~CooWorker();
-	bool startupCalc(bool tree,int ThreadNr, Hashbrett *boards, Movemennt * move, int tiefe, int godepth, std::string zug, int *wertzug, std::string *bestmove, std::string *ponder, bool *whitesearch);
-	int shutdownCalc(int maxthread);
-	int waitdownCalc();
+	bool startupCalc(bool tree, int maxthread, Hashbrett *boards[], Movemennt * move, int tiefe, int godepth, std::string zug[], int wertzug[], std::string bestmove[], std::string ponder[], bool *whitesearch);
+	int shutdownCalc(int maxthread, HANDLE aThread[THREADCOUNT]);
+	int waitdownCalc(HANDLE aThread[THREADCOUNT]);
 private:
 	static DWORD WINAPI Calc(LPVOID);
 	static DWORD WINAPI CalcTree(LPVOID lpParam);
-	HANDLE aThread[THREADCOUNT];
+	void ErrorHandler(LPTSTR lpszFunction);
 	DWORD ThreadID;
 	PMYSCDATA pSCData;
+	HANDLE aThread[THREADCOUNT];
 };
 

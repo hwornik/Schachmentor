@@ -29,5 +29,6 @@ private:
 	DWORD   dwThreadIdS;
 	HANDLE  hThreadS;
 	PMYSDATA pSData;
+
 };
 

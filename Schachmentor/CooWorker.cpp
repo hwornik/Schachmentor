@@ -13,89 +13,99 @@ CooWorker::~CooWorker()
 
 
 
-bool CooWorker::startupCalc(bool tree, int ThreadNr, Hashbrett *boards, Movemennt * move, int tiefe, int godepth, std::string zug, int *wertzug, std::string *bestmove, std::string *ponder, bool *whitesearch)
+bool CooWorker::startupCalc( bool tree, int maxthread, Hashbrett *boards[], Movemennt * move, int tiefe, int godepth, std::string zug[], int wertzug[], std::string bestmove[], std::string ponder[], bool *whitesearch)
 {
-	// Allocate memory for thread data.
-	//*hasharray = new Brett[hashsize];
-	pSCData = (PMYSCDATA)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY,
-		sizeof(MYSCDATA));
+	PMYSCDATA pDataArray[THREADCOUNT];
+	DWORD   dwThreadIdArray[THREADCOUNT];
+	HANDLE  hThreadArray[THREADCOUNT];
 
-	if (pSCData == NULL)
+	// Create MAX_THREADS worker threads.
+	if (maxthread > THREADCOUNT)
+		maxthread = THREADCOUNT;
+	for (int i = 0; i<maxthread; i++)
 	{
-		// If the array allocation fails, the system is out of memory
-		// so there is no point in trying to print an error message.
-		// Just terminate execution.
-		ExitProcess(2);
-	}
-	pSCData->bestmove = bestmove;
-	pSCData->boards = boards;
-	pSCData->godepth = godepth;
-	pSCData->move = move;
-	pSCData->ponder = ponder;
-	pSCData->tiefe = tiefe;
-	pSCData->wertzug = wertzug;
-	pSCData->whitesearch = whitesearch;
-	pSCData->zug = zug;
+		// Allocate memory for thread data.
 
-	// Generate unique data for each thread to work with.
-	// Create the thread to begin execution on its own.
+		pDataArray[i] = (PMYSCDATA)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY,
+			sizeof(MYSCDATA));
 
-	// Create a semaphore with initial and max counts of MAX_SEM_COUNT
-
-	/*ghSemaphore = CreateSemaphore(
-		NULL,           // default security attributes
-		MAX_SEM_COUNT,  // initial count
-		MAX_SEM_COUNT,  // maximum count
-		NULL);          // unnamed semaphore
-
-	if (ghSemaphore == NULL)
-	{
-		printf("CreateSemaphore error: %d\n", GetLastError());
-		return 1;
-	}*/
-
-	// Create worker threads
-	if (tree)
-	{
-		if (ThreadNr < THREADCOUNT)
+		if (pDataArray[i] == NULL)
 		{
-			aThread[ThreadNr] = CreateThread(
-				NULL,       // default security attributes
-				0,          // default stack size
-				(LPTHREAD_START_ROUTINE)CalcTree,
-				pSCData,       // no thread function arguments
-				0,          // default creation flags
-				&ThreadID); // receive thread identifier
+			// If the array allocation fails, the system is out of memory
+			// so there is no point in trying to print an error message.
+			// Just terminate execution.
+			ExitProcess(2);
+		}
 
-			if (aThread[ThreadNr] == NULL)
-			{
-				printf("CreateThread error: %d\n", GetLastError());
-				return 1;
-			}
+		// Generate unique data for each thread to work with.
+
+		pDataArray[i]->bestmove =&bestmove[i] ;
+		pDataArray[i]->boards = boards[i];;
+		pDataArray[i]->godepth = godepth;
+		pDataArray[i]->move = move;
+		pDataArray[i]->ponder = &ponder[i];
+		pDataArray[i]->tiefe = tiefe;
+		pDataArray[i]->wertzug = &wertzug[i];
+		pDataArray[i]->whitesearch = whitesearch;
+		pDataArray[i]->zug = zug[i];
+
+		// Create the thread to begin execution on its own.
+		if (tree)
+		{
+			hThreadArray[i] = CreateThread(
+				NULL,                   // default security attributes
+				0,                      // use default stack size  
+				CalcTree,       // thread function name
+				pDataArray[i],          // argument to thread function 
+				0,                      // use default creation flags 
+				&dwThreadIdArray[i]);   // returns the thread identifier 
+
+
+										// Check the return value for success.
+										// If CreateThread fails, terminate execution. 
+										// This will automatically clean up threads and memory. 
+		}
+		else
+		{
+			hThreadArray[i] = CreateThread(
+				NULL,                   // default security attributes
+				0,                      // use default stack size  
+				Calc,       // thread function name
+				pDataArray[i],          // argument to thread function 
+				0,                      // use default creation flags 
+				&dwThreadIdArray[i]);   // returns the thread identifier 
+		}
+
+		// Check the return value for success.
+		// If CreateThread fails, terminate execution. 
+		// This will automatically clean up threads and memory. 
+
+		if (hThreadArray[i] == NULL)
+		{
+			ErrorHandler(TEXT("CreateThread"));
+			ExitProcess(3);
+		}
+	} // End of main thread creation loop.
+
+	  // Wait until all threads have terminated.
+
+	WaitForMultipleObjects(maxthread, hThreadArray, TRUE, INFINITE);
+
+	// Close all thread handles and free memory allocations.
+
+	for (int i = 0; i<maxthread; i++)
+	{
+		CloseHandle(hThreadArray[i]);
+		if (pDataArray[i] != NULL)
+		{
+			HeapFree(GetProcessHeap(), 0, pDataArray[i]);
+			pDataArray[i] = NULL;    // Ensure address is not reused.
 		}
 	}
-	else
-	{
-		if (ThreadNr < THREADCOUNT)
-		{
-			aThread[ThreadNr] = CreateThread(
-				NULL,       // default security attributes
-				0,          // default stack size
-				(LPTHREAD_START_ROUTINE)Calc,
-				pSCData,       // no thread function arguments
-				0,          // default creation flags
-				&ThreadID); // receive thread identifier
 
-			if (aThread[ThreadNr] == NULL)
-			{
-				printf("CreateThread error: %d\n", GetLastError());
-				return 1;
-			}
-		}
-	}
 	return 0;
 }
-int CooWorker::waitdownCalc()
+int CooWorker::waitdownCalc(HANDLE aThread[THREADCOUNT])
 {
 	WaitForMultipleObjects(THREADCOUNT, aThread, TRUE, INFINITE);
 	for (int i = 0; i < THREADCOUNT; i++)
@@ -104,7 +114,7 @@ int CooWorker::waitdownCalc()
 }
 
 
-int CooWorker::shutdownCalc(int maxthread)
+int CooWorker::shutdownCalc(int maxthread, HANDLE aThread[THREADCOUNT])
 {
 	// Wait for all threads to terminate
 
@@ -186,4 +196,38 @@ DWORD WINAPI CooWorker::CalcTree(LPVOID lpParam)
 	Calculus *calc = new Calculus();
 	calc->traversSearch(pSCData->boards, pSCData->move, pSCData->tiefe, pSCData->godepth, pSCData->zug, pSCData->wertzug, pSCData->bestmove, pSCData->ponder, pSCData->whitesearch);
 	return TRUE;
+}
+
+void CooWorker::ErrorHandler(LPTSTR lpszFunction)
+{
+	// Retrieve the system error message for the last-error code.
+
+	LPVOID lpMsgBuf;
+	LPVOID lpDisplayBuf;
+	DWORD dw = GetLastError();
+
+	FormatMessage(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER |
+		FORMAT_MESSAGE_FROM_SYSTEM |
+		FORMAT_MESSAGE_IGNORE_INSERTS,
+		NULL,
+		dw,
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		(LPTSTR)&lpMsgBuf,
+		0, NULL);
+
+	// Display the error message.
+
+	lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT,
+		(lstrlen((LPCTSTR)lpMsgBuf) + lstrlen((LPCTSTR)lpszFunction) + 40) * sizeof(TCHAR));
+	StringCchPrintf((LPTSTR)lpDisplayBuf,
+		LocalSize(lpDisplayBuf) / sizeof(TCHAR),
+		TEXT("%s failed with error %d: %s"),
+		lpszFunction, dw, lpMsgBuf);
+	MessageBox(NULL, (LPCTSTR)lpDisplayBuf, TEXT("Error"), MB_OK);
+
+	// Free error-handling buffer allocations.
+
+	LocalFree(lpMsgBuf);
+	LocalFree(lpDisplayBuf);
 }
