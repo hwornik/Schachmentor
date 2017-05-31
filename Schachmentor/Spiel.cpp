@@ -288,7 +288,7 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 			if(pData->gamehash!=NULL)
 				if(pData->gamehash->getBoard()!=NULL)
 					conv->displayBoard(pData->gamehash->getBoard());
-			moves->printHash(pData->gamehash);
+			moves->showHash(pData->gamehash);
 			*pData->input = WAITING;
 			*pData->ready = true;
 		}
@@ -338,23 +338,24 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 		if (*pData->input == MAKEMOVE)
 		{
 			rekonfigureHash = true;
-			//pData->gamehash->setBoard(moves->copyBoard(loschen->getBoard()));
+			Hashbrett *loschen;
+			loschen = pData->gamehash;
+			pData->gamehash = new Hashbrett();
+			//moves->makeMove(pData->gamehash, *pData->movemade);
+			pData->gamehash->setBoard(moves->copyBoard(loschen->getBoard()));
 			if (moves->proveMove(pData->gamehash, *pData->movemade))
 			{
-				Hashbrett *loschen;
-				int white = pData->gamehash->getBoard()->getWhitetoMove();
-				loschen = pData->gamehash->getChild(white);
-				pData->gamehash->setChild(NULL,white);
 				moves->makeMove(pData->gamehash, *pData->movemade);
-				bool rekonf = true, stops = false;
+				std::cout << "----------------------------------------\n";
 				pData->gamehash->setFenString(conv->getBoardFen(pData->gamehash->getBoard()));
-				Hashbrett *newgame = moves->rekonfHash(loschen, loschen->getFenString());
+				Hashbrett *newgame = moves->rekonfHash(loschen, pData->gamehash->getFenString());
 				//Sleep(500);
 				if (newgame)
 				{
 					std::cout << "tree";
 					pData->gamehash->setChild(newgame, !white);
 					rekonfigureHash = true;
+					moves->printHash(newgame);
 				}
 				else
 				{

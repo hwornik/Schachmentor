@@ -113,7 +113,7 @@ void Calculus::traversSearch(Hashbrett * boards, Movemennt * move, int tiefe, in
 		godepth = 2;
 		tiefe = 0;
 		//std::cout << boards->getZug() + "\n";
-		//this->deepSearchT(boards, move, tiefe, godepth, zug, wertzug, bestmove, ponder, whitesearch);
+		this->deepSearchT(boards, move, tiefe, godepth, zug, wertzug, bestmove, ponder, whitesearch);
 	}
 }
 

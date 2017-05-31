@@ -1785,57 +1785,61 @@ Hashbrett * Movemennt::rekonfHash(Hashbrett * oldhash, std::string fenstring)
 		{
 			std::cout << "found in" << runde <<  "\n";
 			
-			tree = aktuell->getChild(white);
+			tree = aktuell;
+			tree->setChild(NULL, !white);
 			//tree=aktuell->getChild(!white);
-			loschenB = aktuell->getChild(!white);
+			//loschenB = aktuell->getChild(!white);
 			//tree->setChild(NULL, !white);
-			delhash->delHash(loschenB);
+			//delhash->delHash(loschenB);
 			return tree;
 		}
-		loschenA = aktuell;
+		//loschenA = aktuell;
 		aktuell = aktuell->getChild(!white);
-		loschenA->setChild(NULL, !white);
-		delhash->delHash(loschenA);
+		//loschenA->setChild(NULL, !white);
+		//delhash->delHash(loschenA);
 	}
 	if (aktuell->getFenString().compare(fenstring) == 0)
 	{
-		std::cout << "found in" << runde << "\n";
-		tree = aktuell->getChild(white);
+		std::cout << "found in L" << runde << "\n";
+		tree = aktuell;
 		//tree=aktuell->getChild(!white);
-		loschenB = aktuell->getChild(!white);
+		//loschenB = aktuell->getChild(!white);
 		//tree->setChild(NULL, !white);
-		delhash->delHash(loschenB);
+		//delhash->delHash(loschenB);
 		return tree;
 	}
 	std::cout << "not found in" << runde << "\n";
-	delhash->delHash(aktuell);
+	//delhash->delHash(aktuell);
 	return NULL;
 }
 
 void Movemennt::showHash(Hashbrett * boards)
 {
-	if (boards->getChild(true) != NULL)
+	if (boards)
 	{
-		std::cout << boards->getZug() << " ";
-		showHash(boards->getChild(true));
+		if (boards->getChild(boards->getBoard()->getWhitetoMove()) != NULL)
+		{
+			std::cout << boards->getZug() << " ";
+			showHash(boards->getChild(boards->getBoard()->getWhitetoMove()));
+		}
+		else
+			std::cout << "\n";
+		if (boards->getChild(!boards->getBoard()->getWhitetoMove()) != NULL)
+		{
+			std::cout << boards->getZug() << " ";
+			showHash(boards->getChild(!boards->getBoard()->getWhitetoMove()));
+			//if (boards->getChild(false) != NULL)
+			//	traversSearch(boards->getChild(false), move, tiefe, godepth, zug, wertzug, bestmove, ponder, whitesearch);
+		}
+		else
+			std::cout << "\n";
+		/*if (boards->getChild(true) == NULL && boards->getChild(false) == NULL)
+		{
+			godepth = 2;
+			tiefe = 0;
+			this->deepSearch(boards, move, tiefe, godepth, zug, wertzug, bestmove, ponder, whitesearch);
+		}*/
 	}
-	else
-		std::cout << "\n";
-	if (boards->getChild(false) != NULL)
-	{
-		std::cout << boards->getZug() << " ";
-		showHash(boards->getChild(false));
-	//if (boards->getChild(false) != NULL)
-	//	traversSearch(boards->getChild(false), move, tiefe, godepth, zug, wertzug, bestmove, ponder, whitesearch);
-	}
-	else
-		std::cout << "\n";
-	/*if (boards->getChild(true) == NULL && boards->getChild(false) == NULL)
-	{
-		godepth = 2;
-		tiefe = 0;
-		this->deepSearch(boards, move, tiefe, godepth, zug, wertzug, bestmove, ponder, whitesearch);
-	}*/
 }
 
 
