@@ -112,7 +112,7 @@ void Calculus::traversSearch(Hashbrett * boards, Movemennt * move, int tiefe, in
 	{
 		godepth = 2;
 		tiefe = 0;
-		//std::cout << boards->getZug() + "\n";
+		boards->setZugFolge(boards->getZugFolge().substr(5, boards->getZugFolge().length()));
 		this->deepSearchT(boards, move, tiefe, godepth, zug, wertzug, bestmove, ponder, whitesearch);
 	}
 }
@@ -151,7 +151,7 @@ void Calculus::deepSearchT(Hashbrett * boards, Movemennt * move, int tiefe, int 
 			hash->setBoard(move->copyBoard(boards->getBoard()));
 			hash->getBoard()->setFigurenwert(boards->getBoard()->getFigurenwert() + movesperfig->getW());
 			move->makeMove(hash->getBoard()->getFigur(i, white), movesperfig->getX(), movesperfig->getY(), ' ', hash);
-			hash->setZugFolge(zug + " " + hash->getZugFolge());
+			hash->setZugFolge(boards->getZugFolge() + " " + hash->getZugFolge());
 			hash->setZug(zug);
 			//str=hash->getZugFolge();
 			hash->setFenString(conv->getBoardFen(hash->getBoard()));

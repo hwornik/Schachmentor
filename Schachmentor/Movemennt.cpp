@@ -1787,25 +1787,20 @@ Hashbrett * Movemennt::rekonfHash(Hashbrett * oldhash, std::string fenstring)
 			
 			tree = aktuell;
 			tree->setChild(NULL, !white);
-			//tree=aktuell->getChild(!white);
-			//loschenB = aktuell->getChild(!white);
+			aktuell=aktuell->getChild(!white);
 			//tree->setChild(NULL, !white);
-			//delhash->delHash(loschenB);
+			delhash->delHash(aktuell);
 			return tree;
 		}
-		//loschenA = aktuell;
+		loschenA = aktuell;
 		aktuell = aktuell->getChild(!white);
-		//loschenA->setChild(NULL, !white);
-		//delhash->delHash(loschenA);
+		loschenA->setChild(NULL, !white);
+		delhash->delHash(loschenA);
 	}
 	if (aktuell->getFenString().compare(fenstring) == 0)
 	{
 		std::cout << "found in L" << runde << "\n";
 		tree = aktuell;
-		//tree=aktuell->getChild(!white);
-		//loschenB = aktuell->getChild(!white);
-		//tree->setChild(NULL, !white);
-		//delhash->delHash(loschenB);
 		return tree;
 	}
 	std::cout << "not found in" << runde << "\n";
