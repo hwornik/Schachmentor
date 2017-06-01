@@ -220,7 +220,7 @@ std::string Convert::getBoardFen(Brett * board)
 	for (int i = 7; i >= 0; i--)
 	{
 		leer = 0;
-		if (i != 0)
+		if (i != 7)
 		{
 			fenstring[z] = '/';
 			z++;
@@ -239,12 +239,12 @@ std::string Convert::getBoardFen(Brett * board)
 					leer = 0;
 					z++;
 				}
-				if (board->getField(j, i) > 0 && board->getField(j, i) < board->getFigurmax(true))
+				if (board->getField(j, i) > 0)
 				{
 					fenstring[z] = board->touchFigur(board->getField(j, i) - 1, true)->getTyp();
 					z++;
 				}
-				else if (board->getField(j, i) < 0 && board->getField(j, i) > -board->getFigurmax(false))
+				else if (board->getField(j, i) < 0 )
 				{
 					fenstring[z] = board->touchFigur(-(board->getField(j, i) + 1), false)->getTyp();
 					z++;

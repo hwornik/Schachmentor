@@ -987,8 +987,18 @@ Moving * Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 	return liste;
 }
 
-bool Movemennt::proveMove(int ** move, Figur * fig, Brett * board)
+bool Movemennt::proveMove(int ** move, Hashbrett *hash)
 {
+	Brett *board = new Brett();
+	conv->setBoardwithFEN(board, hash->getFenString());
+	Figur * fig;
+	int z=board->getField(move[0][0], move[0][1]);
+	if (z > 0)
+		fig = board->getFigur(z - 1, true);
+	else if (z < 0)
+		fig = board->getFigur(-(z + 1), false);
+	else
+		return false;
 	if (board->getWhitetoMove() && !isupper(fig->getTyp()))
 		return false;
 	if (!board->getWhitetoMove() && isupper(fig->getTyp()))
@@ -1530,51 +1540,41 @@ bool Movemennt::proveMove(Hashbrett * hash, std::string move)
 	char promo = ' ';
 	if (move.length() > 4)
 	{
-		promo = move.at(4);
+		promo = move.at(4);/// Achtung promo integrieren !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	}
 	movemade = conv->getMoveIntfromChar(move);
-	Figur * fig;
-	int z = hash->getBoard()->getField(movemade[0][0], movemade[0][1]);
-	if (z == 0)
-		return false;
-	if (z > 0)
-	{
-		fig = hash->getBoard()->touchFigur(z - 1, true);
-	}
-	else
-	{
-		fig = hash->getBoard()->touchFigur(-(z + 1), false);
-	}
-	return proveMove(movemade, fig, hash->getBoard());
+	return proveMove(movemade, hash);
 }
 
 bool Movemennt::makeMove(Hashbrett * hash, std::string move)
 {
 	int **movemade;
 	char promo = ' ';
+	Brett *board = new Brett();
+	conv->setBoardwithFEN(board, hash->getFenString());
 	if (move.length() > 4)
 	{
 		promo = move.at(4);
 	}
 	movemade = conv->getMoveIntfromChar(move);
 	Figur * fig;
-	int z = hash->getBoard()->getField(movemade[0][0], movemade[0][1]);
+	int z = board->getField(movemade[0][0], movemade[0][1]);
 	if (z == 0)
 	return false;
 	if (z > 0)
 	{
-		fig = hash->getBoard()->touchFigur(z - 1,true);
+		fig = board->touchFigur(z - 1,true);
 	}
 	else
 	{
-		fig = hash->getBoard()->touchFigur(-(z + 1),false);
+		fig = board->touchFigur(-(z + 1),false);
 	}
-	this->makeMove(fig,movemade[1][0], movemade[1][1],promo, hash);
-	return true;
+	bool ok=this->makeMove(fig,movemade[1][0], movemade[1][1],promo, hash, board);
+	delete board;
+	return ok;
 }
-bool Movemennt::makeMove(Figur *fig, int nachx,int nachy, char promo, Hashbrett * hash)
+bool Movemennt::makeMove(Figur *fig, int nachx,int nachy, char promo, Hashbrett * hash, Brett *board)
 {
-	Brett * board = hash->getBoard();
 	Figur *figk;
 	hash->setZug(conv->getStringfromInt(fig->getPosx(), fig->getPosy(), nachx, nachy,promo));
 	int wert;
@@ -1608,7 +1608,7 @@ bool Movemennt::makeMove(Figur *fig, int nachx,int nachy, char promo, Hashbrett 
 			if (wert > 0 && wert < 10)
 			{
 				wert = conv->getWert(fig->getTyp()) - wert;
-				board->setFigurenwert(board->getFigurenwert() - wert);
+				hash->setFigurenwert(hash->getFigurenwert() - wert);
 				fig->setTyp(promo);
 			}
 		}
@@ -1618,7 +1618,7 @@ bool Movemennt::makeMove(Figur *fig, int nachx,int nachy, char promo, Hashbrett 
 			if (wert > 0 && wert < 10)
 			{
 				wert = conv->getWert(fig->getTyp()) - wert;
-				board->setFigurenwert(board->getFigurenwert() + wert);
+				hash->setFigurenwert(hash->getFigurenwert() + wert);
 				fig->setTyp(promo);
 			}
 		}
@@ -1634,7 +1634,7 @@ bool Movemennt::makeMove(Figur *fig, int nachx,int nachy, char promo, Hashbrett 
 						w = conv->getWert(board->touchFigur(z - 1, true)->getTyp());
 					else
 						w = 0;
-					board->setFigurenwert(board->getFigurenwert() - w);
+					hash->setFigurenwert(hash->getFigurenwert() - w);
 				}
 				else if (z < 0)
 				{
@@ -1642,7 +1642,7 @@ bool Movemennt::makeMove(Figur *fig, int nachx,int nachy, char promo, Hashbrett 
 						w = conv->getWert(board->touchFigur(-(z + 1), false)->getTyp());
 					else
 						w = 0;
-					board->setFigurenwert(board->getFigurenwert() + w);
+					hash->setFigurenwert(hash->getFigurenwert() + w);
 				}
 				board->deleteFigure(z);
 			}
@@ -1679,6 +1679,8 @@ bool Movemennt::makeMove(Figur *fig, int nachx,int nachy, char promo, Hashbrett 
 			if (!board->getWhitetoMove())
 				board->setZugNr(board->getZugNr() + 1);
 			board->setWhitetoMove(!board->getWhitetoMove());
+			hash->setWhitetoMove(board->getWhitetoMove());
+			hash->setFenString(conv->getBoardFen(board));
 			return true;
 		}
 	}
@@ -1712,13 +1714,11 @@ Brett * Movemennt::copyBoard(Brett * board)
 		copy->touchFigur(i, false)->setPosy(board->touchFigur(i, false)->getPosy());
 		copy->touchFigur(i, false)->setTyp(board->touchFigur(i, false)->getTyp());
 	}
-	copy->setBewertung(board->getBewertung());
 	copy->setCastlKingside(true, board->getCastlKingside(true));
 	copy->setCastlKingside(false, board->getCastlKingside(false));
 	copy->setCastlQueenside(true, board->getCastlQueenside(true));
 	copy->setCastlQueenside(false, board->getCastlQueenside(false));
 	copy->setEnPassant(board->getEnPassant());
-	copy->setFigurenwert(board->getFigurenwert());
 	copy->setHalbzug(board->getHalbzug());
 	copy->setKingPos(true, board->getKingPos(true, true), board->getKingPos(true, false));
 	copy->setKingPos(false, board->getKingPos(false, true), board->getKingPos(false, false));
@@ -1776,7 +1776,9 @@ Hashbrett * Movemennt::rekonfHash(Hashbrett * oldhash, std::string fenstring)
 	Hashbrett *aktuell, *loschenA, *loschenB,*tree;
 	aktuell = oldhash;
 	int runde = 0;
-	bool white = !aktuell->getBoard()->getWhitetoMove();
+	Brett *board = new Brett();
+	conv->setBoardwithFEN(board, oldhash->getFenString());
+	bool white = !board->getWhitetoMove();
 	while (aktuell->getChild(!white) != NULL)
 	{
 		std::cout << fenstring << " " << aktuell->getFenString() << aktuell->getZug() << "\n";
@@ -1812,17 +1814,17 @@ void Movemennt::showHash(Hashbrett * boards)
 {
 	if (boards)
 	{
-		if (boards->getChild(boards->getBoard()->getWhitetoMove()) != NULL)
+		if (boards->getChild(boards->getWhitetoMove()) != NULL)
 		{
 			std::cout << boards->getZug() << " ";
-			showHash(boards->getChild(boards->getBoard()->getWhitetoMove()));
+			showHash(boards->getChild(boards->getWhitetoMove()));
 		}
 		else
 			std::cout << "\n";
-		if (boards->getChild(!boards->getBoard()->getWhitetoMove()) != NULL)
+		if (boards->getChild(!boards->getWhitetoMove()) != NULL)
 		{
 			std::cout << boards->getZug() << " ";
-			showHash(boards->getChild(!boards->getBoard()->getWhitetoMove()));
+			showHash(boards->getChild(!boards->getWhitetoMove()));
 			//if (boards->getChild(false) != NULL)
 			//	traversSearch(boards->getChild(false), move, tiefe, godepth, zug, wertzug, bestmove, ponder, whitesearch);
 		}

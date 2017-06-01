@@ -12,15 +12,11 @@ public:
 	int getField(int i, int j);
 	int getKingPos(bool white,bool xwert);
 	void setKingPos(bool white, int x, int y);
-	int getBewertung();
-	void setBewertung(int wert);
 	Figur *touchFigur(int number, bool white);
 	bool addnewFigur(bool white);
 	bool deleteFigure(int boardint);
 	int getFigurmax(bool white);
 	Figur * getFigur(int nr,bool white);
-	void setFigurenwert(int wert);
-	int getFigurenwert();
 	bool getWhitetoMove();
 	void setWhitetoMove(bool white);
 	void setCastlKingside(bool white, bool castle);
@@ -41,8 +37,6 @@ private:
 	int maxweiss;
 	Figur *Schwarz[16];
 	Figur *Weiss[16];
-	int bewertg;
-	int figwert;
 	bool whitetoMove;
 	bool castleKs[2];
 	bool castleQs[2];

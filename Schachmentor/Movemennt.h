@@ -15,10 +15,10 @@ public:
 	Movemennt();
 	~Movemennt();
 	Moving * getMovesperFigure(Brett *board, Figur *fig);
-	bool proveMove(int** move,Figur *fig, Brett *board);
+	bool proveMove(int** move,Hashbrett *hash);
 	bool proveMove(Hashbrett * hash, std::string move);
 	bool makeMove(Hashbrett * hash, std::string move);
-	bool makeMove(Figur *fig, int nachx, int nachy,char promo, Hashbrett * hash);
+	bool makeMove(Figur *fig, int nachx, int nachy,char promo, Hashbrett * hash, Brett *board);
 	bool testRochadeAngriffKS(Brett *board, Figur *fig);
 	bool testRochadeAngriffQS(Brett *board, Figur *fig);
 	Brett *copyBoard(Brett *board);

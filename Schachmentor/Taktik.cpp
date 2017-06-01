@@ -27,6 +27,5 @@ int Taktik::bewertungFig(Brett *board)
 			schwarzwert += conv->getWert(board->touchFigur(i,false)->getTyp());
 		}
 	}
-	board->setFigurenwert(weisswert - schwarzwert);
-	return board->getFigurenwert();
+	return weisswert-schwarzwert;
 }

@@ -26,15 +26,18 @@ void Calculus::deepSearch(Hashbrett * boards, Movemennt * move, int tiefe, int g
 
 	Hashbrett * aktuell;
 	tiefe++;
-	bool white = boards->getBoard()->getWhitetoMove();
 	Moving *movesperfig, *loschen;
 	int moveindex = 0;	
 	aktuell = boards;
 	std::string str;
 	Convert *conv = new Convert();
-	for (int i = 0; i < boards->getBoard()->getFigurmax(white); i++)
+	Brett *board = new Brett();
+	conv->setBoardwithFEN(board, aktuell->getFenString());
+	bool white = board->getWhitetoMove();
+	boards->setWhitetoMove(board->getWhitetoMove());
+	for (int i = 0; i < board->getFigurmax(white); i++)
 	{
-		movesperfig = move->getMovesperFigure(boards->getBoard(), boards->getBoard()->getFigur(i, white));
+		movesperfig = move->getMovesperFigure(board, board->getFigur(i, white));
 		while (movesperfig->getnext() != NULL)
 		{
 			loschen = movesperfig;
@@ -42,12 +45,13 @@ void Calculus::deepSearch(Hashbrett * boards, Movemennt * move, int tiefe, int g
 			loschen->setNext(NULL);
 			delete loschen;
 			Hashbrett *hash = new Hashbrett();
-			hash->setBoard(move->copyBoard(boards->getBoard()));
-			hash->getBoard()->setFigurenwert(boards->getBoard()->getFigurenwert() + movesperfig->getW());
-			move->makeMove(hash->getBoard()->getFigur(i, white), movesperfig->getX(), movesperfig->getY(), ' ', hash);
+			Brett* boardmove=move->copyBoard(board);
+			hash->setFigurenwert(boards->getFigurenwert() + movesperfig->getW());
+			move->makeMove(boardmove->getFigur(i, white), movesperfig->getX(), movesperfig->getY(), ' ', hash,boardmove);
 			hash->setZugFolge(boards->getZugFolge() + " " + hash->getZug());
 			//str=hash->getZugFolge();
-			hash->setFenString(conv->getBoardFen(hash->getBoard()));
+			hash->setFenString(conv->getBoardFen(boardmove));
+			delete boardmove;
 			aktuell->setChild(hash, white);
 			aktuell = aktuell->getChild(white);
 			if (godepth > tiefe)
@@ -69,18 +73,18 @@ void Calculus::deepSearch(Hashbrett * boards, Movemennt * move, int tiefe, int g
 				WriteConsole(hStdout, msgBuf, (DWORD)cchStringSize, &dwChars, NULL);*/
 				if(*whitesearch)
 				{
-					if (*wertzug <= aktuell->getBoard()->getFigurenwert())
+					if (*wertzug <= aktuell->getFigurenwert())
 					{
-						*wertzug = aktuell->getBoard()->getFigurenwert();
+						*wertzug = aktuell->getFigurenwert();
 						*ponder = *bestmove;
 						*bestmove = aktuell->getZugFolge().substr(0, 5);
 					}
 				}
 				else
 				{
-					if (*wertzug >= aktuell->getBoard()->getFigurenwert())
+					if (*wertzug >= aktuell->getFigurenwert())
 					{
-						*wertzug = aktuell->getBoard()->getFigurenwert();
+						*wertzug = aktuell->getFigurenwert();
 						*ponder = *bestmove;
 						*bestmove = aktuell->getZugFolge().substr(0, 5);
 					}
@@ -92,6 +96,7 @@ void Calculus::deepSearch(Hashbrett * boards, Movemennt * move, int tiefe, int g
 		delete movesperfig;
 		//std::cout << "---------------------------------------------------------\n";
 	}
+	delete board;
 	//std::cout << moveindex << " Zuge gefunden Depth\n";
 }
 
@@ -108,7 +113,7 @@ void Calculus::traversSearch(Hashbrett * boards, Movemennt * move, int tiefe, in
 		//	traversSearch(boards->getChild(false), move, tiefe, godepth, zug, wertzug, bestmove, ponder, whitesearch);
 	}
 	//std::cout << boards->getZug() << " ";
-	if (boards->getChild(boards->getBoard()->getWhitetoMove()) == NULL)
+	if (boards->getChild(boards->getWhitetoMove()) == NULL)
 	{
 		godepth = 2;
 		tiefe = 0;
@@ -132,15 +137,18 @@ void Calculus::deepSearchT(Hashbrett * boards, Movemennt * move, int tiefe, int 
 
 	Hashbrett * aktuell;
 	tiefe++;
-	bool white = boards->getBoard()->getWhitetoMove();
 	Moving *movesperfig, *loschen;
 	int moveindex = 0;
 	aktuell = boards;
 	std::string str;
 	Convert *conv = new Convert();
-	for (int i = 0; i < boards->getBoard()->getFigurmax(white); i++)
+	Brett *board = new Brett();
+	conv->setBoardwithFEN(board, aktuell->getFenString());
+	bool white = board->getWhitetoMove();
+	boards->setWhitetoMove(board->getWhitetoMove());
+	for (int i = 0; i < board->getFigurmax(white); i++)
 	{
-		movesperfig = move->getMovesperFigure(boards->getBoard(), boards->getBoard()->getFigur(i, white));
+		movesperfig = move->getMovesperFigure(board, board->getFigur(i, white));
 		while (movesperfig->getnext() != NULL)
 		{
 			loschen = movesperfig;
@@ -148,13 +156,14 @@ void Calculus::deepSearchT(Hashbrett * boards, Movemennt * move, int tiefe, int 
 			loschen->setNext(NULL);
 			delete loschen;
 			Hashbrett *hash = new Hashbrett();
-			hash->setBoard(move->copyBoard(boards->getBoard()));
-			hash->getBoard()->setFigurenwert(boards->getBoard()->getFigurenwert() + movesperfig->getW());
-			move->makeMove(hash->getBoard()->getFigur(i, white), movesperfig->getX(), movesperfig->getY(), ' ', hash);
+			Brett *boardmove=move->copyBoard(board);
+			hash->setFigurenwert(boards->getFigurenwert() + movesperfig->getW());
+			move->makeMove(boardmove->getFigur(i, white), movesperfig->getX(), movesperfig->getY(), ' ', hash,boardmove);
 			hash->setZugFolge(boards->getZugFolge() + " " + hash->getZugFolge());
 			hash->setZug(zug);
 			//str=hash->getZugFolge();
-			hash->setFenString(conv->getBoardFen(hash->getBoard()));
+			hash->setFenString(conv->getBoardFen(boardmove));
+			delete boardmove;
 			aktuell->setChild(hash, white);
 			aktuell = aktuell->getChild(white);
 
@@ -166,23 +175,23 @@ void Calculus::deepSearchT(Hashbrett * boards, Movemennt * move, int tiefe, int 
 				//sizeof(TCHAR)==sizeof(char) may not be true:
 				std::copy(str.begin(), str.end(), param);
 				StringCchPrintf(msgBuf, BUF_SIZE, TEXT("info score cp %d pv %d.Zug %s %d\n"),
-					aktuell->getBoard()->getFigurenwert() * 10, aktuell->getBoard()->getZugNr(), param, tiefe);
+					aktuell->getFigurenwert() * 10, 2, param, tiefe);
 				StringCchLength(msgBuf, BUF_SIZE, &cchStringSize);
 				WriteConsole(hStdout, msgBuf, (DWORD)cchStringSize, &dwChars, NULL);
 				if (*whitesearch)
 				{
-					if (*wertzug <= aktuell->getBoard()->getFigurenwert())
+					if (*wertzug <= aktuell->getFigurenwert())
 					{
-						*wertzug = aktuell->getBoard()->getFigurenwert();
+						*wertzug = aktuell->getFigurenwert();
 						*ponder = *bestmove;
 						*bestmove = aktuell->getZug();
 					}
 				}
 				else
 				{
-					if (*wertzug >= aktuell->getBoard()->getFigurenwert())
+					if (*wertzug >= aktuell->getFigurenwert())
 					{
-						*wertzug = aktuell->getBoard()->getFigurenwert();
+						*wertzug = aktuell->getFigurenwert();
 						*ponder = *bestmove;
 						*bestmove = aktuell->getZug();
 					}
@@ -194,5 +203,6 @@ void Calculus::deepSearchT(Hashbrett * boards, Movemennt * move, int tiefe, int 
 		delete movesperfig;
 		//std::cout << "---------------------------------------------------------\n";
 	}
+	delete board;
 	//std::cout << moveindex << " Zuge gefunden Depth\n";
 }

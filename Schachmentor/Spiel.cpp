@@ -41,11 +41,7 @@ int Spiel::startup()
 		pData->movestodo = moves;
 		pData->movemade = &move;
 		pData->gamehash = new Hashbrett();
-		Brett *board = new Brett();
-		Convert *conv = new Convert();
-		conv->setBoardwithFEN(board, STARTFEN);
-		pData->gamehash->setBoard(board);
-		delete conv;
+		pData->gamehash->setFenString(STARTFEN);
 		// Create the thread to begin execution on its own.
 
 		hThread = CreateThread(
@@ -285,10 +281,14 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 	{
 		if (*pData->input == PRINT)
 		{
-			if(pData->gamehash!=NULL)
-				if(pData->gamehash->getBoard()!=NULL)
-					conv->displayBoard(pData->gamehash->getBoard());
-			moves->showHash(pData->gamehash);
+			if (pData->gamehash != NULL)
+			{
+				Brett *board = new Brett();
+				conv->setBoardwithFEN(board, pData->gamehash->getFenString());
+				conv->displayBoard(board);
+				delete board;
+				moves->showHash(pData->gamehash);
+			}
 			*pData->input = WAITING;
 			*pData->ready = true;
 		}
@@ -299,8 +299,8 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 				pData->gamehash = new Hashbrett();
 				board = new Brett();
 				conv->setBoardwithFEN(board, *pData->fenstring);
-				pData->gamehash->setBoard(board);
-				pData->gamehash->setFenString(conv->getBoardFen(pData->gamehash->getBoard()));
+				pData->gamehash->setFenString(STARTFEN);
+				pData->gamehash->setWhitetoMove(board->getWhitetoMove());
 			}
 			else
 			{
@@ -320,9 +320,8 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 					std::cout << "nottree";
 					board = new Brett();
 					conv->setBoardwithFEN(board, *pData->fenstring);
-					pData->gamehash->setBoard(board);
-					std::string fenkey = conv->getBoardFen(pData->gamehash->getBoard());
-					pData->gamehash->setFenString(fenkey);
+					pData->gamehash->setFenString(*pData->fenstring);
+					pData->gamehash->setWhitetoMove(board->getWhitetoMove());
 					rekonfigureHash = false;
 				}
 			}
@@ -342,12 +341,10 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 			loschen = pData->gamehash;
 			pData->gamehash = new Hashbrett();
 			//moves->makeMove(pData->gamehash, *pData->movemade);
-			pData->gamehash->setBoard(moves->copyBoard(loschen->getBoard()));
+			pData->gamehash->setFenString(loschen->getFenString());
 			if (moves->proveMove(pData->gamehash, *pData->movemade))
 			{
 				moves->makeMove(pData->gamehash, *pData->movemade);
-				std::cout << "----------------------------------------\n";
-				pData->gamehash->setFenString(conv->getBoardFen(pData->gamehash->getBoard()));
 				Hashbrett *newgame = moves->rekonfHash(loschen, pData->gamehash->getFenString());
 				//Sleep(500);
 				if (newgame)
@@ -363,6 +360,8 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 					rekonfigureHash = false;
 				}
 			}
+			else
+				std::cout << "wrong";
 			*pData->input = WAITING;
 			*pData->ready = true;
 		}
@@ -372,7 +371,7 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 			if (rekonfigureHash)
 			{
 				rekonfigureHash = false;
-				white = pData->gamehash->getBoard()->getWhitetoMove();
+				white = pData->gamehash->getWhitetoMove();
 				Calculus *calc = new Calculus();
 				deep->searchMoveToTree(pData->gamehash, pData->quit, pData->endsearch, &timeout,&white);
 				//deep->searchMoveToTree(pData->gamehash, pData->quit, pData->endsearch, &timeout, &white);
@@ -390,7 +389,7 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 				pData->gamehash->setChild(NULL,true);
 				work->startupDelete(one, two);
 				std::cout << "gelöscht";
-				white = pData->gamehash->getBoard()->getWhitetoMove();
+				white = pData->gamehash->getWhitetoMove();
 				deep->searchMove(pData->gamehash, pData->quit, pData->endsearch, &timeout,&white);
 			}
 			*pData->input = WAITING;
@@ -402,9 +401,7 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 			loschen = pData->gamehash;
 			pData->gamehash = new Hashbrett();
 			work->startupDelete(loschen, NULL);
-			Brett *board = new Brett();
-			conv->setBoardwithFEN(board, STARTFEN);
-			pData->gamehash->setBoard(board);
+			pData->gamehash->setFenString(STARTFEN);
 			*pData->input = WAITING;
 			*pData->ready = true;
 		}

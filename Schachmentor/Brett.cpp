@@ -11,8 +11,6 @@ Brett::Brett()
 	}
 	this->zugnr = 1;
 	this->halbzug = 0;
-	this->bewertg = 0;
-	this->figwert = 0;
 	maxweiss = 0;
 	maxschwarz = 0;
 }
@@ -109,15 +107,6 @@ void Brett::setKingPos(bool white, int x, int y)
 	}
 }
 
-int Brett::getBewertung()
-{
-	return this->bewertg;
-}
-
-void Brett::setBewertung(int wert)
-{
-	this->bewertg = wert;
-}
 
 Figur * Brett::touchFigur(int number, bool white)
 {
@@ -217,15 +206,6 @@ Figur * Brett::getFigur(int nr, bool white)
 	}
 }
 
-void Brett::setFigurenwert(int wert)
-{
-	this->figwert = wert;
-}
-
-int Brett::getFigurenwert()
-{
-	return this->figwert;
-}
 
 bool Brett::getWhitetoMove()
 {
@@ -314,8 +294,6 @@ void Brett::reset()
 			Weiss[i] = NULL;
 		}
 	}
-	bewertg = 0;
-	figwert = 0;
 }
 
 void Brett::makeMove(Figur * fig, int nachx, int nachy)

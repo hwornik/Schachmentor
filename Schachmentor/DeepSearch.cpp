@@ -16,7 +16,6 @@ void DeepSearch::searchMove(Hashbrett *searchtree, bool *quit, bool *end, bool *
 	Movemennt *moves = new Movemennt();
 	Hashbrett * aktuell;
 	Hashbrett *hash[THREADCOUNT];
-	bool white = searchtree->getBoard()->getWhitetoMove();
 	Moving *movesperfig, *loschen;
 	int moveindex = 0;
 	int tiefe = 0;
@@ -46,20 +45,26 @@ void DeepSearch::searchMove(Hashbrett *searchtree, bool *quit, bool *end, bool *
 		bester[i] = " ";
 		pondi[i] = " ";
 	}
-	for (int i = 0; i < searchtree->getBoard()->getFigurmax(white); i++)
+	Brett *board = new Brett();
+	conv->setBoardwithFEN(board, aktuell->getFenString());
+	bool white = board->getWhitetoMove();
+	searchtree->setWhitetoMove(board->getWhitetoMove());
+	for (int i = 0; i < board->getFigurmax(white); i++)
 	{
-		movesperfig = moves->getMovesperFigure(searchtree->getBoard(), searchtree->getBoard()->getFigur(i, white));
+		movesperfig = moves->getMovesperFigure(board, board->getFigur(i, white));
 		while (movesperfig->getnext() != NULL)
 		{
 			loschen = movesperfig;
 			movesperfig = movesperfig->getnext();
 			hash[thread] = new Hashbrett();
-			hash[thread]->setBoard(moves->copyBoard(searchtree->getBoard()));
-			hash[thread]->getBoard()->setFigurenwert(searchtree->getBoard()->getFigurenwert() + movesperfig->getW());
-			moves->makeMove(hash[thread]->getBoard()->getFigur(i, white), movesperfig->getX(), movesperfig->getY(), ' ', hash[thread]);
+			hash[thread]->setFigurenwert(searchtree->getFigurenwert() + movesperfig->getW());
+			Brett *boardmove = new Brett();
+			boardmove = moves->copyBoard(board);
+			moves->makeMove(boardmove->getFigur(i, white), movesperfig->getX(), movesperfig->getY(), ' ', hash[thread], boardmove);
 			//Schwarz am zug
 			hash[thread]->setZugFolge(searchtree->getZugFolge() + " " + hash[thread]->getZug());
-			hash[thread]->setFenString(conv->getBoardFen(hash[thread]->getBoard()));
+			hash[thread]->setFenString(conv->getBoardFen(boardmove));
+			delete boardmove;
 			aktzug[thread]=hash[thread]->getZug();
 			aktuell->setChild(hash[thread], white);
 			//std::cout << hash->getZug() << " ";
@@ -138,6 +143,7 @@ void DeepSearch::searchMove(Hashbrett *searchtree, bool *quit, bool *end, bool *
 		bester[i] = " ";
 		pondi[i] = " ";
 	}
+	delete board;
 	std::cout << "bestmove " << *bestmove << " ponder " << *ponder << " " << wert;
 	//return 0;
 }

@@ -18,17 +18,10 @@ public:
 	~Worker();
 	void ErrorHandler(LPTSTR lpszFunction);
 	int startupDelete(Hashbrett *deleteone, Hashbrett *deletetwo);
-	int startupSearch(Hashbrett *searchtree, bool *quit,bool *end,bool *endatDepth, bool *whitesearch, bool tree);
 private:
 	static DWORD WINAPI DeleteHashbrett(LPVOID lpParam);
 	DWORD   dwThreadIdD;
 	HANDLE  hThreadD;
 	PMYDDATA pDData;
-	static DWORD WINAPI searchMove(LPVOID lpParam);
-	static DWORD WINAPI searchTree(LPVOID lpParam);
-	DWORD   dwThreadIdS;
-	HANDLE  hThreadS;
-	PMYSDATA pSData;
-
 };
 

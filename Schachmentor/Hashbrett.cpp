@@ -4,17 +4,15 @@
 
 Hashbrett::Hashbrett()
 {
-	board = new Brett();
 	weiss = NULL;
 	schwarz = NULL;
 	zug = "";
+	figwert = 0;
 }
 
 
 Hashbrett::~Hashbrett()
 {
-	if (this->board != NULL)
-		delete this->board;
 }
 
 Hashbrett * Hashbrett::getChild(bool white)
@@ -38,17 +36,14 @@ void Hashbrett::setZug(std::string zug)
 {
 		this->zug = zug;
 }
-
-void Hashbrett::setBoard(Brett * board)
+void Hashbrett::setFigurenwert(int wert)
 {
-	if (this->board != NULL)
-		delete this->board;
-	this->board = board;
+	this->figwert = wert;
 }
 
-Brett * Hashbrett::getBoard()
+int Hashbrett::getFigurenwert()
 {
-	return this->board;
+	return this->figwert;
 }
 
 std::string Hashbrett::getZug()
@@ -74,6 +69,16 @@ std::string Hashbrett::getZugFolge()
 void Hashbrett::setZugFolge(std::string zugfolge)
 {
 	this->zugfolge = zugfolge;
+}
+
+bool Hashbrett::getWhitetoMove()
+{
+	return this->whitetomove;
+}
+
+void Hashbrett::setWhitetoMove(bool white)
+{
+	whitetomove = white;
 }
 
 
