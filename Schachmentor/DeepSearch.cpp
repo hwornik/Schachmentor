@@ -124,8 +124,8 @@ void DeepSearch::searchMove(Hashbrett *searchtree, bool *quit, bool *end, bool *
 			//delete hash[i];
 			if (wert < werte[i])
 			{
+				*ponder = *bestmove;
 				*bestmove = bester[i];
-				*ponder = pond;
 				wert = werte[i];
 			}
 		}
@@ -133,8 +133,8 @@ void DeepSearch::searchMove(Hashbrett *searchtree, bool *quit, bool *end, bool *
 		{
 			if (wert > werte[i])
 			{
-				*bestmove = bester[i];
 				*ponder = *bestmove;
+				*bestmove = bester[i];
 				wert = werte[i];
 			}
 		}
@@ -181,19 +181,14 @@ void DeepSearch::searchMoveToTree(Hashbrett *searchtree, bool *quit, bool *end, 
 	if (searchtree->getChild(*whitesearch))
 	{
 		links[0] = searchtree->getChild(*whitesearch);//richtiger knoten
-
-	}
-	if (links[0])
-	{
-		while (links[thread])
-		{
-			//links->setZugFolge(links->getZug());
-			//std::cout << "l:" + links[thread]->getZugFolge() + " ";
-			links[thread + 1] = links[thread]->getChild(*whitesearch);
-			links[thread]->setChild(NULL, *whitesearch);
-			aktzug[thread] = links[thread]->getZug();
+			while (links[thread])
+			{
+				//links->setZugFolge(links->getZug());
+				std::cout << "l:";// +links[thread]->getZugFolge() + " "
+				links[thread + 1] = links[thread]->getChild(*whitesearch);
+				links[thread]->setChild(NULL, *whitesearch);
+				aktzug[thread] = links[thread]->getZug();
 				//coop->startupCalc(aThread[thread],true, thread, links[thread], moves, tiefe, godepth, links[thread]->getZug(), &werte[thread], &bester[thread], &pondi[thread], whitesearch);
-				
 				thread++;
 				maxthread++;
 				if (thread >= THREADCOUNT)
@@ -205,10 +200,10 @@ void DeepSearch::searchMoveToTree(Hashbrett *searchtree, bool *quit, bool *end, 
 					thread = 0;
 					for (int i = 0; i < THREADCOUNT; i++)
 					{
-	
-						if(i<THREADCOUNT-1)
-							links[i]->setChild(links[i+1], *whitesearch);
-						std::cout << wert << " c" << werte[i] << bester[i]+ "\n";
+
+						if (i < THREADCOUNT-1)
+							links[i]->setChild(links[i + 1], *whitesearch);
+						std::cout << wert << " " << werte[i] << bester[i] + "\n";
 						if (*whitesearch)
 						{
 							if (wert < werte[i])
@@ -230,56 +225,52 @@ void DeepSearch::searchMoveToTree(Hashbrett *searchtree, bool *quit, bool *end, 
 
 						bester[i] = " ";
 						pondi[i] = " ";
-						
+
 					}
-					if (links[THREADCOUNT])
-					{
-						//std::cout << "xx:" + links[THREADCOUNT]->getZug() + " ";
-						links[0] = links[THREADCOUNT];
-					}
+						//std::cout << "xx:" + links[THREADCOUNT]->getZug() + "
+						links[0] = links[THREADCOUNT-1]->getChild(*whitesearch);
 				}
 				///// threads ende
-		}
-		//std::cout << "l:" + maxthread << " ";
-		if (maxthread > 0)
-		{
-			//WaitForMultipleObjects(maxthread, *aThread, TRUE, INFINITE);
-			coop->startupCalc(true, maxthread, links, moves, tiefe, godepth, aktzug, werte, bester, pondi, whitesearch);
-
-			// Close thread and semaphore handles
-			if (maxthread > THREADCOUNT)
-				maxthread = THREADCOUNT;
-			//for (int i = 0; i < maxthread; i++)
-				//CloseHandle(aThread[i]);
-			for (int i = 0; i < maxthread; i++)
+			}
+			//std::cout << "l:" + maxthread << " ";
+			if (maxthread > 0)
 			{
-				if (i<maxthread-1)
-					links[i]->setChild(links[i + 1], *whitesearch);
-				//if (i == THREADCOUNT)
-				//	getrennnt[thread]->setChild(links2, *whitesearch);
-				std::cout << wert << " " << werte[i] << bester[i] + "\n";
-				if (*whitesearch)
-				{
-					if (wert < werte[i])
-					{
+				//WaitForMultipleObjects(maxthread, *aThread, TRUE, INFINITE);
+				coop->startupCalc(true, maxthread, links, moves, tiefe, godepth, aktzug, werte, bester, pondi, whitesearch);
 
-						*ponder = *bestmove;
-						*bestmove = bester[i];
-						wert = werte[i];
-					}
-				}
-				else
+				// Close thread and semaphore handles
+				if (maxthread > THREADCOUNT)
+					maxthread = THREADCOUNT;
+				//for (int i = 0; i < maxthread; i++)
+					//CloseHandle(aThread[i]);
+				for (int i = 0; i < maxthread; i++)
 				{
-					if (wert > werte[i])
+					if (i < maxthread - 1)
+						links[i]->setChild(links[i + 1], *whitesearch);
+					//if (i == THREADCOUNT)
+					//	getrennnt[thread]->setChild(links2, *whitesearch);
+					std::cout << wert << " c " << werte[i] << bester[i] + "\n";
+					if (*whitesearch)
 					{
-						*ponder = *bestmove;
-						*bestmove = bester[i];
-						wert = werte[i];
+						if (wert < werte[i])
+						{
+
+							*ponder = *bestmove;
+							*bestmove = bester[i];
+							wert = werte[i];
+						}
+					}
+					else
+					{
+						if (wert > werte[i])
+						{
+							*ponder = *bestmove;
+							*bestmove = bester[i];
+							wert = werte[i];
+						}
 					}
 				}
 			}
+			std::cout << "bestmove " << *bestmove << " ponder " << *ponder << " " << wert;
 		}
-		std::cout << "bestmove " << *bestmove << " ponder " << *ponder << " " << wert;
-	}
-
 }

@@ -96,11 +96,11 @@ bool CooWorker::startupCalc( bool tree, int maxthread, Hashbrett *boards[], Move
 	for (int i = 0; i<maxthread; i++)
 	{
 		CloseHandle(hThreadArray[i]);
-		if (pDataArray[i] != NULL)
+	/*	if (pDataArray[i] != NULL)
 		{
 			HeapFree(GetProcessHeap(), 0, pDataArray[i]);
 			pDataArray[i] = NULL;    // Ensure address is not reused.
-		}
+		}*/
 	}
 
 	return 0;
