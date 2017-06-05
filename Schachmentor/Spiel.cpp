@@ -287,7 +287,7 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 				conv->setBoardwithFEN(board, pData->gamehash->getFenString());
 				conv->displayBoard(board);
 				delete board;
-				moves->showHash(pData->gamehash);
+				moves->printHash(pData->gamehash);
 			}
 			*pData->input = WAITING;
 			*pData->ready = true;

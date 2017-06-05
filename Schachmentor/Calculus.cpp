@@ -61,16 +61,16 @@ void Calculus::deepSearch(Hashbrett * boards, Movemennt * move, int tiefe, int g
 			if(godepth == tiefe)
 			{
 				//std::cout << "info score cp " << hash->getBoard()->getFigurenwert() * 10 << " pv " + hash->getZugFolge() << " " << "\n";
-				/*std::string str= aktuell->getZugFolge();
+				std::string str= aktuell->getZugFolge();
 				TCHAR *param = new TCHAR[str.size() + 1];
 				param[str.size()] = 0;
 				//As much as we'd love to, we can't use memcpy() because
 				//sizeof(TCHAR)==sizeof(char) may not be true:
 				std::copy(str.begin(), str.end(), param);
-				StringCchPrintf(msgBuf, BUF_SIZE, TEXT("info score cp %d pv %d.Zug %s %d\n"),
-					aktuell->getBoard()->getFigurenwert() * 10,aktuell->getBoard()->getZugNr(), param,tiefe);
+				StringCchPrintf(msgBuf, BUF_SIZE, TEXT("info score cp %d pv %s %d\n"),
+					aktuell->getFigurenwert() * 10, param,tiefe);
 				StringCchLength(msgBuf, BUF_SIZE, &cchStringSize);
-				WriteConsole(hStdout, msgBuf, (DWORD)cchStringSize, &dwChars, NULL);*/
+				WriteConsole(hStdout, msgBuf, (DWORD)cchStringSize, &dwChars, NULL);
 				if(*whitesearch)
 				{
 					if (*wertzug <= aktuell->getFigurenwert())
@@ -115,10 +115,10 @@ void Calculus::traversSearch(Hashbrett * boards, Movemennt * move, int tiefe, in
 	//std::cout << boards->getZug() << " ";
 	if (boards->getChild(boards->getWhitetoMove()) == NULL)
 	{
-		godepth = 2;
+		godepth = 1;
 		tiefe = 0;
 		boards->setZugFolge(boards->getZugFolge().substr(5, boards->getZugFolge().length()));
-		this->deepSearchT(boards, move, tiefe, godepth, zug, wertzug, bestmove, ponder, whitesearch);
+		this->deepSearch(boards, move, tiefe, godepth, zug, wertzug, bestmove, ponder, whitesearch);
 	}
 }
 

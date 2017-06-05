@@ -81,7 +81,7 @@ void DeepSearch::searchMove(Hashbrett *searchtree, bool *quit, bool *end, bool *
 				thread = 0;
 				for (int i = 0; i < THREADCOUNT; i++)
 				{
-					delete hash[i];
+					//delete hash[i];
 					std::cout << bester[i] << "\n";
 					if (*whitesearch)
 					{
@@ -121,6 +121,7 @@ void DeepSearch::searchMove(Hashbrett *searchtree, bool *quit, bool *end, bool *
 		std::cout << bester[i] << "\n";
 		if (*whitesearch)
 		{
+			//delete hash[i];
 			if (wert < werte[i])
 			{
 				*bestmove = bester[i];
@@ -204,6 +205,7 @@ void DeepSearch::searchMoveToTree(Hashbrett *searchtree, bool *quit, bool *end, 
 					thread = 0;
 					for (int i = 0; i < THREADCOUNT; i++)
 					{
+	
 						if(i<THREADCOUNT-1)
 							links[i]->setChild(links[i+1], *whitesearch);
 						std::cout << wert << " c" << werte[i] << bester[i]+ "\n";
@@ -247,7 +249,7 @@ void DeepSearch::searchMoveToTree(Hashbrett *searchtree, bool *quit, bool *end, 
 			// Close thread and semaphore handles
 			if (maxthread > THREADCOUNT)
 				maxthread = THREADCOUNT;
-			for (int i = 0; i < maxthread; i++)
+			//for (int i = 0; i < maxthread; i++)
 				//CloseHandle(aThread[i]);
 			for (int i = 0; i < maxthread; i++)
 			{

@@ -1732,40 +1732,42 @@ void Movemennt::printHash(Hashbrett * hbrett)
 	Hashbrett *hb,*hbs,*hbst;
 	std::cout << "-------\n";
 	std::cout << hbrett->getZug() << " Mom\n";
-	hb = hbrett->getChild(true);
+	hb = hbrett;
 	if (hb)
 	{
-		while (hb = hb->getChild(true))
+		while ( hb->getChild(hb->getWhitetoMove()))
 		{
 			std::cout << hb->getZug() << " white\n";
-			if (hb->getChild(false))
+			if (hb->getChild(!hb->getWhitetoMove()))
 			{
-				hbs = hb->getChild(false);
-				while (hbs->getChild(false))
+				hbs = hb->getChild(!hb->getWhitetoMove());
+				while (hbs->getChild(!hbs->getWhitetoMove()))
 				{
 					std::cout << "          "+hbs->getZug() << " black\n";
-					if (hbst->getChild(true))
+					hbst = hbs->getChild(!hbs->getWhitetoMove());
+					if (hbst->getChild(hbst->getWhitetoMove()))
 					{
-						hbst = hbs->getChild(false);
 						std::cout << "            " << hbst->getZug() << " white\n";
-						while (hbst->getChild(false))
+						while (hbst->getChild(!hbst->getWhitetoMove()))
 						{
 							std::cout << "                   " + hbst->getZug() << " black\n";
-							hbst = hbst->getChild(false);
+							hbst = hbst->getChild(!hbst->getWhitetoMove());
 						}
+						hbst = hbst->getChild(!hbst->getWhitetoMove());
 					}
-					hbs = hbs->getChild(false);
+					hbs = hbs->getChild(!hbs->getWhitetoMove());
 				}
 			}
+			hb = hb->getChild(hb->getWhitetoMove());
 		}
 	}
-	if (hbrett->getChild(false))
+	if (hbrett->getChild(!hb->getWhitetoMove()))
 	{
-		hbs = hbrett->getChild(false);
-		while (hbs->getChild(false))
+		hbs = hbrett->getChild(!hb->getWhitetoMove());
+		while (hbs->getChild(!hb->getWhitetoMove()))
 		{
 			std::cout << "                   " + hbs->getZug() << " black\n";
-			hbs = hbs->getChild(false);
+			hbs = hbs->getChild(!hb->getWhitetoMove());
 		}
 	}	std::cout << "\n--------------------\n";
 }

@@ -43,11 +43,11 @@ static const char BRETTFELDER[8][8] = { { '#',' ','#',' ','#',' ','#',' ' },
 #define COMPILE_STRING " compiled 23.03.2016"
 
 // Werte für Spiel
-#define MAX_THREADS 3
+//#define MAX_THREADS 3
 #define BUF_SIZE 255
 
 //Anweisung für Roched in zugarray auf pos 3
 #define ROCHADE 100
 
 //deppsearch const
-#define THREADCOUNT 35
+#define THREADCOUNT 64
