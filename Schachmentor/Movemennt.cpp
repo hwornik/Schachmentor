@@ -27,7 +27,7 @@ Moving * Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 			moves = new Moving();
 			moves->setX(fig->getPosx());
 			moves->setY(fig->getPosy() + 1);
-			moves->setW(0);
+			//moves->setW(0);
 			aktuell->setNext(moves);
 			aktuell = aktuell->getnext();
 		}
@@ -36,7 +36,7 @@ Moving * Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 			moves = new Moving();
 			moves->setX(fig->getPosx());
 			moves->setY(fig->getPosy() + 2);
-			moves->setW(0);
+			//moves->setW(0);
 			aktuell->setNext(moves);
 			aktuell = aktuell->getnext();
 		}
@@ -942,7 +942,7 @@ Moving * Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 				moves = new Moving();
 				moves->setX(fig->getPosx() + 2);
 				moves->setY(fig->getPosy());
-				moves->setW(ROCHADE);
+				moves->setW(0);// ROCHADE
 				aktuell->setNext(moves);
 				aktuell = aktuell->getnext();
 			}
@@ -954,7 +954,7 @@ Moving * Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 				moves = new Moving();
 				moves->setX(fig->getPosx() - 2);
 				moves->setY(fig->getPosy());
-				moves->setW(ROCHADE);
+				moves->setW(0);//ROCHADE
 				aktuell->setNext(moves);
 				aktuell = aktuell->getnext();
 			}
@@ -966,7 +966,7 @@ Moving * Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 				moves = new Moving();
 				moves->setX(fig->getPosx() + 2);
 				moves->setY(fig->getPosy());
-				moves->setW(ROCHADE);
+				moves->setW(0);//ROCHADE
 				aktuell->setNext(moves);
 				aktuell = aktuell->getnext();
 			}
@@ -978,7 +978,7 @@ Moving * Movemennt::getMovesperFigure(Brett * board, Figur * fig)
 				moves = new Moving();
 				moves->setX(fig->getPosx() - 2);
 				moves->setY(fig->getPosy());
-				moves->setW(ROCHADE);
+				moves->setW(0);// ROCHADE
 				aktuell->setNext(moves);
 				aktuell = aktuell->getnext();
 			}
