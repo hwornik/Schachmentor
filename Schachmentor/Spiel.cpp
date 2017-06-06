@@ -344,7 +344,7 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 			pData->gamehash->setFenString(loschen->getFenString());
 			if (moves->proveMove(pData->gamehash, *pData->movemade))
 			{
-				moves->makeMove(pData->gamehash, *pData->movemade);
+				moves->makeMove(pData->gamehash, *pData->movemade,true);
 				Hashbrett *newgame = moves->rekonfHash(loschen, pData->gamehash->getFenString());
 				//Sleep(500);
 				if (newgame)

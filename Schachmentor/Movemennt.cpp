@@ -1546,7 +1546,7 @@ bool Movemennt::proveMove(Hashbrett * hash, std::string move)
 	return proveMove(movemade, hash);
 }
 
-bool Movemennt::makeMove(Hashbrett * hash, std::string move)
+bool Movemennt::makeMove(Hashbrett * hash, std::string move, bool update)
 {
 	int **movemade;
 	char promo = ' ';
@@ -1569,11 +1569,11 @@ bool Movemennt::makeMove(Hashbrett * hash, std::string move)
 	{
 		fig = board->touchFigur(-(z + 1),false);
 	}
-	bool ok=this->makeMove(fig,movemade[1][0], movemade[1][1],promo, hash, board);
+	bool ok=this->makeMove(fig,movemade[1][0], movemade[1][1],promo, hash, board,update);
 	delete board;
 	return ok;
 }
-bool Movemennt::makeMove(Figur *fig, int nachx,int nachy, char promo, Hashbrett * hash, Brett *board)
+bool Movemennt::makeMove(Figur *fig, int nachx,int nachy, char promo, Hashbrett * hash, Brett *board,bool update)
 {
 	Figur *figk;
 	hash->setZug(conv->getStringfromInt(fig->getPosx(), fig->getPosy(), nachx, nachy,promo));
@@ -1628,21 +1628,24 @@ bool Movemennt::makeMove(Figur *fig, int nachx,int nachy, char promo, Hashbrett 
 			z = board->getField(movemade[1][0], movemade[1][1]);
 			if (z != 0)
 			{
-				if (z > 0)
+				if (update)
 				{
-					if (board->touchFigur(z - 1, true) != NULL)
-						w = conv->getWert(board->touchFigur(z - 1, true)->getTyp());
-					else
-						w = 0;
-					hash->setFigurenwert(hash->getFigurenwert() - w);
-				}
-				else if (z < 0)
-				{
-					if (board->touchFigur(z - 1, true) != NULL)
-						w = conv->getWert(board->touchFigur(-(z + 1), false)->getTyp());
-					else
-						w = 0;
-					hash->setFigurenwert(hash->getFigurenwert() + w);
+					if (z > 0)
+					{
+						if (board->touchFigur(z - 1, true) != NULL)
+							w = conv->getWert(board->touchFigur(z - 1, true)->getTyp());
+						else
+							w = 0;
+						hash->setFigurenwert(hash->getFigurenwert() - w);
+					}
+					else if (z < 0)
+					{
+						if (board->touchFigur(z - 1, true) != NULL)
+							w = conv->getWert(board->touchFigur(-(z + 1), false)->getTyp());
+						else
+							w = 0;
+						hash->setFigurenwert(hash->getFigurenwert() + w);
+					}
 				}
 				board->deleteFigure(z);
 			}

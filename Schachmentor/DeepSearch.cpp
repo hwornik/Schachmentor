@@ -60,7 +60,7 @@ void DeepSearch::searchMove(Hashbrett *searchtree, bool *quit, bool *end, bool *
 			hash[thread]->setFigurenwert(searchtree->getFigurenwert() + movesperfig->getW());
 			Brett *boardmove = new Brett();
 			boardmove = moves->copyBoard(board);
-			moves->makeMove(boardmove->getFigur(i, white), movesperfig->getX(), movesperfig->getY(), ' ', hash[thread], boardmove);
+			moves->makeMove(boardmove->getFigur(i, white), movesperfig->getX(), movesperfig->getY(), ' ', hash[thread], boardmove,false);
 			//Schwarz am zug
 			hash[thread]->setZugFolge(searchtree->getZugFolge() + " " + hash[thread]->getZug());
 			hash[thread]->setFenString(conv->getBoardFen(boardmove));
@@ -69,8 +69,6 @@ void DeepSearch::searchMove(Hashbrett *searchtree, bool *quit, bool *end, bool *
 			aktuell->setChild(hash[thread], white);
 			//std::cout << hash->getZug() << " ";
 			aktuell = aktuell->getChild(white);
-			/// Threads starten
-			//calc->deepSearch(aktuell, moves, tiefe, godepth, hash->getZug(), wertzug, bestmove, ponder, whitesearch);
 			thread++;
 			maxthread++;
 			if (thread >= THREADCOUNT)
