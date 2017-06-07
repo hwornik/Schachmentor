@@ -36,7 +36,7 @@ void DeepSearch::searchMove(Hashbrett *searchtree, bool *quit, bool *end, bool *
 	bool proof = true;
 	int werte[THREADCOUNT];
 	int maxthread = 0;
-	std::string bester[THREADCOUNT], pondi[THREADCOUNT];
+	std::string bester[THREADCOUNT], bestzug[THREADCOUNT], pondi[THREADCOUNT];
 	for (int i = 0; i < THREADCOUNT; i++)
 	{
 		werte[i] = 1000;
@@ -63,6 +63,7 @@ void DeepSearch::searchMove(Hashbrett *searchtree, bool *quit, bool *end, bool *
 			moves->makeMove(boardmove->getFigur(i, white), movesperfig->getX(), movesperfig->getY(), ' ', hash[thread], boardmove,false);
 			//Schwarz am zug
 			hash[thread]->setZugFolge(searchtree->getZugFolge() + " " + hash[thread]->getZug());
+			bestzug[thread] = hash[thread]->getZug();
 			hash[thread]->setFenString(conv->getBoardFen(boardmove));
 			delete boardmove;
 			aktzug[thread]=hash[thread]->getZug();
@@ -86,7 +87,7 @@ void DeepSearch::searchMove(Hashbrett *searchtree, bool *quit, bool *end, bool *
 						if (wert < werte[i])
 						{
 							*ponder = *bestmove;
-							*bestmove = bester[i];
+							*bestmove = bestzug[i];
 							wert = werte[i];
 						}
 					}
@@ -95,7 +96,7 @@ void DeepSearch::searchMove(Hashbrett *searchtree, bool *quit, bool *end, bool *
 						if (wert > werte[i])
 						{
 							*ponder = *bestmove;
-							*bestmove = bester[i];
+							*bestmove = bestzug[i];
 							wert = werte[i];
 						}
 					}
@@ -116,14 +117,14 @@ void DeepSearch::searchMove(Hashbrett *searchtree, bool *quit, bool *end, bool *
 	coop->startupCalc(false, maxthread, hash, moves, tiefe, godepth, aktzug, werte, bester, pondi, whitesearch);
 	for (int i = 0; i < maxthread; i++)
 	{
-		std::cout << bester[i] << "\n";
+		std::cout << werte[i] << " " << aktzug[i] << "\n";
 		if (*whitesearch)
 		{
 			//delete hash[i];
 			if (wert < werte[i])
 			{
 				*ponder = *bestmove;
-				*bestmove = bester[i];
+				*bestmove = bestzug[i];
 				wert = werte[i];
 			}
 		}
@@ -132,7 +133,7 @@ void DeepSearch::searchMove(Hashbrett *searchtree, bool *quit, bool *end, bool *
 			if (wert > werte[i])
 			{
 				*ponder = *bestmove;
-				*bestmove = bester[i];
+				*bestmove = bestzug[i];
 				wert = werte[i];
 			}
 		}
@@ -158,7 +159,7 @@ void DeepSearch::searchMoveToTree(Hashbrett *searchtree, bool *quit, bool *end, 
 	int godepth = 0;
 	int werte[THREADCOUNT];
 	std::string *bestmove, *ponder;
-	std::string bester[THREADCOUNT], pondi[THREADCOUNT], aktzug[THREADCOUNT];
+	std::string bester[THREADCOUNT], pondi[THREADCOUNT], aktzug[THREADCOUNT], bestzug[THREADCOUNT];
 	Calculus *calc=new Calculus();
 	std::string pond, best;
 	bestmove = &best;
@@ -179,6 +180,7 @@ void DeepSearch::searchMoveToTree(Hashbrett *searchtree, bool *quit, bool *end, 
 	if (searchtree->getChild(*whitesearch))
 	{
 		links[0] = searchtree->getChild(*whitesearch);//richtiger knoten
+		links[0] = links[0]->getChild(*whitesearch);
 			while (links[thread])
 			{
 				//links->setZugFolge(links->getZug());
@@ -249,14 +251,14 @@ void DeepSearch::searchMoveToTree(Hashbrett *searchtree, bool *quit, bool *end, 
 						links[i]->setChild(links[i + 1], *whitesearch);
 					//if (i == THREADCOUNT)
 					//	getrennnt[thread]->setChild(links2, *whitesearch);
-					std::cout << wert << " c " << werte[i] << bester[i] + "\n";
+					std::cout << wert << " c " << werte[i] << aktzug[i] + "\n";
 					if (*whitesearch)
 					{
 						if (wert < werte[i])
 						{
 
 							*ponder = *bestmove;
-							*bestmove = bester[i];
+							*bestmove = aktzug[i];
 							wert = werte[i];
 						}
 					}
@@ -265,7 +267,7 @@ void DeepSearch::searchMoveToTree(Hashbrett *searchtree, bool *quit, bool *end, 
 						if (wert > werte[i])
 						{
 							*ponder = *bestmove;
-							*bestmove = bester[i];
+							*bestmove = aktzug[i];
 							wert = werte[i];
 						}
 					}

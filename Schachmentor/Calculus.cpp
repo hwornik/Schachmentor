@@ -71,7 +71,8 @@ void Calculus::deepSearch(Hashbrett * boards, Movemennt * move, int tiefe, int g
 					aktuell->getFigurenwert() * 10, param,tiefe);
 				StringCchLength(msgBuf, BUF_SIZE, &cchStringSize);
 				WriteConsole(hStdout, msgBuf, (DWORD)cchStringSize, &dwChars, NULL);
-				if(*whitesearch)
+				*wertzug = (*wertzug+(aktuell->getFigurenwert()*100))/2;
+				/*if(*whitesearch)
 				{
 					if (*wertzug <= aktuell->getFigurenwert())
 					{
@@ -88,7 +89,7 @@ void Calculus::deepSearch(Hashbrett * boards, Movemennt * move, int tiefe, int g
 						*ponder = *bestmove;
 						*bestmove = aktuell->getZugFolge().substr(0, 5);
 					}
-				}
+				}*/
 			}
 			moveindex++;
 			//tiefe--;
@@ -178,7 +179,8 @@ void Calculus::deepSearchT(Hashbrett * boards, Movemennt * move, int tiefe, int 
 					aktuell->getFigurenwert() * 10, 2, param, tiefe);
 				StringCchLength(msgBuf, BUF_SIZE, &cchStringSize);
 				WriteConsole(hStdout, msgBuf, (DWORD)cchStringSize, &dwChars, NULL);
-				if (*whitesearch)
+				*wertzug += aktuell->getFigurenwert();
+				/*if (*whitesearch)
 				{
 					if (*wertzug <= aktuell->getFigurenwert())
 					{
@@ -195,7 +197,7 @@ void Calculus::deepSearchT(Hashbrett * boards, Movemennt * move, int tiefe, int 
 						*ponder = *bestmove;
 						*bestmove = aktuell->getZug();
 					}
-				}
+				}*/
 			
 			moveindex++;
 			//tiefe--;

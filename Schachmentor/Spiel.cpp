@@ -287,7 +287,7 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 				conv->setBoardwithFEN(board, pData->gamehash->getFenString());
 				conv->displayBoard(board);
 				delete board;
-				moves->printHash(pData->gamehash);
+				//moves->printHash(pData->gamehash);
 			}
 			*pData->input = WAITING;
 			*pData->ready = true;
@@ -352,7 +352,6 @@ DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 					std::cout << "tree";
 					pData->gamehash->setChild(newgame, !white);
 					rekonfigureHash = true;
-					moves->printHash(newgame);
 				}
 				else
 				{
