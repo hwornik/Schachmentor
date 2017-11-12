@@ -81,10 +81,11 @@ void DeepSearch::searchMove(Hashbrett *searchtree, bool *quit, bool *end, bool *
 				for (int i = 0; i < THREADCOUNT; i++)
 				{
 					//delete hash[i];
+					werte[i] /= 100;
 					std::cout << bester[i] << "\n";
 					if (*whitesearch)
 					{
-						if (wert < werte[i])
+						if (wert <= werte[i])
 						{
 							*ponder = *bestmove;
 							*bestmove = bestzug[i];
@@ -93,7 +94,7 @@ void DeepSearch::searchMove(Hashbrett *searchtree, bool *quit, bool *end, bool *
 					}
 					else
 					{
-						if (wert > werte[i])
+						if (wert >= werte[i])
 						{
 							*ponder = *bestmove;
 							*bestmove = bestzug[i];
@@ -120,8 +121,9 @@ void DeepSearch::searchMove(Hashbrett *searchtree, bool *quit, bool *end, bool *
 		std::cout << werte[i] << " " << aktzug[i] << "\n";
 		if (*whitesearch)
 		{
+			werte[i] /= 100;
 			//delete hash[i];
-			if (wert < werte[i])
+			if (wert <= werte[i])
 			{
 				*ponder = *bestmove;
 				*bestmove = bestzug[i];
@@ -130,7 +132,7 @@ void DeepSearch::searchMove(Hashbrett *searchtree, bool *quit, bool *end, bool *
 		}
 		else
 		{
-			if (wert > werte[i])
+			if (wert >= werte[i])
 			{
 				*ponder = *bestmove;
 				*bestmove = bestzug[i];
@@ -251,10 +253,11 @@ void DeepSearch::searchMoveToTree(Hashbrett *searchtree, bool *quit, bool *end, 
 						links[i]->setChild(links[i + 1], *whitesearch);
 					//if (i == THREADCOUNT)
 					//	getrennnt[thread]->setChild(links2, *whitesearch);
+					werte[i] /= 100;
 					std::cout << wert << " c " << werte[i] << aktzug[i] + "\n";
 					if (*whitesearch)
 					{
-						if (wert < werte[i])
+						if (wert <= werte[i])
 						{
 
 							*ponder = *bestmove;
@@ -264,7 +267,7 @@ void DeepSearch::searchMoveToTree(Hashbrett *searchtree, bool *quit, bool *end, 
 					}
 					else
 					{
-						if (wert > werte[i])
+						if (wert >= werte[i])
 						{
 							*ponder = *bestmove;
 							*bestmove = aktzug[i];

@@ -71,7 +71,10 @@ void Calculus::deepSearch(Hashbrett * boards, Movemennt * move, int tiefe, int g
 					aktuell->getFigurenwert() * 10, param,tiefe);
 				StringCchLength(msgBuf, BUF_SIZE, &cchStringSize);
 				WriteConsole(hStdout, msgBuf, (DWORD)cchStringSize, &dwChars, NULL);
-				*wertzug = (*wertzug+(aktuell->getFigurenwert()*100))/2;
+				// Mittelwertberechnung
+				//*wertzug = (*wertzug+(aktuell->getFigurenwert()*100))/2;
+				// Summenberechnung
+				*wertzug +=aktuell->getFigurenwert();
 				/*if(*whitesearch)
 				{
 					if (*wertzug <= aktuell->getFigurenwert())
@@ -98,6 +101,7 @@ void Calculus::deepSearch(Hashbrett * boards, Movemennt * move, int tiefe, int g
 		//std::cout << "---------------------------------------------------------\n";
 	}
 	delete board;
+	*wertzug /= moveindex;
 	//std::cout << moveindex << " Zuge gefunden Depth\n";
 }
 

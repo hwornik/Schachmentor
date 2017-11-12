@@ -241,6 +241,9 @@ void Spiel::stopthinking()
 	this->stop = true;
 }
 
+/*
+* Hier startet die Berechnung der Züge
+*/
 DWORD WINAPI Spiel::CentralControl(LPVOID lpParam)
 {
 	HANDLE hStdout;
